@@ -1,4 +1,4 @@
-# AEU_projectPy
+# Cinema Reservation
 
 Description
 
