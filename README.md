@@ -1,5 +1,7 @@
 # Cinema Reservation
 
+---
+
 Description
 
 The Cinema Web Application aims to provide users with an intuitive platform where they can browse movie schedules, select showtimes, and reserve seats. The backend will be developed in Python for data management, while the frontend will leverage React and Next.js for a modern and interactive user interface.
