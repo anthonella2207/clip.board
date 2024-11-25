@@ -44,7 +44,7 @@ The web application will feature an intuitive, user-friendly interface built wit
 -	React: Used to create reusable and interactive components for dynamic content rendering.
 -	Next.js: Provides optimized performance, server-side rendering, and seamless management of dynamic routes.
 Key Interface Features
-•	Movie Schedule View:
+-	Movie Schedule View:
 Users will be able to browse the movie schedule with advanced search and filter functionalities, such as:
 -	Genre Filter: Display movies based on selected genres (e.g., Action, Comedy, Drama).
 -	Duration Filter: Filter movies by length (e.g., < 90 minutes, 90-120 minutes, > 120 minutes).
