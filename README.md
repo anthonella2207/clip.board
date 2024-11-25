@@ -8,12 +8,9 @@ Functionalities
 
 1. Data Source:
 The system will integrate with a reliable API to fetch real-time data about movies. This API will deliver:
-- General Information:
-Titles, synopsis, duration, genres, age ratings, and user scores.
-•	Showtimes:
-Specific dates and times for each movie available in the schedule.
-•	Multimedia Resources:
-Promotional assets such as movie posters, banners, and links to trailers.
+- General Information: Titles, synopsis, duration, genres, age ratings, and user scores.
+-	Showtimes: Specific dates and times for each movie available in the schedule.
+-	Multimedia Resources: Promotional assets such as movie posters, banners, and links to trailers.
 
  
 3. Data Storage and Handling:
