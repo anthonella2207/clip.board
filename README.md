@@ -6,7 +6,7 @@ The Cinema Web Application aims to provide users with an intuitive platform wher
  
 Functionalities
 
-1. Data Source
+1. Data Source:
 The system will integrate with a reliable API to fetch real-time data about movies. This API will deliver:
 •	General Information:
 Titles, synopsis, duration, genres, age ratings, and user scores.
@@ -16,7 +16,7 @@ Specific dates and times for each movie available in the schedule.
 Promotional assets such as movie posters, banners, and links to trailers.
 
  
-2. Data Storage and Handling
+2. Data Storage and Handling:
 A relational database will be used for managing all project data. The database structure will include:
 •	Movies Table:
 Stores essential information about the movies on the schedule, such as title, description, and duration.
@@ -28,7 +28,7 @@ Details each cinema hall, including its name and seating capacity.
 Tracks the availability of seats (available, reserved) for each showtime in each theater.
 
  
-3. User account management system
+3. User account management system:
 •	Database Schema:
 Create a robust users table with the following fields:
 o	id (Primary Key)
@@ -47,7 +47,7 @@ o	Manage bookings: Cancel or adjust user bookings as needed.
 o	Monitor user activity: View user booking history and platform engagement for insights.
 
  
-4. Web Interface
+4. Web Interface:
 The web application will feature an intuitive, user-friendly interface built with the following tools:
 •	React:
 Used to create reusable and interactive components for dynamic content rendering.
@@ -66,7 +66,7 @@ Users can select their desired showtimes and pick seats through an intuitive, cl
 The system ensures a straightforward flow, enabling users to complete seat reservations in just a few steps.
  
 
-5. Visualizations
+5. Visualizations:
 Interactive Seat Map
 •	A graphical display of the seating arrangement within the cinema hall.
 •	Seats are visually represented and change status (available, reserved, or selected) dynamically to enhance the user experience.
