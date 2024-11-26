@@ -13,7 +13,7 @@ The system will integrate with a reliable API to fetch real-time data about movi
 -	Multimedia Resources: Promotional assets such as movie posters, banners, and links to trailers.
 
  
-### 3. Data Storage and Handling:
+### 2. Data Storage and Handling:
 A relational database will be used for managing all project data. The database structure will include:
 -	Movies Table: Stores essential information about the movies on the schedule, such as title, description, and duration.
 -	Showtimes Table: Links movies with their available dates and times.
@@ -21,7 +21,7 @@ A relational database will be used for managing all project data. The database s
 -	Seats Table: Tracks the availability of seats (available, reserved) for each showtime in each theater.
 
  
-### 4. User account management system:
+### 3. User account management system:
 Database Schema - Create a robust users table with the following fields:
 -	id (Primary Key)
 -	username (Unique identifier)
@@ -41,7 +41,7 @@ Admin Management
 -	Monitor user activity: View user booking history and platform engagement for insights.
 
  
-### 5. Web Interface:
+### 4. Web Interface:
 The web application will feature an intuitive, user-friendly interface built with the following tools:
 -	React: Used to create reusable and interactive components for dynamic content rendering.
 -	Next.js: Provides optimized performance, server-side rendering, and seamless management of dynamic routes.
@@ -56,7 +56,7 @@ Movie Schedule View: users will be able to browse the movie schedule with advanc
 -	Streamlined Reservation Process: The system ensures a straightforward flow, enabling users to complete seat reservations in just a few steps.
  
 
-### 6. Visualizations:
+### 5. Visualizations:
 Interactive Seat Map
 -	A graphical display of the seating arrangement within the cinema hall.
 -	Seats are visually represented and change status (available, reserved, or selected) dynamically to enhance the user experience.
