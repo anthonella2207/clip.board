@@ -72,3 +72,7 @@ The movie schedule will present a visually engaging display:
 -	A list of available showtimes for each movie.
 -	Additional key details such as genre, duration, and rating.
 
+### 6. Statistical Analysis:
+- Calculate the overall popularity of the movies by calculating the average stars given.
+- Demographical analysis: The users are divided into different age groups (e.g., 12–18: teenagers, 18–30: young adults, etc.) to determine in which age group the film is popular or unpopular.
+- Calculate how any people watched the movie when and where to estimate how full the cinema hall will be in the end.
