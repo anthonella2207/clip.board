@@ -6,14 +6,15 @@
     "axios": "^1.7.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.14.2",
-    "react-scripts": "5.0.1"
+    "react-router-dom": "^6.28.1",
+    "react-scripts": "5.0.1",
+    "swiper": "^9.0.0"
   },
   "scripts": {
-    "start": "client/node_modules/.bin/react-scripts start",
-    "build": "client/node_modules/.bin/react-scripts build",
-    "test": "client/node_modules/.bin/react-scripts test",
-    "eject": "client/node_modules/.bin/react-scripts eject"
+    "start": "node_modules/.bin/react-scripts start",
+    "build": "node_modules/.bin/react-scripts build",
+    "test": "node_modules/.bin/react-scripts test",
+    "eject": "node_modules/.bin/react-scripts eject"
   },
   "eslintConfig": {
     "extends": [

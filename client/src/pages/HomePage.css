@@ -1,0 +1,122 @@
+/* Encabezado principal */
+.homepage-header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Centra el contenido verticalmente */
+  align-items: center; /* Centra el contenido horizontalmente */
+  height: 300px; /* Espacio suficiente para el título y la lámpara */
+  color: white;
+  font-size: 2rem;
+  font-weight: bold;
+  position: relative;
+}
+
+/* Contenedor de la lámpara */
+.lamp-container {
+  position: relative; /* Relativo al contenedor */
+  top: 0; /* Lámpara más cercana al título */
+  display: flex;
+  justify-content: center; /* Centra la lámpara horizontalmente */
+  width: 100%;
+}
+
+.lamp {
+  width: 400px;
+  height: auto;
+  animation: swing 2s ease-in-out infinite; /* Animación de oscilación */
+}
+
+.light-effect {
+  position: absolute;
+  top: 100%; /* Coloca la luz justo debajo de la lámpara */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0; /* Forma triangular inicial */
+  height: 0;
+  border-left: 200px solid transparent; /* Lado izquierdo transparente */
+  border-right: 200px solid transparent; /* Lado derecho transparente */
+  border-bottom: 500px solid rgba(250, 250, 176, 0.8); /* Luz triangular */
+  opacity: 0.8; /* Hace que la luz sea translúcida */
+  filter: blur(20px); /* Difumina los bordes */
+  pointer-events: none; /* Evita interferencias en clics */
+  z-index: 1; /* Coloca detrás de otros elementos */
+}
+
+
+/* Título */
+h1 {
+  margin: 0;
+  padding-top: -50px; /* Espacio entre la lámpara y el título */
+  text-align: center;
+  color: white;
+  font-size: 3rem; /* Título más grande */
+}
+
+/* Carrusel Coverflow */
+.movie-carousel {
+  width: 100%;
+  height: 500px; /* Ajusta la altura del carrusel */
+  margin-top: 100px;
+}
+
+.movie-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 200px; /* Tamaño de cada imagen en el carrusel */
+  height: 450px;
+}
+
+.movie-poster-carousel {
+  width: 100%;
+  height: 100%;
+  border-radius: 15px; /* Bordes redondeados */
+  object-fit: cover; /* Ajusta la imagen para cubrir el contenedor */
+}
+
+.movie-poster {
+  width: 12.187690432663011vw;
+  height: 18.281535648994517vw;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.movies-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Coincide con el nuevo tamaño de las imágenes */
+  gap: 40px; /* Más espacio entre las películas */
+}
+
+/* Cambia la ubicación en pantallas más pequeñas */
+@media (max-width: 51.474530831099194vw) {
+  .toggle-view-button {
+    right: 10px; /* Reduce el espacio desde la derecha */
+    bottom: 10px; /* Reduce el espacio desde la parte inferior */
+  }
+}
+
+/* Cambia la ubicación en pantallas grandes (ejemplo de sidebar amplio) */
+@media (min-width: 80.42895442359249vw) {
+  .toggle-view-button {
+    right: 270px; /* Ajusta el espacio considerando un sidebar más ancho */
+  }
+}
+
+.swiper-pagination {
+  bottom: 50px; /* Ajusta la posición de los puntos de paginación */
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  color: #fff; /* Cambia el color de las flechas */
+  font-size: 20px;
+}
+
+
+/* Fondo y estilo general */
+body {
+  margin: 0;
+  background-color: rgba(0, 0, 0, 0.9); /* Fondo oscuro */
+  font-family: Arial, sans-serif;
+  position: relative;
+}
