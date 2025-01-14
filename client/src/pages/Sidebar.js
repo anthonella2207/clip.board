@@ -14,19 +14,22 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className="sidebar">
-      <div className="sidebar-header">
-        <h1>Mov.time</h1>
+      <div className="sidebar">
+          <div className="sidebar-header">
+              <h1>
+                  <span className="clip">Clip</span>
+                  <span className="board">.board</span>
+              </h1>
+          </div>
+          <ul className="menu-list">
+              {menuItems.map((item, index) => (
+                  <li key={index} className="menu-item">
+                      {item.icon}
+                      <span>{item.name}</span>
+                  </li>
+              ))}
+          </ul>
       </div>
-      <ul className="menu-list">
-        {menuItems.map((item, index) => (
-          <li key={index} className="menu-item">
-            {item.icon}
-            <span>{item.name}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
   );
 };
 

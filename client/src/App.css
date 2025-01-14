@@ -5,25 +5,12 @@
   height: 100vh;
 }
 
-/* Sidebar styles */
-.sidebar {
-  width: 250px;
-  background-color: #1c1c1e;
-  color: white;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  position: fixed; /* Asegura que la barra lateral esté fija */
-}
-
-/* Content area */
 .main-content {
-  margin-left: 250px; /* Deja espacio para la barra lateral fija */
+  margin-left: 180px; /* Alineado exacto al ancho de la sidebar */
   flex: 1;
   padding: 20px;
-  background-color: #141414;
+  background-color: #1D1C2A;
   color: white;
-  overflow-y: auto; /* Agrega scroll si el contenido principal es muy largo */
+  overflow-y: auto;
+  box-sizing: border-box;
 }
