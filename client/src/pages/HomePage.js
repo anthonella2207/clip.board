@@ -68,7 +68,6 @@ const HomePage = () => {
                 alt={movie.title}
                 className="movie-poster"
               />
-              <p className="movie-title">{movie.title}</p>
             </div>
           ))}
         </div>
@@ -89,7 +88,6 @@ const HomePage = () => {
                 alt={movie.title}
                 className="movie-poster"
               />
-              <p className="movie-title">{movie.title}</p>
             </div>
           ))}
         </div>
@@ -110,7 +108,6 @@ const HomePage = () => {
                 alt={movie.title}
                 className="movie-poster"
               />
-              <p className="movie-title">{movie.title}</p>
             </div>
           ))}
         </div>
