@@ -1,35 +1,29 @@
-.homepage {
-  font-family: Arial, sans-serif;
-  background: linear-gradient(to right, #141e30, #243b55);
+/* General layout */
+.layout {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+}
+
+/* Sidebar styles */
+.sidebar {
+  width: 250px;
+  background-color: #1c1c1e;
   color: white;
-  min-height: 100vh;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   padding: 20px;
-  text-align: center;
+  position: fixed; /* Asegura que la barra lateral esté fija */
 }
 
-.homepage-header {
-  margin-bottom: 20px;
-}
-
-.movies-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 15px;
-  padding: 10px;
-}
-
-.movie-card {
-  transition: transform 0.3s, box-shadow 0.3s;
-  cursor: pointer;
-}
-
-.movie-card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-}
-
-.movie-poster {
-  width: 100%;
-  border-radius: 10px;
-  object-fit: cover;
+/* Content area */
+.main-content {
+  margin-left: 250px; /* Deja espacio para la barra lateral fija */
+  flex: 1;
+  padding: 20px;
+  background-color: #141414;
+  color: white;
+  overflow-y: auto; /* Agrega scroll si el contenido principal es muy largo */
 }

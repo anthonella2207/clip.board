@@ -1,36 +1,31 @@
-import React, { useState } from "react";
+import React from "react";
 import "./Sidebar.css";
+import { FaHome, FaHeart, FaShoppingCart, FaClock, FaPlay, FaBookmark, FaCog } from "react-icons/fa";
 
-const Sidebar = ({ categories, onFilter }) => {
-  const [isActive, setIsActive] = useState(false); // Estado para controlar el despliegue de categorías
-
-  const toggleCategories = () => {
-    setIsActive(!isActive); // Alterna el estado entre true y false
-  };
-
-  const sortedCategories = [...categories].sort((a, b) =>
-    a.name.localeCompare(b.name)
-  );
+const Sidebar = () => {
+  const menuItems = [
+    { name: "Home", icon: <FaHome /> },
+    { name: "Favorite", icon: <FaHeart /> },
+    { name: "Purchase", icon: <FaShoppingCart /> },
+    { name: "Reminder", icon: <FaClock /> },
+    { name: "Playlist", icon: <FaPlay /> },
+    { name: "Bookmarks", icon: <FaBookmark /> },
+    { name: "Settings", icon: <FaCog /> },
+  ];
 
   return (
     <div className="sidebar">
-      {/* Contenedor de categorías */}
-      <div className={`categories ${isActive ? "active" : ""}`}>
-        <button className="categories-toggle" onClick={toggleCategories}>
-          Categories
-        </button>
-        <ul className={`category-list ${isActive ? "active" : ""}`}>
-          {sortedCategories.map((category) => (
-            <li
-              key={category.id}
-              className="category-item"
-              onClick={() => onFilter("category", category.name)}
-            >
-              {category.name}
-            </li>
-          ))}
-        </ul>
+      <div className="sidebar-header">
+        <h1>Mov.time</h1>
       </div>
+      <ul className="menu-list">
+        {menuItems.map((item, index) => (
+          <li key={index} className="menu-item">
+            {item.icon}
+            <span>{item.name}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

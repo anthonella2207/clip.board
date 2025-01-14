@@ -1,70 +1,46 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "./Sidebar";
-import api from "../Api";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { EffectCoverflow, Pagination, Navigation } from "swiper";
-import "swiper/css";
-import "swiper/css/effect-coverflow";
-import "swiper/css/pagination";
-import "swiper/css/navigation";
+import api from "../Api"; // Configuración de tu cliente Axios
 import "./HomePage.css";
 
 const HomePage = () => {
-  const [categories, setCategories] = useState([]);
-  const [movies, setMovies] = useState([]);
-  const [filteredMovies, setFilteredMovies] = useState([]);
-  const [showAll, setShowAll] = useState(false);
+  const [topRatedMovies, setTopRatedMovies] = useState([]);
+  const [actualMovies, setActualMovies] = useState([]);
+  const [upcomingMovies, setUpcomingMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
   const navigate = useNavigate();
 
-  // Fetch movies and categories from the API
-  const fetchMoviesAndCategories = async () => {
+  // Fetch movies from the API
+  const fetchMovies = async () => {
     try {
-      const moviesResponse = await api.get("/movie/popular");
-      const categoriesResponse = await api.get("/genre/movie/list");
+      const [topRatedResponse, nowPlayingResponse, upcomingResponse] = await Promise.all([
+        api.get("/movie/top_rated"), // Top Rated Movies
+        api.get("/movie/now_playing"), // Currently Playing Movies
+        api.get("/movie/upcoming"), // Upcoming Movies
+      ]);
 
-      const uniqueMovies = Array.from(
-        new Map(moviesResponse.data.results.map((movie) => [movie.id, movie]))
-          .values()
-      );
+      const actualMoviesData = nowPlayingResponse.data.results.slice(0, 20); // First 20 movies
+      const upcomingMoviesData = upcomingResponse.data.results
+        .filter(
+          (movie) => !actualMoviesData.some((actual) => actual.id === movie.id) // Exclude duplicates
+        )
+        .slice(0, 5); // First 5 unique movies
 
-      const updatedCategories = [
-        { id: 0, name: "All Movies" }, // Default option to show all movies
-        ...categoriesResponse.data.genres, // Fetch genres from the API
-      ];
-
-      setCategories(updatedCategories);
-      setMovies(uniqueMovies);
-      setFilteredMovies(uniqueMovies);
+      setTopRatedMovies(topRatedResponse.data.results.slice(0, 3)); // Top Rated: 3 movies
+      setActualMovies(actualMoviesData);
+      setUpcomingMovies(upcomingMoviesData);
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Error fetching data:", error.message);
       setError(true);
     } finally {
       setLoading(false);
     }
   };
 
-  // Filter movies based on the selected category
-  const handleFilter = (filterType, value) => {
-    if (filterType === "category") {
-      if (value === "All Movies") {
-        setFilteredMovies(movies);
-      } else {
-        const filtered = movies.filter((movie) =>
-          movie.genre_ids.includes(
-            categories.find((cat) => cat.name === value)?.id
-          )
-        );
-        setFilteredMovies(filtered);
-      }
-    }
-  };
-
   useEffect(() => {
-    fetchMoviesAndCategories();
+    fetchMovies();
   }, []);
 
   if (loading) {
@@ -76,69 +52,68 @@ const HomePage = () => {
   }
 
   return (
-    <div className="homepage">
-      <Sidebar categories={categories} onFilter={handleFilter} />
+    <div className="content">
+      {/* Top Rated Section */}
+      <div className="top-rated-section">
+        <h1>Top Rated</h1>
+        <div className="movies-grid">
+          {topRatedMovies.map((movie) => (
+            <div
+              key={movie.id}
+              className="movie-card"
+              onClick={() => navigate(`/movie/${movie.id}`)}
+            >
+              <img
+                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                alt={movie.title}
+                className="movie-poster"
+              />
+              <p className="movie-title">{movie.title}</p>
+            </div>
+          ))}
+        </div>
+      </div>
 
-      <div className="content">
-        <header className="homepage-header">
-          <div className="lamp-container">
-            <img src="/lamp.png" alt="Lamp" className="lamp"/>
-            <div className="light-effect"></div>
-          </div>
-          <h1>Clipboard</h1>
-        </header>
+      {/* Actual Section */}
+      <div className="actual-section">
+        <h1>Actual</h1>
+        <div className="movies-grid">
+          {actualMovies.map((movie) => (
+            <div
+              key={movie.id}
+              className="movie-card"
+              onClick={() => navigate(`/movie/${movie.id}`)}
+            >
+              <img
+                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                alt={movie.title}
+                className="movie-poster"
+              />
+              <p className="movie-title">{movie.title}</p>
+            </div>
+          ))}
+        </div>
+      </div>
 
-        {!showAll ? (
-          <Swiper
-            modules={[EffectCoverflow, Pagination, Navigation]}
-            effect="coverflow"
-            grabCursor={true}
-            centeredSlides={true}
-            slidesPerView={5}
-            loop={true}
-            coverflowEffect={{
-              rotate: 50,
-              stretch: 0,
-              depth: 100,
-              modifier: 1,
-            }}
-            pagination={{
-              clickable: true,
-            }}
-            navigation
-            className="movie-carousel"
-          >
-            {filteredMovies.map((movie) => (
-              <SwiperSlide
-                key={movie.id}
-                className="movie-slide"
-                onClick={() => navigate(`/movie/${movie.id}`)}
-              >
-                <img
-                  src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                  alt={movie.title}
-                  className="movie-poster-carousel"
-                />
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        ) : (
-          <div className="movies-grid">
-            {filteredMovies.map((movie) => (
-              <div
-                key={movie.id}
-                className="movie-card"
-                onClick={() => navigate(`/movie/${movie.id}`)}
-              >
-                <img
-                  src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                  alt={movie.title}
-                  className="movie-poster"
-                />
-              </div>
-            ))}
-          </div>
-        )}
+      {/* Upcoming Section */}
+      <div className="upcoming-section">
+        <h1>Upcoming Movies</h1>
+        <div className="movies-grid">
+          {upcomingMovies.map((movie) => (
+            <div
+              key={movie.id}
+              className="movie-card"
+              onClick={() => navigate(`/movie/${movie.id}`)}
+            >
+              <img
+                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                alt={movie.title}
+                className="movie-poster"
+              />
+              <p className="movie-title">{movie.title}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
