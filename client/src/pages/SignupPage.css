@@ -1,0 +1,139 @@
+/* Contenedor Principal */
+.signup-container {
+  display: flex;
+  height: 100vh;
+  width: 100%; /* Asegura que ocupe todo el ancho */
+  font-family: Arial, sans-serif;
+  gap: 0; /* Elimina espacio entre las secciones */
+  box-sizing: border-box; /* Evita cálculos erróneos de ancho */
+}
+
+/* Sección Izquierda */
+.signup-left {
+  flex: 0; /* Ocupa la misma proporción que la derecha */
+  background-color: #1D1C2A;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 80px; /* Ajusta el padding según sea necesario */
+  margin: 0; /* Asegura que no haya márgenes externos */
+}
+
+/* Sección Derecha */
+.signup-right {
+  flex: 3.9; /* Ocupa la misma proporción que la izquierda */
+  background-color: #1D1C2A;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px; /* Ajusta el padding según sea necesario */
+  margin: 0; /* Asegura que no haya márgenes externos */
+}
+
+.join-for-free {
+  font-size: 1.2rem;
+  color: #ccc;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.signup-slogan {
+  font-size: 2.8rem;
+  max-width: 400px;
+}
+
+.signup-slogan .highlight {
+  color: #289cd5;
+  font-weight: bold;
+}
+
+
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 400px;
+  gap: 15px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.input-group input {
+  padding: 10px;
+  border-radius: 30px;
+  border: none;
+  outline: none;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.input-group input::placeholder {
+  color: #ccc;
+}
+
+.input-group input:focus {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Botón de Crear Cuenta */
+.signup-button {
+  background-color: #289cd5;
+  color: #fff;
+  padding: 10px;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.signup-button:hover {
+  background-color: #1a6da8;
+}
+
+/* Enlace de Iniciar Sesión */
+.login-link {
+  color: #289cd5;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.login-link:hover {
+  text-decoration: underline;
+}
+
+/* Alineación horizontal de First Name y Last Name */
+.name-fields {
+  display: flex; /* Activa el layout horizontal */
+  gap: 10px; /* Espaciado entre los campos */
+}
+
+.name-fields input {
+  flex: 1; /* Ambos campos ocupan el mismo ancho */
+  padding: 10px;
+  border-radius: 30px;
+  border: none;
+  outline: none;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.name-fields input::placeholder {
+  color: #ccc;
+}
+
+.name-fields input:focus {
+  background-color: rgba(255, 255, 255, 0.2);
+}

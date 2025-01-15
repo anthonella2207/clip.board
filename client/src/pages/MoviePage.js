@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import api from "../Api";
+import "./MoviePage.css";
 
 const MoviePage = () => {
   const { id } = useParams();
@@ -29,8 +30,7 @@ const MoviePage = () => {
   if (loading) return <p>Loading movie...</p>;
   if (error) return <p>Error loading movie. Please try again later.</p>;
 
-  const { title, overview, poster_path, release_date, vote_average, credits } =
-    movie;
+  const { title, overview, poster_path, release_date, vote_average, credits } = movie;
   const directors = credits.crew
     .filter((member) => member.job === "Director")
     .map((director) => director.name)
@@ -41,18 +41,46 @@ const MoviePage = () => {
     .join(", ");
 
   return (
-    <div style={{ padding: "20px", color: "#fff" }}>
-      <h1>{title}</h1>
-      <p><strong>Overview:</strong> {overview}</p>
-      <p><strong>Release Date:</strong> {release_date}</p>
-      <p><strong>Rating:</strong> {vote_average}/10</p>
-      <p><strong>Directors:</strong> {directors}</p>
-      <p><strong>Main Cast:</strong> {cast}</p>
-      <img
-        src={`https://image.tmdb.org/t/p/w500${poster_path}`}
-        alt={title}
-        style={{ width: "300px", borderRadius: "10px" }}
-      />
+    <div className="movie-page-container">
+      {/* Botón para volver */}
+      <button className="back-button" onClick={() => window.history.back()}>
+        ← Back
+      </button>
+
+      {/* Título */}
+      <h1 className="movie-title">{title}</h1>
+
+      {/* Contenido principal */}
+      <div className="movie-main">
+        {/* Descripción en rectángulo */}
+        <div className="movie-details">
+          <div className="transparent-box">
+            <p className="movie-overview">{overview}</p>
+          </div>
+          {/* Información general en rectángulo */}
+          <div className="transparent-box">
+            <p><strong>Release Date:</strong> {release_date}</p>
+            <p><strong>Rating:</strong> {vote_average}/10</p>
+            <p><strong>Directors:</strong> {directors}</p>
+            <p><strong>Main Cast:</strong> {cast}</p>
+          </div>
+        </div>
+
+        {/* Poster y horarios */}
+        <div className="poster-and-schedule">
+          <img
+            className="movie-poster"
+            src={`https://image.tmdb.org/t/p/w500${poster_path}`}
+            alt={title}
+          />
+          <div className="movie-schedule">
+            <h2>Showtimes</h2>
+            <div className="schedule-item">3:00 PM - Kino 1</div>
+            <div className="schedule-item">6:00 PM - Kino 2</div>
+            <div className="schedule-item">9:00 PM - Kino 3</div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

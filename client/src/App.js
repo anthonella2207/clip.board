@@ -5,6 +5,7 @@ import LoginPage from "./pages/LoginPage";
 import MoviePage from "./pages/MoviePage";
 import Sidebar from "./pages/Sidebar";
 import { Navigate } from "react-router-dom";
+import SignupPage from "./pages/SignupPage";
 import "./App.css";
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
         <Routes>
           {/* Rutas sin Sidebar */}
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
           <Route
             path="/*"
             element={
@@ -21,7 +23,7 @@ function App() {
                 <Sidebar />
                 <div className="main-content">
                   <Routes>
-                    <Route path="/" element={<Navigate to="/login" />} />
+                    <Route path="/" element={<Navigate to="/home" />} />
                     <Route path="/home" element={<HomePage />} />
                     <Route path="/movie/:id" element={<MoviePage />} />
                   </Routes>

@@ -1,56 +1,99 @@
-.login-container{
-    background-color: #1D1C2A;
-    color: white;
-    font-family: "Arial", sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    margin: 0;
+.login-container {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  font-family: Arial, sans-serif;
+  gap: 0;
+  box-sizing: border-box;
 }
 
-.login-title{
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-    margin-top: -20px;
+.login-left {
+  flex: 1;
+  background-color: #1D1C2A;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 80px;
 }
 
-.login-form{
-    background-color: #289cd5;
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    width: 300px;
-    text-align: center;
-}
-
-.login-form input{
-    width: 90%;
-    padding: 0.8rem;
-    margin: 0.5rem 0;
-    border: none;
-    border-radius: 5px;
-    outline: none;
-}
-
-.login-button{
-    background-color: #1D1C2A;
-    color: white;
-    font-size: 1rem;
-    border: none;
-    border-radius: 5px;
-    padding: 0.8rem 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.login-description {
+.welcome-message {
   font-size: 1.2rem;
   color: #ccc;
-  margin-top: 10px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
 }
 
-.login-button:hover{
-    background-color: #1D1C2A;
+.login-slogan {
+  font-size: 2.8rem;
+  max-width: 400px;
+}
+
+.login-slogan .highlight {
+  color: #289cd5;
+  font-weight: bold;
+}
+
+.login-right {
+  flex: 3;
+  background-color: #1D1C2A;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 400px;
+  gap: 15px;
+}
+
+.input-group input {
+  padding: 10px;
+  border-radius: 30px;
+  border: none;
+  outline: none;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.input-group input::placeholder {
+  color: #ccc;
+}
+
+.input-group input:focus {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.login-button {
+  background-color: #289cd5;
+  color: #fff;
+  padding: 10px;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.login-button:hover {
+  background-color: #1a6da8;
+}
+
+.signup-link {
+  color: #289cd5;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.signup-link:hover {
+  text-decoration: underline;
 }
