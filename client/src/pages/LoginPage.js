@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./LoginPage.css";
 
 const LoginPage = () => {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,10 +20,10 @@ const LoginPage = () => {
       const data = await response.json();
       if(data.success){
         alert("Login successful!");
-        window.location.href = "/homepage";
+        navigate("/home");
       }
       else{
-        alert("Fehler: " + data.message);
+        alert("Error: " + data.message);
       }
     }
     catch(error){
