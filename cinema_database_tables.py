@@ -1,4 +1,7 @@
 import sqlite3 # Documentation: https://docs.python.org/3/library/sqlite3.html
+import requests
+import json
+import cinema_functions_for_database
 
 # create a new database and open database connection to allow sqlite3 to work with it
 con = sqlite3.connect("cinema.db")
@@ -7,6 +10,7 @@ con = sqlite3.connect("cinema.db")
 cur = con.cursor()
 
 # create database tables
+cursor.execute("DROP TABLE IF EXISTS movie;")
 cur.execute("""
 CREATE TABLE movie (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -19,16 +23,19 @@ CREATE TABLE movie (
 );
 """)
 
+cursor.execute("DROP TABLE IF EXISTS user;")
 cur.execute("""
 CREATE TABLE user (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
-	username VARCHAR(20) NOT NULL UNIQUE,
+	vorname VARCHAR(20) NOT NULL,
+	nachname VARCHAR(50) NOT NULL,
 	password VARCHAR(30) NOT NULL,
 	email VARCHAR(30) NOT NULL UNIQUE,
 	role VARCHAR(10) NOT NULL
 );
 """)
 
+cursor.execute("DROP TABLE IF EXISTS reservation;")
 cur.execute("""
 CREATE TABLE reservation (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -41,6 +48,7 @@ CREATE TABLE reservation (
 );
 """)
 
+cursor.execute("DROP TABLE IF EXISTS hall;")
 cur.execute("""
 CREATE TABLE hall (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -51,6 +59,7 @@ CREATE TABLE hall (
 );
 """)
 
+cursor.execute("DROP TABLE IF EXISTS seat;")
 cur.execute("""
 CREATE TABLE seat (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -65,6 +74,7 @@ CREATE TABLE seat (
 );
 """)
 
+cursor.execute("DROP TABLE IF EXISTS showtime_includes_movie;")
 cur.execute("""
 CREATE TABLE showtime_includes_movie (
 	movie_id INT,
@@ -75,6 +85,7 @@ CREATE TABLE showtime_includes_movie (
 );
 """)
 
+cursor.execute("DROP TABLE IF EXISTS movie_in_hall;")
 cur.execute("""
 CREATE TABLE movie_in_hall (
 	movie_id INT,
@@ -85,6 +96,7 @@ CREATE TABLE movie_in_hall (
 );
 """)
 
+cursor.execute("DROP TABLE IF EXISTS logs_history;")
 cur.execute("""
 CREATE TABLE logs_history (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -96,3 +108,38 @@ CREATE TABLE logs_history (
 	FOREIGN KEY (reservation_id) REFERENCES reservation(id)
 );
 """)
+
+# INITIAL VALUES
+
+# insert some values
+# using API to insert values in movie table
+
+# add some users
+add_user(1, "Anthonella Alessandra", "Frutos Lara", "1234", "a.frutoslara@stud.uni-goettingen.de ", "Admin")
+add_user(2, "Emily Sophie", "Aust", "1234", "emilysophie.aust@stud.uni-goettingen.de ", "Client")
+add_user(3, "Cordula", "Maier", "1234", "cordula.maier@stud.uni-goettingen.de", "Client")
+
+# add halls
+add_hall(1, "Kino 1", 10, 20, 200)
+add_hall(2, "Kino 2", 10, 20, 200)
+add_hall(3, "Kino 3", 10, 20, 200)
+add_hall(4, "Kino 4", 10, 20, 200)
+add_hall(5, "Kino 5", 10, 20, 200)
+add_hall(6, "Kino 6", 10, 20, 200)
+add_hall(7, "Kino 7", 10, 20, 200)
+add_hall(8, "Kino 8", 10, 20, 200)
+add_hall(9, "Kino 9", 10, 20, 200)
+add_hall(10, "Kino 10", 10, 20, 200)
+
+#add seats
+for i in range(10):
+    id_counter = 1
+    price = 8
+    for j in range(10):
+        if (j >= 5):
+            price = 5
+        for k in range(20):
+            add_seat(id_counter, "free", j, k, 8, None, i)
+            id_counter+= 1
+
+

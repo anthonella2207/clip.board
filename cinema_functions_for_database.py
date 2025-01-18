@@ -16,12 +16,12 @@ def add_movie(iD, year, genre, movie_name, duration, regisseur, bewertung):
     finally:
         con.close()
 
-def add_user(iD, user_name, password, email, role):
+def add_user(iD, vorname, nachname, password, email, role):
     try:
         cur.execute("""
             INSERT INTO user VALUES
-                (?, ?, ?, ?, ?)
-        """, (iD, user_name, password, email, role))
+                (?, ?, ?, ?, ?, ?)
+        """, (iD, vorname, nachname, password, email, role))
         con.commit()
         print(f"User {user_name} added.")
     except sqlite3.IntegrityError:
