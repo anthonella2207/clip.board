@@ -1,6 +1,13 @@
 # DESCRIPTION
 # here you can find all the functions to call our database
 
+import sqlite3 # Documentation: https://docs.python.org/3/library/sqlite3.html
+import requests
+import json
+
+con = sqlite3.connect("cinema.db")
+cur = con.cursor()
+
 def add_movie(iD, year, genre, movie_name, duration, regisseur, bewertung):
     try:
         cur.execute("""
