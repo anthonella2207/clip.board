@@ -334,6 +334,55 @@ def delete_logs_history(logs_history_iD):
         con.close()
 
 # d) Setting/Updating data
+
+def update_user_name(user_id, new_vorname, new_nachname):
+    try:
+        con = sqlite3.connect("cinema.db")
+        cur = con.cursor()
+        cur.execute("UPDATE user SET vorname = ? WHERE id = ?", (new_vorname, user_id))
+        con.commit()
+        cur.execute("UPDATE user SET nachname = ? WHERE id = ?", (new_nachname, user_id))
+        con.commit()
+        if cur.rowcount > 0:
+            print(f"User with ID {user_id} updated: name = {new_vorname} {new_nachname}")
+        else:
+            print(f"No user found with ID {user_id}.")
+    except sqlite3.Error as e:
+        print(f"Error while updating users name: {e}")
+    finally:
+        con.close()
+
+def update_user_email(user_id, new_email):
+    try:
+        con = sqlite3.connect("cinema.db")
+        cur = con.cursor()
+        cur.execute("UPDATE user SET email = ? WHERE id = ?", (new_email, user_id))
+        con.commit()
+        if cur.rowcount > 0:
+            print(f"User with ID {user_id} updated: email = {new_email}")
+        else:
+            print(f"No user found with ID {user_id}.")
+    except sqlite3.Error as e:
+        print(f"Error while updating users email: {e}")
+    finally:
+        con.close()
+
+# Hint: only Admins can change user roles!
+def update_user_role(user_id, new_role):
+    try:
+        con = sqlite3.connect("cinema.db")
+        cur = con.cursor()
+        cur.execute("UPDATE user SET role = ? WHERE id = ?", (new_role, user_id))
+        con.commit()
+        if cur.rowcount > 0:
+            print(f"User with ID {user_id} updated: role = {new_role}")
+        else:
+            print(f"No user found with ID {user_id}.")
+    except sqlite3.Error as e:
+        print(f"Error while updating users role: {e}")
+    finally:
+        con.close()
+
 def update_seat_status(seat_iD, new_status):
     try:
         con = sqlite3.connect("cinema.db")
