@@ -39,6 +39,15 @@ CREATE TABLE user (
 );
 """)
 
+cur.execute("DROP TABLE IF EXISTS showtime;")
+cur.execute("""
+CREATE TABLE showtime (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    date VARCHAR(50),
+    time VARCHAR(50)
+);
+""")
+
 cur.execute("DROP TABLE IF EXISTS reservation;")
 cur.execute("""
 CREATE TABLE reservation (
@@ -147,6 +156,10 @@ add_hall(9, "Kino 9", 10, 20, 200)
 con.commit()
 add_hall(10, "Kino 10", 10, 20, 200)
 con.commit()
+
+# Add showtimes
+add_showtime(None, None, "16:00")
+add_showtime(None, None, "20:00")
 
 #add seats
 id_counter = 1

@@ -1,13 +1,27 @@
+# ***************************************************************************************
 # DESCRIPTION
-# here you can find all the functions to call our database
 
+# Here you can find all the functions to call our database.
+
+# We have all the functions for ...
+
+# a) Adding data
+# b) Getting data
+# c) Deleting data
+# d) Setting/Updating data
+
+# ***************************************************************************************
+
+# Imports
 import sqlite3 # Documentation: https://docs.python.org/3/library/sqlite3.html
 import requests
 import json
 
+# Connecting with our database
 con = sqlite3.connect("cinema.db")
 cur = con.cursor()
 
+# a) Adding data
 def add_movie(iD, year, genre, movie_name, duration, regisseur, bewertung):
     try:
         con = sqlite3.connect("cinema.db")
@@ -25,6 +39,7 @@ def add_movie(iD, year, genre, movie_name, duration, regisseur, bewertung):
     finally:
         con.close()
 
+# Adding users hint: id = None for using AUTOINCREMENT in SQL
 def add_user(iD, vorname, nachname, password, email, role):
     try:
         con = sqlite3.connect("cinema.db")
@@ -161,8 +176,7 @@ def add_logs_history(iD, action, action_timestamp, user_iD, reservation_iD):
     finally:
         con.close()
 
-# *********** Getting data **********
-
+# b) Getting data
 def get_all_users():
     con = sqlite3.connect("cinema.db")
     cur = con.cursor()
@@ -173,7 +187,7 @@ def get_all_users():
 def get_all_showtimes():
     con = sqlite3.connect("cinema.db")
     cur = con.cursor()
-    for row in cur.execute("SELECT * FROM showtimes"):
+    for row in cur.execute("SELECT * FROM showtime"):
         print(row)
     con.close()
 
@@ -212,15 +226,36 @@ def get_all_logs_histories():
         print(row)
     con.close()
 
-# ********* Deleting data ********
+def get_movie_id(original_title):
+    con = sqlite3.connect("cinema.db")
+    cur = con.cursor()
+    cur.execute("SELECT id FROM movie WHERE original_title = ?", (original_title,))
+    result = cur.fetchone()
+    con.close()
+    if result:
+        return result[0]
+    else:
+        return None
+def get_posterurl(movie_id):
+    con = sqlite3.connect("cinema.db")
+    cur = con.cursor()
+    poster_baseURL = "https://image.tmdb.org/t/p/w500"
+    cur.execute("SELECT poster_path FROM movie WHERE id = ?", (movie_id,))
+    result = cur.fetchone()
+    con.close()
+    if result:
+        print(poster_baseURL + str(result[0]))
+    else:
+        return None
 
+# c) Deleting data
 def delete_user(user_iD):
     try:
         con = sqlite3.connect("cinema.db")
         cur = con.cursor()
         cur.execute("DELETE FROM user WHERE id = ?", (user_iD,))
         con.commit()
-        print(f"User with ID {movie_iD} deleted.")
+        print(f"User with ID {user_iD} deleted.")
     except sqlite3.Error as e:
         print(f"Error while deleting movie: {e}")
     finally:
@@ -298,8 +333,7 @@ def delete_logs_history(logs_history_iD):
     finally:
         con.close()
 
-# *********** Updating data **************
-
+# d) Setting/Updating data
 def update_seat_status(seat_iD, new_status):
     try:
         con = sqlite3.connect("cinema.db")
