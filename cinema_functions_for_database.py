@@ -1,15 +1,27 @@
 # ***************************************************************************************
 # DESCRIPTION
 
-# Here you can find all the functions to call our database.
+# Here you can find all the functions to call our database. Below you can see our sections,
+# for which we have defined functionalities. Below that, you can see an overview of all
+# single functions in a 'Table of functions'.
+
+
+# SECTIONS
 
 # We have all the functions for ...
-
 # a) Adding data
 # b) Getting data
 #    -> Login functions
 # c) Deleting data
 # d) Setting/Updating data
+
+
+# TABLE OF FUNCTIONS
+
+# a) Adding data
+# add_movie(iD, year, genre, movie_name, duration, regisseur, bewertung)
+# add_user(iD, vorname, nachname, password, email, role)
+# ...
 
 # ***************************************************************************************
 
@@ -262,6 +274,109 @@ def get_movie_id(original_title):
         return result[0]
     else:
         return None
+def get_movie(id):
+    con = sqlite3.connect("cinema.db")
+    cur = con.cursor()
+    cur.execute("SELECT original_title FROM movie WHERE id = ?", (id,))
+    result = cur.fetchone()
+    con.close()
+    if result:
+        return result[0]
+    else:
+        return None
+def get_movie_with_filter():
+    return
+def get_movie_adult(id):
+    con = sqlite3.connect("cinema.db")
+    cur = con.cursor()
+    cur.execute("SELECT adult FROM movie WHERE id = ?", (id,))
+    result = cur.fetchone()
+    con.close()
+    if result:
+        return result[0]
+    else:
+        return None
+def get_movie_genre(id):
+    con = sqlite3.connect("cinema.db")
+    cur = con.cursor()
+    cur.execute("SELECT genre FROM movie WHERE id = ?", (id,))
+    result = cur.fetchone()
+    con.close()
+    if result:
+        return result[0]
+    else:
+        return None
+def get_movie_origin_country():
+    con = sqlite3.connect("cinema.db")
+    cur = con.cursor()
+    cur.execute("SELECT origin_country FROM movie WHERE id = ?", (id,))
+    result = cur.fetchone()
+    con.close()
+    if result:
+        return result[0]
+    else:
+        return None
+def get_movie_origin_language(id):
+    con = sqlite3.connect("cinema.db")
+    cur = con.cursor()
+    cur.execute("SELECT origin_language FROM movie WHERE id = ?", (id,))
+    result = cur.fetchone()
+    con.close()
+    if result:
+        return result[0]
+    else:
+        return None
+def get_movie_original_title(id):
+    con = sqlite3.connect("cinema.db")
+    cur = con.cursor()
+    cur.execute("SELECT original_title FROM movie WHERE id = ?", (id,))
+    result = cur.fetchone()
+    con.close()
+    if result:
+        return result[0]
+    else:
+        return None
+def get_movie_overview(id):
+    con = sqlite3.connect("cinema.db")
+    cur = con.cursor()
+    cur.execute("SELECT overview FROM movie WHERE id = ?", (id,))
+    result = cur.fetchone()
+    con.close()
+    if result:
+        return result[0]
+    else:
+        return None
+def get_movie_release_date(id):
+    con = sqlite3.connect("cinema.db")
+    cur = con.cursor()
+    cur.execute("SELECT release_date FROM movie WHERE id = ?", (id,))
+    result = cur.fetchone()
+    con.close()
+    if result:
+        return result[0]
+    else:
+        return None
+def get_movie_runtime(id):
+    con = sqlite3.connect("cinema.db")
+    cur = con.cursor()
+    cur.execute("SELECT runtime FROM movie WHERE id = ?", (id,))
+    result = cur.fetchone()
+    con.close()
+    if result:
+        return result[0]
+    else:
+        return None
+def get_movie_vote_average(id):
+    con = sqlite3.connect("cinema.db")
+    cur = con.cursor()
+    cur.execute("SELECT vote_average FROM movie WHERE id = ?", (id,))
+    result = cur.fetchone()
+    con.close()
+    if result:
+        return result[0]
+    else:
+        return None
+
 def get_posterurl(movie_id):
     con = sqlite3.connect("cinema.db")
     cur = con.cursor()
@@ -271,6 +386,61 @@ def get_posterurl(movie_id):
     con.close()
     if result:
         print(poster_baseURL + str(result[0]))
+    else:
+        return None
+
+def get_user_id(email):
+    con = sqlite3.connect("cinema.db")
+    cur = con.cursor()
+    cur.execute("SELECT id FROM user WHERE email = ?", (email,))
+    result = cur.fetchone()
+    con.close()
+    if result:
+        return result[0]
+    else:
+        return None
+
+def get_user_vorname(id):
+    con = sqlite3.connect("cinema.db")
+    cur = con.cursor()
+    cur.execute("SELECT vorname FROM user WHERE id = ?", (id,))
+    result = cur.fetchone()
+    con.close()
+    if result:
+        return result[0]
+    else:
+        return None
+
+def get_user_nachname(id):
+    con = sqlite3.connect("cinema.db")
+    cur = con.cursor()
+    cur.execute("SELECT nachname FROM user WHERE id = ?", (id,))
+    result = cur.fetchone()
+    con.close()
+    if result:
+        return result[0]
+    else:
+        return None
+
+def get_user_email(id):
+    con = sqlite3.connect("cinema.db")
+    cur = con.cursor()
+    cur.execute("SELECT email FROM user WHERE id = ?", (id,))
+    result = cur.fetchone()
+    con.close()
+    if result:
+        return result[0]
+    else:
+        return None
+
+def get_user_role(id):
+    con = sqlite3.connect("cinema.db")
+    cur = con.cursor()
+    cur.execute("SELECT role FROM user WHERE id = ?", (id,))
+    result = cur.fetchone()
+    con.close()
+    if result:
+        return result[0]
     else:
         return None
 
