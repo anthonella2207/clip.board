@@ -10,6 +10,8 @@ cur = con.cursor()
 
 def add_movie(iD, year, genre, movie_name, duration, regisseur, bewertung):
     try:
+        con = sqlite3.connect("cinema.db")
+        cur = con.cursor()
         cur.execute("""
             INSERT INTO movie VALUES
                 (?, ?, ?, ?, ?, ?, ?)
@@ -25,12 +27,14 @@ def add_movie(iD, year, genre, movie_name, duration, regisseur, bewertung):
 
 def add_user(iD, vorname, nachname, password, email, role):
     try:
+        con = sqlite3.connect("cinema.db")
+        cur = con.cursor()
         cur.execute("""
             INSERT INTO user VALUES
                 (?, ?, ?, ?, ?, ?)
         """, (iD, vorname, nachname, password, email, role))
         con.commit()
-        print(f"User {user_name} added.")
+        print(f"User {vorname} {nachname} added.")
     except sqlite3.IntegrityError:
         print(f"Error while adding user: IntegrityError")
     except:
@@ -40,6 +44,8 @@ def add_user(iD, vorname, nachname, password, email, role):
 
 def add_showtime(iD, date, time):
     try:
+        con = sqlite3.connect("cinema.db")
+        cur = con.cursor()
         cur.execute("""
             INSERT INTO showtime VALUES
                 (?, ?, ?)
@@ -55,6 +61,8 @@ def add_showtime(iD, date, time):
 
 def add_reservation(iD, total_price, time_of_reservation, user_iD, showtime_iD):
     try:
+        con = sqlite3.connect("cinema.db")
+        cur = con.cursor()
         cur.execute("""
             INSERT INTO reservation VALUES
                 (?, ?, ?, ?, ?)
@@ -70,6 +78,8 @@ def add_reservation(iD, total_price, time_of_reservation, user_iD, showtime_iD):
 
 def add_hall(iD, hall_name, row_count, seats_per_row, total_seats):
     try:
+        con = sqlite3.connect("cinema.db")
+        cur = con.cursor()
         cur.execute("""
             INSERT INTO hall VALUES
                 (?, ?, ?, ?, ?)
@@ -85,6 +95,8 @@ def add_hall(iD, hall_name, row_count, seats_per_row, total_seats):
 
 def add_seat(iD, status, row_number, seat_number, price, reservation_iD, hall_iD):
     try:
+        con = sqlite3.connect("cinema.db")
+        cur = con.cursor()
         cur.execute("""
             INSERT INTO seat VALUES
                 (?, ?, ?, ?, ?, ?, ?)
@@ -100,6 +112,8 @@ def add_seat(iD, status, row_number, seat_number, price, reservation_iD, hall_iD
 
 def add_showtime_includes_movie(movie_iD, showtime_iD):
     try:
+        con = sqlite3.connect("cinema.db")
+        cur = con.cursor()
         cur.execute("""
             INSERT INTO showtime_includes_movie VALUES
                 (?, ?)
@@ -115,6 +129,8 @@ def add_showtime_includes_movie(movie_iD, showtime_iD):
 
 def add_movie_in_hall(movie_iD, hall_iD):
     try:
+        con = sqlite3.connect("cinema.db")
+        cur = con.cursor()
         cur.execute("""
             INSERT INTO showtime_includes_movie VALUES
                 (?, ?)
@@ -130,6 +146,8 @@ def add_movie_in_hall(movie_iD, hall_iD):
 
 def add_logs_history(iD, action, action_timestamp, user_iD, reservation_iD):
     try:
+        con = sqlite3.connect("cinema.db")
+        cur = con.cursor()
         cur.execute("""
             INSERT INTO logs_history VALUES
                 (?, ?, ?, ?, ?)

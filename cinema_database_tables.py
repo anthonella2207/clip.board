@@ -119,7 +119,7 @@ CREATE TABLE logs_history (
 # using API to insert values in movie table
 
 # add some users
-add_user(1, "Anthonella Alessandra", "Frutos Lara", "1234", "a.frutoslara@stud.uni-goettingen.de ", "Admin")
+add_user(1, "Anthonella Alessandra", "Frutos Lara", "1234", "a.frutoslara@stud.uni-goettingen.de", "Admin")
 con.commit()
 add_user(2, "Emily Sophie", "Aust", "1234", "emilysophie.aust@stud.uni-goettingen.de ", "Client")
 con.commit()
@@ -149,14 +149,14 @@ add_hall(10, "Kino 10", 10, 20, 200)
 con.commit()
 
 #add seats
-for i in range(10):
-    id_counter = 1
+id_counter = 1
+for hall_id in range(1, 11):
     price = 8
-    for j in range(10):
-        if (j >= 5):
+    for row_number in range(1, 11):
+        if (row_number >= 5):
             price = 5
-        for k in range(20):
-            add_seat(id_counter, "free", j, k, 8, None, i)
+        for seat_number in range(1, 21):
+            add_seat(id_counter, "free", row_number, seat_number, price, None, hall_id)
             con.commit()
             id_counter += 1
 
