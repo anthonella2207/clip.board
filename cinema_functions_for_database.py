@@ -7,6 +7,7 @@
 
 # a) Adding data
 # b) Getting data
+#    -> Login functions
 # c) Deleting data
 # d) Setting/Updating data
 
@@ -225,6 +226,31 @@ def get_all_logs_histories():
     for row in cur.execute("SELECT * FROM logs_history"):
         print(row)
     con.close()
+
+def login_check_for_user(email):
+    con = sqlite3.connect("cinema.db")
+    cur = con.cursor()
+    cur.execute("SELECT * FROM user WHERE email = ?", (email,))
+    result = cur.fetchone()
+    con.close()
+    if result:
+        return 1
+    else:
+        return 0
+
+def login_check_password(email, password):
+    con = sqlite3.connect("cinema.db")
+    cur = con.cursor()
+    cur.execute("SELECT password FROM user WHERE email = ?", (email,))
+    result = cur.fetchone()
+    con.close()
+    if result:
+        if password == str(result[0]):
+            return 1
+        else:
+            return 0
+    else:
+        return f"No user found with email {email}"
 
 def get_movie_id(original_title):
     con = sqlite3.connect("cinema.db")
