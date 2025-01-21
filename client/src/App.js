@@ -6,6 +6,7 @@ import MoviePage from "./pages/MoviePage";
 import Sidebar from "./pages/Sidebar";
 import { Navigate } from "react-router-dom";
 import SignupPage from "./pages/SignupPage";
+import SeatPage from "./pages/SeatPage";
 import "./App.css";
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
                     <Route path="/" element={<Navigate to="/home" />} />
                     <Route path="/home" element={<HomePage />} />
                     <Route path="/movie/:id" element={<MoviePage />} />
+                    <Route path="/seats/:hallId" element={<SeatPage />} />
                   </Routes>
                 </div>
               </div>

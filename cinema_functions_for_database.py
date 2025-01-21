@@ -29,6 +29,7 @@
 import sqlite3 # Documentation: https://docs.python.org/3/library/sqlite3.html
 import requests
 import json
+import os
 
 # Connecting with our database
 con = sqlite3.connect("cinema.db")
@@ -224,6 +225,32 @@ def get_all_seats():
     for row in cur.execute("SELECT * FROM seat"):
         print(row)
     con.close()
+
+def get_seats_for_hall(hall_id):
+    try:
+        db_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'cinema.db'))
+        con = sqlite3.connect(db_path)
+        cur = con.cursor()
+        seats = cur.execute("""SELECT id, status, row_number, seat_number, price, reservation_id FROM seat WHERE hall_id = ? """, (hall_id,)).fetchall()
+        print(f"Fetching seats for hall_id={hall_id}")
+        print(f"Query result: {seats}")
+
+        return[
+            {
+                "id": seat[0],
+                "status": seat[1],
+                "row_number": seat[2],
+                "seat_number": seat[3],
+                "price": seat[4],
+                "isbooked": seat[1] == "booked"
+            }
+            for seat in seats
+        ]
+    except sqlite3.Error as e:
+        print(f"Error while fetching seats: {e}")
+        return []
+    finally:
+        con.close()
 
 def get_all_movies():
     con = sqlite3.connect("cinema.db")

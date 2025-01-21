@@ -1,10 +1,12 @@
 from flask import Flask
 from flask_cors import CORS
 from authRoutes import auth_routes
+from seats_routes import seats_routes
 
 app = Flask(__name__)
 CORS(app)
 app.register_blueprint(auth_routes, url_prefix='/auth')
+app.register_blueprint(seats_routes, url_prefix='/api')
 
 @app.route('/')
 def home():
