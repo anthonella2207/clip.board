@@ -671,6 +671,35 @@ def calculate_percentage_available_seats(hall_id):
         con.close()
 
 # Number and percentage of reserved seats
+def calculate_number_not_available_seats(hall_id):
+    try:
+        con = sqlite3.connect("cinema.db")
+        cur = con.cursor()
+        cur.execute("SELECT count(id) FROM seat WHERE hall_id = ? AND status = 'reserved'", (hall_id,))
+        result = cur.fetchone()
+        if result:
+            return result[0]
+        else:
+            return None
+    except sqlite3.Error as e:
+        print(f"Error while calculating number of reserved seats: {e}")
+    finally:
+        con.close()
+
+def calculate_percentage_not_available_seats(hall_id):
+    try:
+        con = sqlite3.connect("cinema.db")
+        cur = con.cursor()
+        cur.execute("SELECT count(id) FROM seat WHERE hall_id = ? AND status = 'reserved'", (hall_id,))
+        result = cur.fetchone()
+        if result:
+            return 1 - result[0]/200
+        else:
+            return None
+    except sqlite3.Error as e:
+        print(f"Error while calculating percentage of reserved seats: {e}")
+    finally:
+        con.close()
 
 # List of available seats
 def list_available_seats(hall_id):
