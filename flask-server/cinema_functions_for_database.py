@@ -606,18 +606,34 @@ def update_user_role(user_id, new_role):
     finally:
         con.close()
 
-def update_seat_status(seat_iD, new_status):
+def update_seat_status(hall_id, seat_iD, new_status):
     try:
         con = sqlite3.connect("cinema.db")
         cur = con.cursor()
-        cur.execute("UPDATE seat SET status = ? WHERE id = ?", (new_status, seat_iD))
+        cur.execute("UPDATE seat SET status = ? WHERE hall_id = ? AND id = ?", (new_status, hall_id, seat_iD))
         con.commit()
         # rowcount is number of changed rows while updating
         if cur.rowcount > 0:
-            print(f"Seat with ID {seat_iD} updated: status = {new_status}")
+            print(f"Seat with ID {seat_iD} in hall {hall_id} updated: status = {new_status}")
         else:
             print(f"No seat found with ID {seat_iD}.")
     except sqlite3.Error as e:
         print(f"Error while updating seat status: {e}")
     finally:
         con.close()
+
+def calculate_total_price(hall_id):
+    try:
+        con = sqlite3.connect("cinema.db")
+        cur = con.cursor()
+        cur.execute("SELECT sum(price) FROM seat WHERE status = 'selected'")
+        result = cur.fetchone()
+        if result:
+            return result[0]
+        else:
+            return None
+    except sqlite3.Error as e:
+        print(f"Error while calculating total price: {e}")
+    finally:
+        con.close()
+
