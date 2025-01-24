@@ -651,7 +651,7 @@ def calculate_number_available_seats(hall_id):
         else:
             return None
     except sqlite3.Error as e:
-        print(f"Error while calculating total price: {e}")
+        print(f"Error while calculating number of available seats: {e}")
     finally:
         con.close()
 
@@ -666,8 +666,52 @@ def calculate_percentage_available_seats(hall_id):
         else:
             return None
     except sqlite3.Error as e:
-        print(f"Error while calculating total price: {e}")
+        print(f"Error while calculating percentage of available seats: {e}")
     finally:
         con.close()
 
 # Number and percentage of reserved seats
+
+# List of available seats
+def list_available_seats(hall_id):
+    try:
+        con = sqlite3.connect("cinema.db")
+        cur = con.cursor()
+        print("(id, status, row number, seat number, price, reservation ID, hall ID")
+        for row in cur.execute("SELECT * FROM seat WHERE hall_id = ? AND status = 'free'", (hall_id,)):
+            print(row)
+        return
+    except sqlite3.Error as e:
+        print(f"Error while calculating list of available seats: {e}")
+    finally:
+        con.close()
+
+# List of seats that are not available
+def list_not_available_seats(hall_id):
+    try:
+        con = sqlite3.connect("cinema.db")
+        cur = con.cursor()
+        print("(id, status, row number, seat number, price, reservation ID, hall ID")
+        for row in cur.execute("SELECT * FROM seat WHERE hall_id = ? AND status = 'reserved'", (hall_id,)):
+            print(row)
+        return
+    except sqlite3.Error as e:
+        print(f"Error while calculating list of not available seats: {e}")
+    finally:
+        con.close()
+
+# Number of users in the system with their information, except for their password
+# Abwandlung der Funktion get_all_users()
+def get_number_of_all_users():
+    try:
+        con = sqlite3.connect("cinema.db")
+        cur = con.cursor()
+        cur.execute("SELECT count(id) FROM user")
+        result = cur.fetchone()
+        print(f"Number of all users: {result[0]}")
+        for row in cur.execute("SELECT id, vorname, nachname, email, role FROM user"):
+            print(row)
+    except sqlite3.Error as e:
+        print(f"Error while calculation number of all users: {e}")
+    finally:
+        con.close()
