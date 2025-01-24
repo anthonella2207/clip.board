@@ -43,8 +43,7 @@ cur.execute("DROP TABLE IF EXISTS showtime;")
 cur.execute("""
 CREATE TABLE showtime (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    date VARCHAR(50),
-    time VARCHAR(50)
+    time VARCHAR(50) NOT NULL
 );
 """)
 
@@ -158,8 +157,8 @@ add_hall(10, "Kino 10", 10, 20, 200)
 con.commit()
 
 # Add showtimes
-add_showtime(None, None, "16:00")
-add_showtime(None, None, "20:00")
+add_showtime(None, '16:00')
+add_showtime(None, '20:00')
 
 #add seats
 id_counter = 1

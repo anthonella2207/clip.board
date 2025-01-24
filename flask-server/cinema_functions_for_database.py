@@ -72,14 +72,14 @@ def add_user(iD, vorname, nachname, password, email, role):
     finally:
         con.close()
 
-def add_showtime(iD, date, time):
+def add_showtime(iD, time):
     try:
         con = sqlite3.connect("cinema.db")
         cur = con.cursor()
         cur.execute("""
             INSERT INTO showtime VALUES
-                (?, ?, ?)
-        """, (iD, date, time))
+                (?, ?)
+        """, (iD, time))
         con.commit()
         print(f"Showtime {iD} added.")
     except sqlite3.IntegrityError:
