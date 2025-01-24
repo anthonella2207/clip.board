@@ -715,3 +715,4 @@ def get_number_of_all_users():
         print(f"Error while calculation number of all users: {e}")
     finally:
         con.close()
+#
