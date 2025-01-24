@@ -1,4 +1,4 @@
-# ***************************************************************************************
+""" ***************************************************************************************
 # DESCRIPTION
 
 # Here you can find all the functions to call our database. Below you can see our sections,
@@ -24,7 +24,7 @@
 # add_user(iD, vorname, nachname, password, email, role)
 # ...
 
-# ***************************************************************************************
+*************************************************************************************** """
 
 # Imports
 import sqlite3 # Documentation: https://docs.python.org/3/library/sqlite3.html
