@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../Api"; // Configuración de tu cliente Axios
 import "./HomePage.css";
+import Filter from "./FilterPage"
 
 const HomePage = () => {
   const [topRatedMovies, setTopRatedMovies] = useState([]);
@@ -9,6 +10,14 @@ const HomePage = () => {
   const [upcomingMovies, setUpcomingMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+
+  //Filter states
+  const [filters, setFilters] = useState({
+    genre:"",
+    min_duration:"",
+    max_duration:"",
+    age_rating:"",
+  });
 
   const navigate = useNavigate();
 
@@ -43,6 +52,27 @@ const HomePage = () => {
     fetchMovies();
   }, []);
 
+   useEffect(() => {
+        console.log("Current filters:", filters);
+
+        const fetchFilteredMovies = async () => {
+            try {
+                const response = await api.get("http://localhost:5000/filters", { params: filters });
+                setActualMovies(response.data.movies); // Aktualisiere die angezeigten Filme
+            } catch (error) {
+                console.error("Error fetching filtered movies:", error);
+            }
+        };
+
+        if (filters.genre || filters.min_duration || filters.max_duration || filters.age_rating) {
+            fetchFilteredMovies();
+        }
+    }, [filters]);
+
+  const handleFilterChange = (newFilters) => {
+    setFilters(newFilters);
+  };
+
   if (loading) {
     return <p>Loading movies...</p>;
   }
@@ -53,6 +83,7 @@ const HomePage = () => {
 
   return (
     <div className="content">
+      <Filter onFilter={handleFilterChange} />
       {/* Top Rated Section */}
       <div className="top-rated-section">
         <h1>Top Rated</h1>

@@ -2,12 +2,6 @@ from flask import Blueprint, request, jsonify
 
 auth_routes = Blueprint('auth_routes', __name__)
 
-users = {
-    "user1": "123456789",
-    "user2": "qwertzuio",
-    "admin": "ADMIN"
-}
-
 @auth_routes.route('/login', methods=['POST'])
 
 def login():

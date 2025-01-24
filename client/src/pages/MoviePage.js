@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import api from "../Api";
 import "./MoviePage.css";
+import { Link } from "react-router-dom";
 
 const MoviePage = () => {
   const { id } = useParams();
@@ -75,14 +76,26 @@ const MoviePage = () => {
           />
           <div className="movie-schedule">
             <h2>Showtimes</h2>
-            <div className="schedule-item">3:00 PM - Kino 1</div>
-            <div className="schedule-item">6:00 PM - Kino 2</div>
-            <div className="schedule-item">9:00 PM - Kino 3</div>
+            <Link to="/seats/1" className="schedule-item-link">
+              <div className="schedule-item">
+               3:00 PM - Kino 1
+              </div>
+            </Link>
+            <Link to="/seats/2" className="schedule-item-link">
+              <div className="schedule-item">
+                6:00 PM - Kino 2
+              </div>
+            </Link>
+            <Link to="/seats/3" className="schedule-item-link">
+              <div className="schedule-item">
+                9:00 PM - Kino 3
+              </div>
+            </Link>
           </div>
         </div>
       </div>
     </div>
-  );
+);
 };
 
 export default MoviePage;

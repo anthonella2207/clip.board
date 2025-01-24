@@ -95,7 +95,7 @@
   margin-bottom: 10px;
 }
 
-.schedule-item {
+/*.schedule-item {
   background-color: rgba(40, 156, 213, 0.4);
   color: white;
   padding: 10px 15px;
@@ -104,5 +104,28 @@
   font-size: 1rem;
   width: 200px;
   text-align: center;
+} */
+
+.schedule-item{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #007bff;
+  color: white;
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  text-align: center;
+  font-size: 16px;
 }
 
+.schedule-item-link{
+  text-decoration: none;
+}
+
+.schedule-item:hover{
+  background-color: #0056b3;
+  transform: scale(1.02);
+}
