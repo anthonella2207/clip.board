@@ -1,17 +1,9 @@
-import os
 import sqlite3
-import sys
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-from cinema_functions_for_database import get_movie_runtime, get_movie_genre, get_movie_adult, get_movie, get_movie_id
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # Gehe ein Verzeichnis nach oben
-DB_PATH = os.path.join(BASE_DIR, 'cinema.db')
+from cinema_functions_for_database import get_movie_runtime, get_movie_genre, get_movie_adult, get_movie
 
 def filter_movies_by_duration(min_duration, max_duration):
-    con = sqlite3.connect(DB_PATH)
+    con = sqlite3.connect("cinema.db")
     cur = con.cursor()
     query = "SELECT id FROM movie"
     cur.execute(query)
@@ -28,7 +20,7 @@ def filter_movies_by_duration(min_duration, max_duration):
     return filtered_movies
 
 def filter_movies_by_genre(selected_genre):
-    con = sqlite3.connect(DB_PATH)
+    con = sqlite3.connect("cinema.db")
     cur = con.cursor()
     query = "SELECT id FROM movie"
     cur.execute(query)
@@ -45,7 +37,7 @@ def filter_movies_by_genre(selected_genre):
     return filtered_movies
 
 def filter_movies_by_age(age_rating):
-    con = sqlite3.connect(DB_PATH)
+    con = sqlite3.connect("cinema.db")
     cur = con.cursor()
     query = "SELECT id FROM movie"
     cur.execute(query)

@@ -1,10 +1,6 @@
 from flask import Flask, request, jsonify, Blueprint
 from filter import filter_movies_by_genre, filter_movies_by_duration, filter_movies_by_age
 import sqlite3
-import os
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DB_PATH = os.path.join(BASE_DIR, 'cinema.db')
 
 filter_bp = Blueprint('filters', __name__)
 
@@ -34,7 +30,7 @@ def filter_movies():
 
 @filter_bp.route('/available-genres', methods=['GET'])
 def get_genres():
-    con = sqlite3.connect(DB_PATH)  # Der Pfad zur Datenbank
+    con = sqlite3.connect("cinema.db")  # Der Pfad zur Datenbank
     cur = con.cursor()
     try:
         cur.execute("SELECT DISTINCT genre FROM movie")  # Hole alle Genres

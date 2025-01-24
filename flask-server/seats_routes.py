@@ -1,7 +1,4 @@
 from flask import Blueprint, request, jsonify
-import sys
-import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from cinema_functions_for_database import get_seats_for_hall
 
 seats_routes = Blueprint('seats_routes', __name__)
