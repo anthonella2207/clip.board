@@ -1,28 +1,28 @@
 """ ***************************************************************************************
-# DESCRIPTION
+DESCRIPTION
 
-# Here you can find all the functions to call our database. Below you can see our sections,
-# for which we have defined functionalities. Below that, you can see an overview of all
-# single functions in a 'Table of functions'.
-
-
-# SECTIONS
-
-# We have all the functions for ...
-# a) Adding data
-# b) Getting data
-#    -> Login functions
-# c) Deleting data
-# d) Setting/Updating data
-# e) Calculations and Analysis
+Here you can find all the functions to call our database. Below you can see our sections,
+for which we have defined functionalities. Below that, you can see an overview of all
+single functions in a 'Table of functions'.
 
 
-# TABLE OF FUNCTIONS
+SECTIONS
 
-# a) Adding data
-# add_movie(iD, year, genre, movie_name, duration, regisseur, bewertung)
-# add_user(iD, vorname, nachname, password, email, role)
-# ...
+We have all the functions for ...
+a) Adding data
+b) Getting data
+   -> Login functions
+c) Deleting data
+d) Setting/Updating data
+e) Calculations and Analysis
+
+
+TABLE OF FUNCTIONS
+
+a) Adding data
+add_movie(iD, year, genre, movie_name, duration, regisseur, bewertung)
+add_user(iD, vorname, nachname, password, email, role)
+...
 
 *************************************************************************************** """
 

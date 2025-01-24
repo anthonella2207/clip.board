@@ -1,3 +1,15 @@
+""" ***************************************************************************************
+DESCRIPTION
+
+In this file our database cinema.db is created. Also, we created the required entities,
+their attributes, primary and foreign keys. We added some restrictions like
+NOT NULL.
+
+Below that, some initial values are being inserted into our database, e.g. ourselfes as
+users, cinema halls, seats, etc.
+
+"""
+
 import sqlite3 # Documentation: https://docs.python.org/3/library/sqlite3.html
 import requests
 import json
