@@ -14,6 +14,7 @@
 #    -> Login functions
 # c) Deleting data
 # d) Setting/Updating data
+# e) Calculations and Analysis
 
 
 # TABLE OF FUNCTIONS
@@ -622,6 +623,7 @@ def update_seat_status(hall_id, seat_iD, new_status):
     finally:
         con.close()
 
+# e) Calculations and Analysis
 def calculate_total_price(hall_id):
     try:
         con = sqlite3.connect("cinema.db")
@@ -637,3 +639,35 @@ def calculate_total_price(hall_id):
     finally:
         con.close()
 
+# Number and percentage of available seats
+def calculate_number_available_seats(hall_id):
+    try:
+        con = sqlite3.connect("cinema.db")
+        cur = con.cursor()
+        cur.execute("SELECT count(id) FROM seat WHERE hall_id = ? AND status = 'free'", (hall_id,))
+        result = cur.fetchone()
+        if result:
+            return result[0]
+        else:
+            return None
+    except sqlite3.Error as e:
+        print(f"Error while calculating total price: {e}")
+    finally:
+        con.close()
+
+def calculate_percentage_available_seats(hall_id):
+    try:
+        con = sqlite3.connect("cinema.db")
+        cur = con.cursor()
+        cur.execute("SELECT count(id) FROM seat WHERE hall_id = ? AND status = 'free'", (hall_id,))
+        result = cur.fetchone()
+        if result:
+            return 1 - result[0]/200
+        else:
+            return None
+    except sqlite3.Error as e:
+        print(f"Error while calculating total price: {e}")
+    finally:
+        con.close()
+
+# Number and percentage of reserved seats
