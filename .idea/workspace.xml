@@ -5,31 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="64f15b6f-76d7-41f5-8c24-9060dc1130dd" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/AEU_projectPy.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/AEU_projectPy.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/Api.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/Api.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/pages/HomePage.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/pages/HomePage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/pages/MoviePage.css" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/pages/MoviePage.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/pages/MoviePage.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/pages/MoviePage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flask-server/cinema.db" beforeDir="false" afterPath="$PROJECT_DIR$/flask-server/cinema.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flask-server/cinema_database_tables.py" beforeDir="false" afterPath="$PROJECT_DIR$/flask-server/cinema_database_tables.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flask-server/cinema_functions_for_database.py" beforeDir="false" afterPath="$PROJECT_DIR$/flask-server/cinema_functions_for_database.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flask-server/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/flask-server/server.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cinema.db" beforeDir="false" afterPath="$PROJECT_DIR$/flask-server/cinema.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cinema_database_tables.py" beforeDir="false" afterPath="$PROJECT_DIR$/flask-server/cinema_database_tables.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cinema_functions_for_database.py" beforeDir="false" afterPath="$PROJECT_DIR$/flask-server/cinema_functions_for_database.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flask-server/filter.py" beforeDir="false" afterPath="$PROJECT_DIR$/flask-server/filter.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flask-server/filter_routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/flask-server/filter_routes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flask-server/seats_routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/flask-server/seats_routes.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
-  </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="Python Script" />
-      </list>
-    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -43,12 +30,9 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/anthonella2207/AEU_projectPy.git&quot;,
-    &quot;accountId&quot;: &quot;3806cea7-d210-43dc-a643-bf1baeae79fc&quot;
+    &quot;accountId&quot;: &quot;eecb4f44-2e73-4358-9ba1-a6ea7b75e279&quot;
   }
 }</component>
-  <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/flask-server/server.py" root0="SKIP_INSPECTION" />
-  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 4
 }</component>
@@ -63,12 +47,11 @@
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/anthonella/Desktop/collegue/semestre3/python/AEU_projectPy&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_interpreter_path&quot;: &quot;node&quot;,
+    &quot;nodejs_interpreter_path&quot;: &quot;C:/Users/User/AppData/Roaming/JetBrains/PyCharm2024.3/node/versions/22.13.0/node&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
@@ -82,8 +65,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-e768b9ed790e-JavaScript-PY-243.21565.199" />
-        <option value="bundled-python-sdk-cab1f2013843-4ae2d6a61b08-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-243.21565.199" />
+        <option value="bundled-js-predefined-d6986cc7102b-deb605915726-JavaScript-PY-243.22562.220" />
+        <option value="bundled-python-sdk-0fc6c617c4bd-9a18a617cbe4-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-243.22562.220" />
       </set>
     </attachedChunks>
   </component>
@@ -99,20 +82,6 @@
       <workItem from="1737537368825" duration="6113000" />
       <workItem from="1737565205545" duration="1261000" />
       <workItem from="1737627312439" duration="4034000" />
-      <workItem from="1737714655803" duration="6457000" />
-      <workItem from="1737721393603" duration="3191000" />
-      <workItem from="1737803042456" duration="2688000" />
-      <workItem from="1737805742634" duration="2239000" />
-      <workItem from="1737808081013" duration="631000" />
-      <workItem from="1737810605269" duration="1431000" />
-      <workItem from="1737823161367" duration="95000" />
-      <workItem from="1737828149442" duration="1183000" />
-      <workItem from="1737835633908" duration="107000" />
-      <workItem from="1737836241443" duration="306000" />
-      <workItem from="1737838730858" duration="142000" />
-      <workItem from="1737838899155" duration="923000" />
-      <workItem from="1737909958926" duration="10000" />
-      <workItem from="1737911899994" duration="349000" />
     </task>
     <servers />
   </component>

@@ -32,13 +32,13 @@ import json
 import os
 
 # Connecting with our database
-con = sqlite3.connect("../flask-server/cinema.db")
+con = sqlite3.connect("cinema.db")
 cur = con.cursor()
 
 # a) Adding data
 def add_movie(iD, year, genre, movie_name, duration, regisseur, bewertung):
     try:
-        con = sqlite3.connect("../flask-server/cinema.db")
+        con = sqlite3.connect("cinema.db")
         cur = con.cursor()
         cur.execute("""
             INSERT INTO movie VALUES
@@ -56,7 +56,7 @@ def add_movie(iD, year, genre, movie_name, duration, regisseur, bewertung):
 # Adding users hint: id = None for using AUTOINCREMENT in SQL
 def add_user(iD, vorname, nachname, password, email, role):
     try:
-        con = sqlite3.connect("../flask-server/cinema.db")
+        con = sqlite3.connect("cinema.db")
         cur = con.cursor()
         cur.execute("""
             INSERT INTO user VALUES
@@ -73,7 +73,7 @@ def add_user(iD, vorname, nachname, password, email, role):
 
 def add_showtime(iD, date, time):
     try:
-        con = sqlite3.connect("../flask-server/cinema.db")
+        con = sqlite3.connect("cinema.db")
         cur = con.cursor()
         cur.execute("""
             INSERT INTO showtime VALUES
@@ -90,7 +90,7 @@ def add_showtime(iD, date, time):
 
 def add_reservation(iD, total_price, time_of_reservation, user_iD, showtime_iD):
     try:
-        con = sqlite3.connect("../flask-server/cinema.db")
+        con = sqlite3.connect("cinema.db")
         cur = con.cursor()
         cur.execute("""
             INSERT INTO reservation VALUES
@@ -107,7 +107,7 @@ def add_reservation(iD, total_price, time_of_reservation, user_iD, showtime_iD):
 
 def add_hall(iD, hall_name, row_count, seats_per_row, total_seats):
     try:
-        con = sqlite3.connect("../flask-server/cinema.db")
+        con = sqlite3.connect("cinema.db")
         cur = con.cursor()
         cur.execute("""
             INSERT INTO hall VALUES
@@ -124,7 +124,7 @@ def add_hall(iD, hall_name, row_count, seats_per_row, total_seats):
 
 def add_seat(iD, status, row_number, seat_number, price, reservation_iD, hall_iD):
     try:
-        con = sqlite3.connect("../flask-server/cinema.db")
+        con = sqlite3.connect("cinema.db")
         cur = con.cursor()
         cur.execute("""
             INSERT INTO seat VALUES
@@ -141,7 +141,7 @@ def add_seat(iD, status, row_number, seat_number, price, reservation_iD, hall_iD
 
 def add_showtime_includes_movie(movie_iD, showtime_iD):
     try:
-        con = sqlite3.connect("../flask-server/cinema.db")
+        con = sqlite3.connect("cinema.db")
         cur = con.cursor()
         cur.execute("""
             INSERT INTO showtime_includes_movie VALUES
@@ -158,7 +158,7 @@ def add_showtime_includes_movie(movie_iD, showtime_iD):
 
 def add_movie_in_hall(movie_iD, hall_iD):
     try:
-        con = sqlite3.connect("../flask-server/cinema.db")
+        con = sqlite3.connect("cinema.db")
         cur = con.cursor()
         cur.execute("""
             INSERT INTO showtime_includes_movie VALUES
@@ -175,7 +175,7 @@ def add_movie_in_hall(movie_iD, hall_iD):
 
 def add_logs_history(iD, action, action_timestamp, user_iD, reservation_iD):
     try:
-        con = sqlite3.connect("../flask-server/cinema.db")
+        con = sqlite3.connect("cinema.db")
         cur = con.cursor()
         cur.execute("""
             INSERT INTO logs_history VALUES
@@ -192,35 +192,35 @@ def add_logs_history(iD, action, action_timestamp, user_iD, reservation_iD):
 
 # b) Getting data
 def get_all_users():
-    con = sqlite3.connect("../flask-server/cinema.db")
+    con = sqlite3.connect("cinema.db")
     cur = con.cursor()
     for row in cur.execute("SELECT * FROM user"):
         print(row)
     con.close()
 
 def get_all_showtimes():
-    con = sqlite3.connect("../flask-server/cinema.db")
+    con = sqlite3.connect("cinema.db")
     cur = con.cursor()
     for row in cur.execute("SELECT * FROM showtime"):
         print(row)
     con.close()
 
 def get_all_reservations():
-    con = sqlite3.connect("../flask-server/cinema.db")
+    con = sqlite3.connect("cinema.db")
     cur = con.cursor()
     for row in cur.execute("SELECT * FROM reservation"):
         print(row)
     con.close()
 
 def get_all_halls():
-    con = sqlite3.connect("../flask-server/cinema.db")
+    con = sqlite3.connect("cinema.db")
     cur = con.cursor()
     for row in cur.execute("SELECT * FROM hall"):
         print(row)
     con.close()
 
 def get_all_seats():
-    con = sqlite3.connect("../flask-server/cinema.db")
+    con = sqlite3.connect("cinema.db")
     cur = con.cursor()
     for row in cur.execute("SELECT * FROM seat"):
         print(row)
@@ -228,7 +228,7 @@ def get_all_seats():
 
 def get_seats_for_hall(hall_id):
     try:
-        db_path = os.path.abspath(os.path.join("../flask-server/cinema.db"))
+        db_path = os.path.abspath(os.path.join("cinema.db"))
         con = sqlite3.connect(db_path)
         cur = con.cursor()
         seats = cur.execute("""SELECT id, status, row_number, seat_number, price, reservation_id FROM seat WHERE hall_id = ? """, (hall_id,)).fetchall()
@@ -253,21 +253,21 @@ def get_seats_for_hall(hall_id):
         con.close()
 
 def get_all_movies():
-    con = sqlite3.connect("../flask-server/cinema.db")
+    con = sqlite3.connect("cinema.db")
     cur = con.cursor()
     for row in cur.execute("SELECT * FROM movie"):
         print(row)
     con.close()
 
 def get_all_logs_histories():
-    con = sqlite3.connect("../flask-server/cinema.db")
+    con = sqlite3.connect("cinema.db")
     cur = con.cursor()
     for row in cur.execute("SELECT * FROM logs_history"):
         print(row)
     con.close()
 
 def login_check_for_user(email):
-    con = sqlite3.connect("../flask-server/cinema.db")
+    con = sqlite3.connect("cinema.db")
     cur = con.cursor()
     cur.execute("SELECT * FROM user WHERE email = ?", (email,))
     result = cur.fetchone()
@@ -278,7 +278,7 @@ def login_check_for_user(email):
         return 0
 
 def login_check_password(email, password):
-    con = sqlite3.connect("../flask-server/cinema.db")
+    con = sqlite3.connect("cinema.db")
     cur = con.cursor()
     cur.execute("SELECT password FROM user WHERE email = ?", (email,))
     result = cur.fetchone()
@@ -292,7 +292,7 @@ def login_check_password(email, password):
         return f"No user found with email {email}"
 
 def get_movie_id(original_title):
-    con = sqlite3.connect("../flask-server/cinema.db")
+    con = sqlite3.connect("cinema.db")
     cur = con.cursor()
     cur.execute("SELECT id FROM movie WHERE original_title = ?", (original_title,))
     result = cur.fetchone()
@@ -302,7 +302,7 @@ def get_movie_id(original_title):
     else:
         return None
 def get_movie(id):
-    con = sqlite3.connect("../flask-server/cinema.db")
+    con = sqlite3.connect("cinema.db")
     cur = con.cursor()
     cur.execute("SELECT original_title FROM movie WHERE id = ?", (id,))
     result = cur.fetchone()
@@ -314,7 +314,7 @@ def get_movie(id):
 def get_movie_with_filter():
     return
 def get_movie_adult(id):
-    con = sqlite3.connect("../flask-server/cinema.db")
+    con = sqlite3.connect("cinema.db")
     cur = con.cursor()
     cur.execute("SELECT adult FROM movie WHERE id = ?", (id,))
     result = cur.fetchone()
@@ -324,7 +324,7 @@ def get_movie_adult(id):
     else:
         return None
 def get_movie_genre(id):
-    con = sqlite3.connect("../flask-server/cinema.db")
+    con = sqlite3.connect("cinema.db")
     cur = con.cursor()
     cur.execute("SELECT genre FROM movie WHERE id = ?", (id,))
     result = cur.fetchone()
@@ -334,7 +334,7 @@ def get_movie_genre(id):
     else:
         return None
 def get_movie_origin_country():
-    con = sqlite3.connect("../flask-server/cinema.db")
+    con = sqlite3.connect("cinema.db")
     cur = con.cursor()
     cur.execute("SELECT origin_country FROM movie WHERE id = ?", (id,))
     result = cur.fetchone()
@@ -344,7 +344,7 @@ def get_movie_origin_country():
     else:
         return None
 def get_movie_origin_language(id):
-    con = sqlite3.connect("../flask-server/cinema.db")
+    con = sqlite3.connect("cinema.db")
     cur = con.cursor()
     cur.execute("SELECT origin_language FROM movie WHERE id = ?", (id,))
     result = cur.fetchone()
@@ -354,7 +354,7 @@ def get_movie_origin_language(id):
     else:
         return None
 def get_movie_original_title(id):
-    con = sqlite3.connect("../flask-server/cinema.db")
+    con = sqlite3.connect("cinema.db")
     cur = con.cursor()
     cur.execute("SELECT original_title FROM movie WHERE id = ?", (id,))
     result = cur.fetchone()
@@ -364,7 +364,7 @@ def get_movie_original_title(id):
     else:
         return None
 def get_movie_overview(id):
-    con = sqlite3.connect("../flask-server/cinema.db")
+    con = sqlite3.connect("cinema.db")
     cur = con.cursor()
     cur.execute("SELECT overview FROM movie WHERE id = ?", (id,))
     result = cur.fetchone()
@@ -374,7 +374,7 @@ def get_movie_overview(id):
     else:
         return None
 def get_movie_release_date(id):
-    con = sqlite3.connect("../flask-server/cinema.db")
+    con = sqlite3.connect("cinema.db")
     cur = con.cursor()
     cur.execute("SELECT release_date FROM movie WHERE id = ?", (id,))
     result = cur.fetchone()
@@ -384,7 +384,7 @@ def get_movie_release_date(id):
     else:
         return None
 def get_movie_runtime(id):
-    con = sqlite3.connect("../flask-server/cinema.db")
+    con = sqlite3.connect("cinema.db")
     cur = con.cursor()
     cur.execute("SELECT runtime FROM movie WHERE id = ?", (id,))
     result = cur.fetchone()
@@ -394,7 +394,7 @@ def get_movie_runtime(id):
     else:
         return None
 def get_movie_vote_average(id):
-    con = sqlite3.connect("../flask-server/cinema.db")
+    con = sqlite3.connect("cinema.db")
     cur = con.cursor()
     cur.execute("SELECT vote_average FROM movie WHERE id = ?", (id,))
     result = cur.fetchone()
@@ -405,7 +405,7 @@ def get_movie_vote_average(id):
         return None
 
 def get_posterurl(movie_id):
-    con = sqlite3.connect("../flask-server/cinema.db")
+    con = sqlite3.connect("cinema.db")
     cur = con.cursor()
     poster_baseURL = "https://image.tmdb.org/t/p/w500"
     cur.execute("SELECT poster_path FROM movie WHERE id = ?", (movie_id,))
@@ -417,7 +417,7 @@ def get_posterurl(movie_id):
         return None
 
 def get_user_id(email):
-    con = sqlite3.connect("../flask-server/cinema.db")
+    con = sqlite3.connect("cinema.db")
     cur = con.cursor()
     cur.execute("SELECT id FROM user WHERE email = ?", (email,))
     result = cur.fetchone()
@@ -428,7 +428,7 @@ def get_user_id(email):
         return None
 
 def get_user_vorname(id):
-    con = sqlite3.connect("../flask-server/cinema.db")
+    con = sqlite3.connect("cinema.db")
     cur = con.cursor()
     cur.execute("SELECT vorname FROM user WHERE id = ?", (id,))
     result = cur.fetchone()
@@ -439,7 +439,7 @@ def get_user_vorname(id):
         return None
 
 def get_user_nachname(id):
-    con = sqlite3.connect("../flask-server/cinema.db")
+    con = sqlite3.connect("cinema.db")
     cur = con.cursor()
     cur.execute("SELECT nachname FROM user WHERE id = ?", (id,))
     result = cur.fetchone()
@@ -450,7 +450,7 @@ def get_user_nachname(id):
         return None
 
 def get_user_email(id):
-    con = sqlite3.connect("../flask-server/cinema.db")
+    con = sqlite3.connect("cinema.db")
     cur = con.cursor()
     cur.execute("SELECT email FROM user WHERE id = ?", (id,))
     result = cur.fetchone()
@@ -461,7 +461,7 @@ def get_user_email(id):
         return None
 
 def get_user_role(id):
-    con = sqlite3.connect("../flask-server/cinema.db")
+    con = sqlite3.connect("cinema.db")
     cur = con.cursor()
     cur.execute("SELECT role FROM user WHERE id = ?", (id,))
     result = cur.fetchone()
@@ -474,7 +474,7 @@ def get_user_role(id):
 # c) Deleting data
 def delete_user(user_iD):
     try:
-        con = sqlite3.connect("../flask-server/cinema.db")
+        con = sqlite3.connect("cinema.db")
         cur = con.cursor()
         cur.execute("DELETE FROM user WHERE id = ?", (user_iD,))
         con.commit()
@@ -486,7 +486,7 @@ def delete_user(user_iD):
 
 def delete_movie(movie_iD):
     try:
-        con = sqlite3.connect("../flask-server/cinema.db")
+        con = sqlite3.connect("cinema.db")
         cur = con.cursor()
         cur.execute("DELETE FROM movie WHERE ID = ?", (movie_iD,))
         con.commit()
@@ -498,7 +498,7 @@ def delete_movie(movie_iD):
 
 def delete_showtime(showtime_iD):
     try:
-        con = sqlite3.connect("../flask-server/cinema.db")
+        con = sqlite3.connect("cinema.db")
         cur = con.cursor()
         cur.execute("DELETE FROM showtime WHERE id = ?", (showtime_iD,))
         con.commit()
@@ -510,7 +510,7 @@ def delete_showtime(showtime_iD):
 
 def delete_reservation(reservation_iD):
     try:
-        con = sqlite3.connect("../flask-server/cinema.db")
+        con = sqlite3.connect("cinema.db")
         cur = con.cursor()
         cur.execute("DELETE FROM reservation WHERE id = ?", (reservation_iD,))
         con.commit()
@@ -522,7 +522,7 @@ def delete_reservation(reservation_iD):
 
 def delete_hall(hall_iD):
     try:
-        con = sqlite3.connect("../flask-server/cinema.db")
+        con = sqlite3.connect("cinema.db")
         cur = con.cursor()
         cur.execute("DELETE FROM hall WHERE id = ?", (hall_iD,))
         con.commit()
@@ -534,7 +534,7 @@ def delete_hall(hall_iD):
 
 def delete_seat(seat_iD):
     try:
-        con = sqlite3.connect("../flask-server/cinema.db")
+        con = sqlite3.connect("cinema.db")
         cur = con.cursor()
         cur.execute("DELETE FROM seat WHERE id = ?", (seat_iD,))
         con.commit()
@@ -546,7 +546,7 @@ def delete_seat(seat_iD):
 
 def delete_logs_history(logs_history_iD):
     try:
-        con = sqlite3.connect("../flask-server/cinema.db")
+        con = sqlite3.connect("cinema.db")
         cur = con.cursor()
         cur.execute("DELETE FROM logs_history WHERE id = ?", (logs_history_iD,))
         con.commit()
@@ -560,7 +560,7 @@ def delete_logs_history(logs_history_iD):
 
 def update_user_name(user_id, new_vorname, new_nachname):
     try:
-        con = sqlite3.connect("../flask-server/cinema.db")
+        con = sqlite3.connect("cinema.db")
         cur = con.cursor()
         cur.execute("UPDATE user SET vorname = ? WHERE id = ?", (new_vorname, user_id))
         con.commit()
@@ -577,7 +577,7 @@ def update_user_name(user_id, new_vorname, new_nachname):
 
 def update_user_email(user_id, new_email):
     try:
-        con = sqlite3.connect("../flask-server/cinema.db")
+        con = sqlite3.connect("cinema.db")
         cur = con.cursor()
         cur.execute("UPDATE user SET email = ? WHERE id = ?", (new_email, user_id))
         con.commit()
@@ -593,7 +593,7 @@ def update_user_email(user_id, new_email):
 # Hint: only Admins can change user roles!
 def update_user_role(user_id, new_role):
     try:
-        con = sqlite3.connect("../flask-server/cinema.db")
+        con = sqlite3.connect("cinema.db")
         cur = con.cursor()
         cur.execute("UPDATE user SET role = ? WHERE id = ?", (new_role, user_id))
         con.commit()
@@ -608,7 +608,7 @@ def update_user_role(user_id, new_role):
 
 def update_seat_status(hall_id, seat_iD, new_status):
     try:
-        con = sqlite3.connect("../flask-server/cinema.db")
+        con = sqlite3.connect("cinema.db")
         cur = con.cursor()
         cur.execute("UPDATE seat SET status = ? WHERE hall_id = ? AND id = ?", (new_status, hall_id, seat_iD))
         con.commit()
@@ -624,7 +624,7 @@ def update_seat_status(hall_id, seat_iD, new_status):
 
 def calculate_total_price(hall_id):
     try:
-        con = sqlite3.connect("../flask-server/cinema.db")
+        con = sqlite3.connect("cinema.db")
         cur = con.cursor()
         cur.execute("SELECT sum(price) FROM seat WHERE status = 'selected'")
         result = cur.fetchone()
@@ -637,35 +637,3 @@ def calculate_total_price(hall_id):
     finally:
         con.close()
 
-
-DB_FILE = "../flask-server/cinema.db"  # Ensure this matches your actual database file
-
-
-def insert_movies(movies):
-    """Inserts multiple movies into the database"""
-    with sqlite3.connect(DB_FILE) as conn:
-        cursor = conn.cursor()
-        cursor.executemany(
-            """
-            INSERT INTO movie (
-                poster_path, adult, genre, origin_country, origin_language,
-                original_title, overview, release_date, runtime, vote_average
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
-            [
-                (
-                    movie.get("poster_path", ""),
-                    movie.get("adult", 0),
-                    movie.get("genre", "Unknown"),
-                    movie.get("origin_country", "Unknown"),
-                    movie.get("origin_language", "Unknown"),
-                    movie.get("original_title", "Unknown"),
-                    movie.get("overview", "No description available"),
-                    movie.get("release_date", "1900-01-01"),
-                    movie.get("runtime", 0),
-                    movie.get("vote_average", 0.0),
-                )
-                for movie in movies
-            ],
-        )
-        conn.commit()
