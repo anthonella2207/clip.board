@@ -10,7 +10,7 @@ from io import BytesIO
 app = Flask(__name__)
 CORS(app)  # Allow cross-origin requests
 # Configuration
-API_KEY = "814254e9d1fb4859da3f4798b86b6f49"  # Replace with your TMDB API Key
+API_KEY = "814254e9d1fb4859da3f4798b86b6f49"
 IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500"
 POSTER_FOLDER = "./posters"
 DB_PATH = os.path.join(os.getcwd(), "movies.db")
