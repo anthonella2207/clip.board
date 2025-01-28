@@ -488,6 +488,31 @@ def filter_movies_by_adult():
 
     con.close()
 
+def filter_movies_by_vote_average(vote_average):
+    con = sqlite3.connect("movies.db")
+    cur = con.cursor()
+
+    query = "SELECT * FROM movies WHERE category = 'now_playing'"
+
+    if vote_average == "> 9":
+        query = "SELECT * FROM movies WHERE category = 'now_playing' AND vote_average > 9"
+    if vote_average == "> 8":
+        query = "SELECT * FROM movies WHERE category = 'now_playing' AND vote_average > 8"
+    if vote_average == "> 7":
+        query = "SELECT * FROM movies WHERE category = 'now_playing' AND vote_average > 7"
+    if vote_average == "> 6":
+        query = "SELECT * FROM movies WHERE category = 'now_playing' AND vote_average > 6"
+    if vote_average == "> 5":
+        query = "SELECT * FROM movies WHERE category = 'now_playing' AND vote_average > 5"
+
+    cur.execute(query)
+
+    rows = cur.fetchall()
+    for row in rows:
+        print(row)
+
+    con.close()
+
 def filter_movies_by_duration(duration):
     con = sqlite3.connect("movies.db")
     cur = con.cursor()
