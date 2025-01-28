@@ -27,95 +27,94 @@ os.makedirs(POSTER_FOLDER, exist_ok=True)
 
 # Create database if not exists
 def initialize_database():
-    # if not os.path.exists(DB_PATH):
-        conn = sqlite3.connect(DB_PATH)
-        cursor = conn.cursor()
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
 
-        # Create movies table
-        cursor.execute("DROP TABLE IF EXISTS movies;")
-        cursor.execute("""
-        CREATE TABLE movies (
-            id INTEGER PRIMARY KEY,
-            title TEXT NOT NULL,
-            release_date VARCHAR(50) NOT NULL,
-            overview VARCHAR(500) NOT NULL,
-            vote_average REAL NOT NULL,
-            poster_path VARCHAR(100) NOT NULL,
-            category VARCHAR(100) NOT NULL,
-            genres VARCHAR(100) NOT NULL,
-            hall_id INTEGER,
-            showtime VARCHAR(50),
-            FOREIGN KEY (hall_id) REFERENCES hall(id)
-        );
-        """)
+    # Create movies table
+    cursor.execute("DROP TABLE IF EXISTS movies;")
+    cursor.execute("""
+    CREATE TABLE movies (
+        id INTEGER PRIMARY KEY,
+        title TEXT NOT NULL,
+        release_date VARCHAR(50) NOT NULL,
+        overview VARCHAR(500) NOT NULL,
+        vote_average REAL NOT NULL,
+        poster_path VARCHAR(100) NOT NULL,
+        category VARCHAR(100) NOT NULL,
+        genres VARCHAR(100) NOT NULL,
+        hall_id INTEGER,
+        showtime VARCHAR(50),
+        FOREIGN KEY (hall_id) REFERENCES hall(id)
+    );
+    """)
 
-        cursor.execute("DROP TABLE IF EXISTS user;")
-        cursor.execute("""
-        CREATE TABLE user (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            vorname VARCHAR(20) NOT NULL,
-            nachname VARCHAR(50) NOT NULL,
-            password VARCHAR(30) NOT NULL,
-            email VARCHAR(30) NOT NULL UNIQUE,
-            role VARCHAR(10) NOT NULL
-        );
-        """)
+    cursor.execute("DROP TABLE IF EXISTS user;")
+    cursor.execute("""
+    CREATE TABLE user (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        vorname VARCHAR(20) NOT NULL,
+        nachname VARCHAR(50) NOT NULL,
+        password VARCHAR(30) NOT NULL,
+        email VARCHAR(30) NOT NULL UNIQUE,
+        role VARCHAR(10) NOT NULL
+    );
+    """)
 
-        cursor.execute("DROP TABLE IF EXISTS reservation;")
-        cursor.execute("""
-        CREATE TABLE reservation (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            total_price DECIMAL(10, 2) DEFAULT NULL,
-            time_of_reservation DATETIME NOT NULL,
-            user_id INTEGER,
-            movie_id INTEGER,
-            FOREIGN KEY (user_id) REFERENCES user(id),
-            FOREIGN KEY (movie_id) REFERENCES movies(id)
-        );
-        """)
+    cursor.execute("DROP TABLE IF EXISTS reservation;")
+    cursor.execute("""
+    CREATE TABLE reservation (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        total_price DECIMAL(10, 2) DEFAULT NULL,
+        time_of_reservation DATETIME NOT NULL,
+        user_id INTEGER,
+        movie_id INTEGER,
+        FOREIGN KEY (user_id) REFERENCES user(id),
+        FOREIGN KEY (movie_id) REFERENCES movies(id)
+    );
+    """)
 
-        cursor.execute("DROP TABLE IF EXISTS hall;")
-        cursor.execute("""
-        CREATE TABLE hall (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name VARCHAR(20) NOT NULL,
-            row_count INTEGER NOT NULL,
-            seats_per_row INTEGER NOT NULL,
-            total_seats INTEGER NOT NULL
-        );
-        """)
+    cursor.execute("DROP TABLE IF EXISTS hall;")
+    cursor.execute("""
+    CREATE TABLE hall (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name VARCHAR(20) NOT NULL,
+        row_count INTEGER NOT NULL,
+        seats_per_row INTEGER NOT NULL,
+        total_seats INTEGER NOT NULL
+    );
+    """)
 
-        cursor.execute("DROP TABLE IF EXISTS seat;")
-        cursor.execute("""
-        CREATE TABLE seat (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            status VARCHAR(20) NOT NULL,
-            row_number INTEGER NOT NULL,
-            seat_number INTEGER NOT NULL,
-            price DECIMAL(10, 2) DEFAULT NULL,
-            reservation_id INTEGER,
-            hall_id INTEGER,
-            FOREIGN KEY (reservation_id) REFERENCES reservation(id),
-            FOREIGN KEY (hall_id) REFERENCES hall(id)
-        );
-        """)
+    cursor.execute("DROP TABLE IF EXISTS seat;")
+    cursor.execute("""
+    CREATE TABLE seat (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        status VARCHAR(20) NOT NULL,
+        row_number INTEGER NOT NULL,
+        seat_number INTEGER NOT NULL,
+        price DECIMAL(10, 2) DEFAULT NULL,
+        reservation_id INTEGER,
+        hall_id INTEGER,
+        FOREIGN KEY (reservation_id) REFERENCES reservation(id),
+        FOREIGN KEY (hall_id) REFERENCES hall(id)
+    );
+    """)
 
-        cursor.execute("DROP TABLE IF EXISTS logs_history;")
-        cursor.execute("""
-        CREATE TABLE logs_history (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            action VARCHAR(100) NOT NULL,
-            action_timestamp DATETIME NOT NULL,
-            user_id INTEGER,
-            reservation_id INTEGER,
-            FOREIGN KEY (user_id) REFERENCES user(id),
-            FOREIGN KEY (reservation_id) REFERENCES reservation(id)
-        );
-        """)
+    cursor.execute("DROP TABLE IF EXISTS logs_history;")
+    cursor.execute("""
+    CREATE TABLE logs_history (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        action VARCHAR(100) NOT NULL,
+        action_timestamp DATETIME NOT NULL,
+        user_id INTEGER,
+        reservation_id INTEGER,
+        FOREIGN KEY (user_id) REFERENCES user(id),
+        FOREIGN KEY (reservation_id) REFERENCES reservation(id)
+    );
+    """)
 
-        conn.commit()
-        conn.close()
-        print("Database initialized.")
+    conn.commit()
+    conn.close()
+    print("Database initialized.")
 
 # Save movie to database
 def save_movie_to_db_with_category(movie, category):
