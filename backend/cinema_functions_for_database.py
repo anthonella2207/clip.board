@@ -509,6 +509,33 @@ def filter_movies_by_duration(duration):
 
     con.close()
 
+def filter_movies_by_keywords(keywords):
+    con = sqlite3.connect("movies.db")
+    cur = con.cursor()
+
+    keyword_list = []
+    for keyword in keywords.split():
+        keyword_list.append(keyword.strip())
+
+    conditions_list = []
+    for keyword in keyword_list:
+        conditions_list.append("(LOWER(title) LIKE ? OR LOWER(overview) LIKE ?)")
+    conditions = " AND ".join(conditions_list)
+
+    query = f"SELECT * FROM movies WHERE {conditions}"
+
+    parameters = []
+    for keyword in keyword_list:
+        parameters.append(f"%{keyword.lower()}%")
+        parameters.append(f"%{keyword.lower()}%")
+
+    cur.execute(query, parameters)
+    rows = cur.fetchall()
+    for row in rows:
+        print(row)
+
+    con.close()
+
 
 # c) Deleting data
 def delete_user(user_iD):
