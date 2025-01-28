@@ -309,7 +309,7 @@ def initialize_playing_schedule():
 
     # Get all IDs from all movies in our database and save in list
     idList = []
-    for row in cur.execute("SELECT id FROM movies"):
+    for row in cur.execute("SELECT id FROM movies WHERE category = ?", ('now_playing',)):
         idList.append(row[0])
 
     showtime = "16:00 Uhr"
