@@ -548,7 +548,7 @@ def filter_movies_by_keywords(keywords):
     con.close()
 
 # example for function call
-# filter_movies(genres= "Animation", keywords = " mufasa king", vote_average = "> 7", duration = "90-120 minutes")
+# filter_movies(genres="Animation", keywords=" mufasa king", vote_average="> 7", duration="90-120 minutes")
 def filter_movies(genres=None, vote_average=None, duration=None, keywords=None):
     con = sqlite3.connect("movies.db")
     cur = con.cursor()
