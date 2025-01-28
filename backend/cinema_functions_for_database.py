@@ -473,20 +473,6 @@ def filter_movies_by_genres(genres):
 
     con.close()
 
-# filter by movies which are declared as adult
-# meaning: content which is not for general audience
-# content could contain: sexual content, strong language, extreme violence
-def filter_movies_by_adult():
-    con = sqlite3.connect("movies.db")
-    cur = con.cursor()
-
-    cur.execute("SELECT * FROM movies WHERE category = 'now_playing' AND adult = 1")
-
-    rows = cur.fetchall()
-    for row in rows:
-        print(row)
-
-    con.close()
 
 def filter_movies_by_vote_average(vote_average):
     con = sqlite3.connect("movies.db")
@@ -561,6 +547,69 @@ def filter_movies_by_keywords(keywords):
 
     con.close()
 
+# example for function call
+# filter_movies(genres= "Animation", keywords = " mufasa king", vote_average = "> 7", duration = "90-120 minutes")
+def filter_movies(genres=None, vote_average=None, duration=None, keywords=None):
+    con = sqlite3.connect("movies.db")
+    cur = con.cursor()
+
+    conditions_list = []
+    parameters = []
+
+    # Genre Filter
+    if genres:
+        genre_list = []
+        for genre in genres.split(","):
+            genre_list.append(genre.strip())
+        for genre in genre_list:
+            conditions_list.append("genres LIKE ?")
+            parameters.append(f"%{genre}%")
+
+    # Vote Average Filter
+    if vote_average:
+        if vote_average == "> 9":
+            conditions_list.append("vote_average > 9")
+        elif vote_average == "> 8":
+            conditions_list.append("vote_average > 8")
+        elif vote_average == "> 7":
+            conditions_list.append("vote_average > 7")
+        elif vote_average == "> 6":
+            conditions_list.append("vote_average > 6")
+        elif vote_average == "> 5":
+            conditions_list.append("vote_average > 5")
+
+    # Duration Filter
+    if duration:
+        if duration == "Less than 90 minutes":
+            conditions_list.append("runtime < 90")
+        elif duration == "90-120 minutes":
+            conditions_list.append("runtime BETWEEN 90 AND 120")
+        elif duration == "More than 120 minutes":
+            conditions_list.append("runtime > 120")
+
+    # Keyword Filter
+    if keywords:
+        keyword_list = []
+        for keyword in keywords.split():
+            keyword_list.append(keyword.strip())
+        for keyword in keyword_list:
+            conditions_list.append("(LOWER(title) LIKE ? OR LOWER(overview) LIKE ?)")
+            parameters.extend([f"%{keyword.lower()}%", f"%{keyword.lower()}%"])
+
+    # Combine all conditions
+    conditions = " AND ".join(conditions_list)
+    query = f"SELECT * FROM movies WHERE category = 'now_playing'"
+    if conditions:
+        query += f" AND {conditions}"
+
+    # Execute the query
+    cur.execute(query, parameters)
+    rows = cur.fetchall()
+    for row in rows:
+        print(row)
+
+    con.close()
+    return rows
 
 # c) Deleting data
 def delete_user(user_iD):
