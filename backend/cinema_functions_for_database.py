@@ -36,14 +36,14 @@ con = sqlite3.connect("movies.db")
 cur = con.cursor()
 
 # a) Adding data
-def add_movie(iD, year, genre, movie_name, duration, regisseur, bewertung):
+def add_movie(id, title, release_date, overview, vote_average, poster_path, category, genres, hall_id, showtime):
     try:
         con = sqlite3.connect("movies.db")
         cur = con.cursor()
         cur.execute("""
             INSERT INTO movie VALUES
-                (?, ?, ?, ?, ?, ?, ?)
-        """, (iD, year, genre, movie_name, duration, regisseur, bewertung))
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (id, title, release_date, overview, vote_average, poster_path, category, genres, hall_id, showtime))
         con.commit()
         print(f"Movie {movie_name} added.")
     except sqlite3.IntegrityError:
@@ -71,35 +71,18 @@ def add_user(iD, vorname, nachname, password, email, role):
     finally:
         con.close()
 
-def add_showtime(iD, date, time):
-    try:
-        con = sqlite3.connect("movies.db")
-        cur = con.cursor()
-        cur.execute("""
-            INSERT INTO showtime VALUES
-                (?, ?, ?)
-        """, (iD, date, time))
-        con.commit()
-        print(f"Showtime {iD} added.")
-    except sqlite3.IntegrityError:
-        print(f"Error while adding user: IntegrityError")
-    except:
-        print("Error occured")
-    finally:
-        con.close()
-
-def add_reservation(iD, total_price, time_of_reservation, user_iD, showtime_iD):
+def add_reservation(iD, total_price, time_of_reservation, user_iD, movie_iD):
     try:
         con = sqlite3.connect("movies.db")
         cur = con.cursor()
         cur.execute("""
             INSERT INTO reservation VALUES
                 (?, ?, ?, ?, ?)
-        """, (iD, total_price, time_of_reservation, user_iD, showtime_iD))
+        """, (iD, total_price, time_of_reservation, user_iD, movie_iD))
         con.commit()
         print(f"Reservation {iD} added.")
     except sqlite3.IntegrityError:
-        print(f"Error while adding user: IntegrityError")
+        print(f"Error while adding reservation: IntegrityError")
     except:
         print("Error occured")
     finally:
@@ -116,7 +99,7 @@ def add_hall(iD, hall_name, row_count, seats_per_row, total_seats):
         con.commit()
         print(f"Hall {hall_name} added.")
     except sqlite3.IntegrityError:
-        print(f"Error while adding user: IntegrityError")
+        print(f"Error while adding hall: IntegrityError")
     except:
         print("Error occured")
     finally:
@@ -133,41 +116,7 @@ def add_seat(iD, status, row_number, seat_number, price, reservation_iD, hall_iD
         con.commit()
         print(f"Seat {iD} added.")
     except sqlite3.IntegrityError:
-        print(f"Error while adding user: IntegrityError")
-    except:
-        print("Error occured")
-    finally:
-        con.close()
-
-def add_showtime_includes_movie(movie_iD, showtime_iD):
-    try:
-        con = sqlite3.connect("movies.db")
-        cur = con.cursor()
-        cur.execute("""
-            INSERT INTO showtime_includes_movie VALUES
-                (?, ?)
-        """, (movie_iD, showtime_iD))
-        con.commit()
-        print(f"Showtime includes movie ({movie_iD}, {showtime_iD}) added.")
-    except sqlite3.IntegrityError:
-        print(f"Error while adding user: IntegrityError")
-    except:
-        print("Error occured")
-    finally:
-        con.close()
-
-def add_movie_in_hall(movie_iD, hall_iD):
-    try:
-        con = sqlite3.connect("movies.db")
-        cur = con.cursor()
-        cur.execute("""
-            INSERT INTO showtime_includes_movie VALUES
-                (?, ?)
-        """, (movie_iD, hall_iD))
-        con.commit()
-        print(f"Movie in hall ({movie_iD}, {hall_iD}) added.")
-    except sqlite3.IntegrityError:
-        print(f"Error while adding user: IntegrityError")
+        print(f"Error while adding seat: IntegrityError")
     except:
         print("Error occured")
     finally:
@@ -184,7 +133,7 @@ def add_logs_history(iD, action, action_timestamp, user_iD, reservation_iD):
         con.commit()
         print(f"Logs and history {iD} added.")
     except sqlite3.IntegrityError:
-        print(f"Error while adding user: IntegrityError")
+        print(f"Error while adding Logs/History: IntegrityError")
     except:
         print("Error occured")
     finally:
@@ -195,13 +144,6 @@ def get_all_users():
     con = sqlite3.connect("movies.db")
     cur = con.cursor()
     for row in cur.execute("SELECT * FROM user"):
-        print(row)
-    con.close()
-
-def get_all_showtimes():
-    con = sqlite3.connect("movies.db")
-    cur = con.cursor()
-    for row in cur.execute("SELECT * FROM showtime"):
         print(row)
     con.close()
 
@@ -291,10 +233,10 @@ def login_check_password(email, password):
     else:
         return f"No user found with email {email}"
 
-def get_movie_id(original_title):
+def get_movie_id(title):
     con = sqlite3.connect("movies.db")
     cur = con.cursor()
-    cur.execute("SELECT id FROM movies WHERE original_title = ?", (original_title,))
+    cur.execute("SELECT id FROM movies WHERE title = ?", (title,))
     result = cur.fetchone()
     con.close()
     if result:
@@ -304,7 +246,7 @@ def get_movie_id(original_title):
 def get_movie(id):
     con = sqlite3.connect("movies.db")
     cur = con.cursor()
-    cur.execute("SELECT original_title FROM movie WHERE id = ?", (id,))
+    cur.execute("SELECT title FROM movies WHERE id = ?", (id,))
     result = cur.fetchone()
     con.close()
     if result:
@@ -326,37 +268,18 @@ def get_movie_adult(id):
 def get_movie_genre(id):
     con = sqlite3.connect("movies.db")
     cur = con.cursor()
-    cur.execute("SELECT genre FROM movie WHERE id = ?", (id,))
+    cur.execute("SELECT genre FROM movies WHERE id = ?", (id,))
     result = cur.fetchone()
     con.close()
     if result:
         return result[0]
     else:
         return None
-def get_movie_origin_country():
+
+def get_movie_title(id):
     con = sqlite3.connect("movies.db")
     cur = con.cursor()
-    cur.execute("SELECT origin_country FROM movie WHERE id = ?", (id,))
-    result = cur.fetchone()
-    con.close()
-    if result:
-        return result[0]
-    else:
-        return None
-def get_movie_origin_language(id):
-    con = sqlite3.connect("movies.db")
-    cur = con.cursor()
-    cur.execute("SELECT origin_language FROM movie WHERE id = ?", (id,))
-    result = cur.fetchone()
-    con.close()
-    if result:
-        return result[0]
-    else:
-        return None
-def get_movie_original_title(id):
-    con = sqlite3.connect("movies.db")
-    cur = con.cursor()
-    cur.execute("SELECT original_title FROM movie WHERE id = ?", (id,))
+    cur.execute("SELECT title FROM movies WHERE id = ?", (id,))
     result = cur.fetchone()
     con.close()
     if result:
@@ -366,7 +289,7 @@ def get_movie_original_title(id):
 def get_movie_overview(id):
     con = sqlite3.connect("movies.db")
     cur = con.cursor()
-    cur.execute("SELECT overview FROM movie WHERE id = ?", (id,))
+    cur.execute("SELECT overview FROM movies WHERE id = ?", (id,))
     result = cur.fetchone()
     con.close()
     if result:
@@ -376,27 +299,27 @@ def get_movie_overview(id):
 def get_movie_release_date(id):
     con = sqlite3.connect("movies.db")
     cur = con.cursor()
-    cur.execute("SELECT release_date FROM movie WHERE id = ?", (id,))
+    cur.execute("SELECT release_date FROM movies WHERE id = ?", (id,))
     result = cur.fetchone()
     con.close()
     if result:
         return result[0]
     else:
         return None
-def get_movie_runtime(id):
-    con = sqlite3.connect("movies.db")
-    cur = con.cursor()
-    cur.execute("SELECT runtime FROM movie WHERE id = ?", (id,))
-    result = cur.fetchone()
-    con.close()
-    if result:
-        return result[0]
-    else:
-        return None
+#def get_movie_duration(id):
+#    con = sqlite3.connect("movies.db")
+#    cur = con.cursor()
+#    cur.execute("SELECT  FROM movie WHERE id = ?", (id,))
+#    result = cur.fetchone()
+#    con.close()
+#    if result:
+#        return result[0]
+#    else:
+#        return None
 def get_movie_vote_average(id):
     con = sqlite3.connect("movies.db")
     cur = con.cursor()
-    cur.execute("SELECT vote_average FROM movie WHERE id = ?", (id,))
+    cur.execute("SELECT vote_average FROM movies WHERE id = ?", (id,))
     result = cur.fetchone()
     con.close()
     if result:
@@ -408,7 +331,7 @@ def get_posterurl(movie_id):
     con = sqlite3.connect("movies.db")
     cur = con.cursor()
     poster_baseURL = "https://image.tmdb.org/t/p/w500"
-    cur.execute("SELECT poster_path FROM movie WHERE id = ?", (movie_id,))
+    cur.execute("SELECT poster_path FROM movies WHERE id = ?", (movie_id,))
     result = cur.fetchone()
     con.close()
     if result:
@@ -480,7 +403,7 @@ def delete_user(user_iD):
         con.commit()
         print(f"User with ID {user_iD} deleted.")
     except sqlite3.Error as e:
-        print(f"Error while deleting movie: {e}")
+        print(f"Error while deleting user: {e}")
     finally:
         con.close()
 
@@ -488,21 +411,9 @@ def delete_movie(movie_iD):
     try:
         con = sqlite3.connect("movies.db")
         cur = con.cursor()
-        cur.execute("DELETE FROM movie WHERE ID = ?", (movie_iD,))
+        cur.execute("DELETE FROM movies WHERE id = ?", (movie_iD,))
         con.commit()
         print(f"Movie with ID {movie_iD} deleted.")
-    except sqlite3.Error as e:
-        print(f"Error while deleting movie: {e}")
-    finally:
-        con.close()
-
-def delete_showtime(showtime_iD):
-    try:
-        con = sqlite3.connect("movies.db")
-        cur = con.cursor()
-        cur.execute("DELETE FROM showtime WHERE id = ?", (showtime_iD,))
-        con.commit()
-        print(f"Showtime with ID {showtime_iD} deleted.")
     except sqlite3.Error as e:
         print(f"Error while deleting movie: {e}")
     finally:
@@ -516,7 +427,7 @@ def delete_reservation(reservation_iD):
         con.commit()
         print(f"Reservation with ID {reservation_iD} deleted.")
     except sqlite3.Error as e:
-        print(f"Error while deleting movie: {e}")
+        print(f"Error while deleting reservation: {e}")
     finally:
         con.close()
 
@@ -528,7 +439,7 @@ def delete_hall(hall_iD):
         con.commit()
         print(f"Hall with ID {hall_iD} deleted.")
     except sqlite3.Error as e:
-        print(f"Error while deleting movie: {e}")
+        print(f"Error while deleting hall: {e}")
     finally:
         con.close()
 
@@ -540,7 +451,7 @@ def delete_seat(seat_iD):
         con.commit()
         print(f"Seat with ID {seat_iD} deleted.")
     except sqlite3.Error as e:
-        print(f"Error while deleting movie: {e}")
+        print(f"Error while deleting seat: {e}")
     finally:
         con.close()
 
@@ -552,7 +463,7 @@ def delete_logs_history(logs_history_iD):
         con.commit()
         print(f"Log/history with ID {logs_history_iD} deleted.")
     except sqlite3.Error as e:
-        print(f"Error while deleting movie: {e}")
+        print(f"Error while deleting Logs/History: {e}")
     finally:
         con.close()
 
