@@ -42,7 +42,9 @@ def initialize_database():
             vote_average REAL,
             poster_path TEXT,
             category TEXT NOT NULL,
-            genres TEXT
+            genres TEXT,
+            hall_id INTEGER,
+            showtime VARCHAR(50)
         );
         """)
 
@@ -301,6 +303,30 @@ def add_initial_seats():
 
     conn.close()
 
+def initialize_playing_schedule():
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    # Get all IDs from all movies in our database and save in list
+    idList = []
+    for row in cur.execute("SELECT id FROM movies"):
+        idList.append(row[0])
+
+    showtime = "16:00 Uhr"
+    hall = 1
+    for i in range(len(idList)):
+        if (i % 2 != 0):
+            showtime = "20:00 Uhr"
+        else:
+            showtime = "16:00 Uhr"
+
+        if (i % 2 == 0 and i != 0):
+            hall += 1
+
+        set_hall_showtime_for_movie(idList[i], hall, showtime)
+
+    conn.close()
+
 
 if __name__ == "__main__":
     initialize_database()
@@ -308,5 +334,6 @@ if __name__ == "__main__":
     add_initial_users()
     add_initial_cinema_halls()
     add_initial_seats()
+    initialize_playing_schedule()
     start_frontend()
     app.run(debug=True)

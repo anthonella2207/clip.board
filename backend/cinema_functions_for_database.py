@@ -255,7 +255,7 @@ def get_seats_for_hall(hall_id):
 def get_all_movies():
     con = sqlite3.connect("movies.db")
     cur = con.cursor()
-    for row in cur.execute("SELECT * FROM movie"):
+    for row in cur.execute("SELECT * FROM movies"):
         print(row)
     con.close()
 
@@ -294,7 +294,7 @@ def login_check_password(email, password):
 def get_movie_id(original_title):
     con = sqlite3.connect("movies.db")
     cur = con.cursor()
-    cur.execute("SELECT id FROM movie WHERE original_title = ?", (original_title,))
+    cur.execute("SELECT id FROM movies WHERE original_title = ?", (original_title,))
     result = cur.fetchone()
     con.close()
     if result:
@@ -557,6 +557,24 @@ def delete_logs_history(logs_history_iD):
         con.close()
 
 # d) Setting/Updating data
+
+def set_hall_showtime_for_movie(movie_id, hall_id, showtime):
+    try:
+        con = sqlite3.connect("movies.db")
+        cur = con.cursor()
+        cur.execute("UPDATE movies SET hall_id = ? WHERE id = ?", (hall_id, movie_id))
+        con.commit()
+        cur.execute("UPDATE movies SET showtime = ? WHERE id = ?", (showtime, movie_id))
+        con.commit()
+        if cur.rowcount > 0:
+            print(f"Movie with ID {movie_id} updated: hall_id = {hall_id}")
+            print(f"Movie with ID {movie_id} updated: showtime = {showtime}")
+        else:
+            print(f"No movie found with ID {movie_id}.")
+    except sqlite3.Error as e:
+        print(f"Error while updating movies hall_id and showtime: {e}")
+    finally:
+        con.close()
 
 def update_user_name(user_id, new_vorname, new_nachname):
     try:
