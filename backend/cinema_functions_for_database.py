@@ -201,6 +201,13 @@ def get_all_movies():
         print(row)
     con.close()
 
+def get_all_now_playing_movies():
+    con = sqlite3.connect("movies.db")
+    cur = con.cursor()
+    for row in cur.execute("SELECT * FROM movies WHERE category = ?", ('now_playing',)):
+        print(row)
+    con.close()
+
 def get_all_logs_histories():
     con = sqlite3.connect("movies.db")
     cur = con.cursor()

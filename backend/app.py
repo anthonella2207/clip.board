@@ -42,6 +42,8 @@ def initialize_database():
         poster_path VARCHAR(100) NOT NULL,
         category VARCHAR(100) NOT NULL,
         genres VARCHAR(100) NOT NULL,
+        runtime INTEGER,
+        adult BOOLEAN,
         hall_id INTEGER,
         showtime VARCHAR(50),
         FOREIGN KEY (hall_id) REFERENCES hall(id)
@@ -121,8 +123,8 @@ def save_movie_to_db_with_category(movie, category):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
-        INSERT OR IGNORE INTO movies (id, title, release_date, overview, vote_average, poster_path, category, genres)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT OR IGNORE INTO movies (id, title, release_date, overview, vote_average, poster_path, category, genres, runtime, adult)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         movie['id'],
         movie['title'],
@@ -131,7 +133,9 @@ def save_movie_to_db_with_category(movie, category):
         movie['vote_average'],
         movie['poster_path'],
         category,
-        ", ".join([genre['name'] for genre in movie['genres']]) if 'genres' in movie else None
+        ", ".join([genre['name'] for genre in movie['genres']]) if 'genres' in movie else None,
+        movie.get('runtime'),
+        movie.get('adult', False)
     ))
     conn.commit()
     conn.close()
@@ -146,6 +150,16 @@ def fetch_genres():
         return genres_dict
     else:
         print("Failed to fetch genres")
+        return {}
+
+# Fetch movie details (including runtime and adult flag)
+def fetch_movie_details(movie_id):
+    details_url = f"https://api.themoviedb.org/3/movie/{movie_id}?api_key={API_KEY}&language=en-US"
+    response = requests.get(details_url)
+    if response.status_code == 200:
+        return response.json()
+    else:
+        print(f"Failed to fetch details for movie ID {movie_id}: {response.status_code}")
         return {}
 
 # Fetch movies from TMDB by category and save to database
@@ -177,6 +191,11 @@ def fetch_movies_by_category(category_url, category_name, genres_dict):
                 for genre_id in movie.get('genre_ids', [])
             ]
 
+            # Fetch additional movie details
+            details = fetch_movie_details(movie['id'])
+            movie['runtime'] = details.get('runtime')
+            movie['adult'] = details.get('adult', False)
+
             save_movie_to_db_with_category(movie, category_name)
             print(f"Saved movie: {title} in category: {category_name}")
     else:
@@ -201,7 +220,7 @@ def get_movies_by_category(category):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
-        SELECT id, title, release_date, overview, vote_average, poster_path, genres
+        SELECT id, title, release_date, overview, vote_average, poster_path, genres, runtime, adult
         FROM movies WHERE category = ?
     """, (category,))
     movies = cursor.fetchall()
@@ -214,7 +233,9 @@ def get_movies_by_category(category):
             "overview": movie[3],
             "vote_average": movie[4],
             "poster_path": movie[5],
-            "genres": movie[6]
+            "genres": movie[6],
+            "runtime": movie[7],
+            "adult": movie[8]
         }
         for movie in movies
     ])
