@@ -522,7 +522,7 @@ def filter_movies_by_keywords(keywords):
         conditions_list.append("(LOWER(title) LIKE ? OR LOWER(overview) LIKE ?)")
     conditions = " AND ".join(conditions_list)
 
-    query = f"SELECT * FROM movies WHERE {conditions}"
+    query = f"SELECT * FROM movies WHERE category = 'now_playing' AND {conditions}"
 
     parameters = []
     for keyword in keyword_list:
