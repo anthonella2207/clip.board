@@ -6,6 +6,7 @@ from flask_cors import CORS
 import requests
 from PIL import Image
 from io import BytesIO
+from cinema_functions_for_database import *
 
 app = Flask(__name__)
 CORS(app)  # Allow cross-origin requests
@@ -258,8 +259,54 @@ def start_frontend():
     print(f"Frontend path: {frontend_path}")  # Debugging line
     subprocess.Popen(["npm", "start"], cwd=frontend_path)
 
+# Add ourselfs as users
+def add_initial_users():
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    add_user(1, "Anthonella Alessandra", "Frutos Lara", "1234", "a.frutoslara@stud.uni-goettingen.de", "Admin")
+    conn.commit()
+    add_user(2, "Emily Sophie", "Aust", "1234", "emilysophie.aust@stud.uni-goettingen.de ", "Client")
+    conn.commit()
+    add_user(3, "Cordula", "Maier", "1234", "cordula.maier@stud.uni-goettingen.de", "Client")
+    conn.commit()
+
+    conn.close()
+
+# Add cinema halls
+def add_initial_cinema_halls():
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    for i in range(1, 11):
+        add_hall(i, f"Kino {i}", 10, 20, 200)
+        conn.commit()
+
+    conn.close()
+
+def add_initial_seats():
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    id_counter = 1
+    for hall_id in range(1, 11):
+        price = 8
+        for row_number in range(1, 11):
+            if (row_number >= 5):
+                price = 5
+            for seat_number in range(1, 21):
+                add_seat(id_counter, "free", row_number, seat_number, price, None, hall_id)
+                con.commit()
+                id_counter += 1
+
+    conn.close()
+
+
 if __name__ == "__main__":
     initialize_database()
     fetch_and_save_movies()
+    add_initial_users()
+    add_initial_cinema_halls()
+    add_initial_seats()
     start_frontend()
     app.run(debug=True)
