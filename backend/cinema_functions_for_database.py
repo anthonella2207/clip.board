@@ -473,7 +473,42 @@ def filter_movies_by_genres(genres):
 
     con.close()
 
-def filter_movies_by_adult()
+# filter by movies which are declared as adult
+# meaning: content which is not for general audience
+# content could contain: sexual content, strong language, extreme violence
+def filter_movies_by_adult():
+    con = sqlite3.connect("movies.db")
+    cur = con.cursor()
+
+    cur.execute("SELECT * FROM movies WHERE category = 'now_playing' AND adult = 1")
+
+    rows = cur.fetchall()
+    for row in rows:
+        print(row)
+
+    con.close()
+
+def filter_movies_by_duration(duration):
+    con = sqlite3.connect("movies.db")
+    cur = con.cursor()
+
+    query = "SELECT * FROM movies WHERE category = 'now_playing'"
+
+    if duration == "Less than 90 minutes":
+        query = "SELECT * FROM movies WHERE category = 'now_playing' AND runtime < 90"
+    if duration == "90-120 minutes":
+        query = "SELECT * FROM movies WHERE category = 'now_playing' AND runtime BETWEEN 90 AND 120"
+    if duration == "More than 120 minutes":
+        query = "SELECT * FROM movies WHERE category = 'now_playing' AND runtime > 120"
+
+    cur.execute(query)
+
+    rows = cur.fetchall()
+    for row in rows:
+        print(row)
+
+    con.close()
+
 
 # c) Deleting data
 def delete_user(user_iD):
