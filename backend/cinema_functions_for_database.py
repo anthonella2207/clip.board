@@ -36,14 +36,14 @@ con = sqlite3.connect("movies.db")
 cur = con.cursor()
 
 # a) Adding data
-def add_movie(id, title, release_date, overview, vote_average, poster_path, category, genres, hall_id, showtime):
+def add_movie(id, title, release_date, overview, vote_average, poster_path, category, genres, runtime, adult, hall_id, showtime):
     try:
         con = sqlite3.connect("movies.db")
         cur = con.cursor()
         cur.execute("""
             INSERT INTO movie VALUES
-                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (id, title, release_date, overview, vote_average, poster_path, category, genres, hall_id, showtime))
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (id, title, release_date, overview, vote_average, poster_path, category, genres, runtime, adult, hall_id, showtime))
         con.commit()
         print(f"Movie {movie_name} added.")
     except sqlite3.IntegrityError:
@@ -260,8 +260,7 @@ def get_movie(id):
         return result[0]
     else:
         return None
-def get_movie_with_filter():
-    return
+
 def get_movie_adult(id):
     con = sqlite3.connect("movies.db")
     cur = con.cursor()
@@ -272,6 +271,18 @@ def get_movie_adult(id):
         return result[0]
     else:
         return None
+
+def get_movie_runtime(id):
+    con = sqlite3.connect("movies.db")
+    cur = con.cursor()
+    cur.execute("SELECT runtime FROM movie WHERE id = ?", (id,))
+    result = cur.fetchone()
+    con.close()
+    if result:
+        return result[0]
+    else:
+        return None
+
 def get_movie_genre(id):
     con = sqlite3.connect("movies.db")
     cur = con.cursor()
@@ -313,16 +324,7 @@ def get_movie_release_date(id):
         return result[0]
     else:
         return None
-#def get_movie_duration(id):
-#    con = sqlite3.connect("movies.db")
-#    cur = con.cursor()
-#    cur.execute("SELECT  FROM movie WHERE id = ?", (id,))
-#    result = cur.fetchone()
-#    con.close()
-#    if result:
-#        return result[0]
-#    else:
-#        return None
+
 def get_movie_vote_average(id):
     con = sqlite3.connect("movies.db")
     cur = con.cursor()
