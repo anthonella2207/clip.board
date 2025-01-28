@@ -12,6 +12,7 @@
 # a) Adding data
 # b) Getting data
 #    -> Login functions
+#    -> Filter functions
 # c) Deleting data
 # d) Setting/Updating data
 
@@ -253,7 +254,7 @@ def get_movie_id(title):
 def get_movie(id):
     con = sqlite3.connect("movies.db")
     cur = con.cursor()
-    cur.execute("SELECT title FROM movies WHERE id = ?", (id,))
+    cur.execute("SELECT * FROM movies WHERE id = ?", (id,))
     result = cur.fetchone()
     con.close()
     if result:
@@ -336,6 +337,39 @@ def get_movie_vote_average(id):
     else:
         return None
 
+def get_movie_category(id):
+    con = sqlite3.connect("movies.db")
+    cur = con.cursor()
+    cur.execute("SELECT category FROM movies WHERE id = ?", (id,))
+    result = cur.fetchone()
+    con.close()
+    if result:
+        return result[0]
+    else:
+        return None
+
+def get_movie_hall(id):
+    con = sqlite3.connect("movies.db")
+    cur = con.cursor()
+    cur.execute("SELECT hall_id FROM movies WHERE id = ?", (id,))
+    result = cur.fetchone()
+    con.close()
+    if result:
+        return result[0]
+    else:
+        return None
+
+def get_movie_showtime(id):
+    con = sqlite3.connect("movies.db")
+    cur = con.cursor()
+    cur.execute("SELECT showtime FROM movies WHERE id = ?", (id,))
+    result = cur.fetchone()
+    con.close()
+    if result:
+        return result[0]
+    else:
+        return None
+
 def get_posterurl(movie_id):
     con = sqlite3.connect("movies.db")
     cur = con.cursor()
@@ -402,6 +436,44 @@ def get_user_role(id):
         return result[0]
     else:
         return None
+
+# genres as String-list are input,
+# for example: filter_movies_by_genre("Action, Drama")
+# filters only now_playing movies
+def filter_movies_by_genres(genres):
+    con = sqlite3.connect("movies.db")
+    cur = con.cursor()
+
+    # Split input genres by ',' and remove leading whitespaces
+    genre_list = []
+    for genre in genres.split(","):
+        genre_list.append(genre.strip())
+
+    # Build the WHERE clause dynamically to check for all genres
+    conditions_list = []
+    for genre in genre_list:
+        conditions_list.append("genres LIKE ?")
+    conditions = " AND ".join(conditions_list)
+
+    # SQL query with dynamic conditions
+    query = f"SELECT * FROM movies WHERE category = 'now_playing' AND {conditions}"
+
+    # Add wildcards for each genre for partial matching
+    parameters = []
+    for genre in genre_list:
+        parameters.append(f"%{genre}%")
+
+    # Execute query
+    cur.execute(query, parameters)
+
+    # Print results
+    rows = cur.fetchall()
+    for row in rows:
+        print(row)
+
+    con.close()
+
+def filter_movies_by_adult()
 
 # c) Deleting data
 def delete_user(user_iD):
