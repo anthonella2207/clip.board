@@ -25,8 +25,7 @@ function App() {
 
   const bottomMenuItem = { name: "Login", icon: <FaSignInAlt /> };
 
-useEffect(() => {
-  const fetchMovies = () => {
+  useEffect(() => {
     const fetchMoviesByCategory = async (category, setMovies) => {
       try {
         const response = await fetch(`http://127.0.0.1:5000/api/movies/${category}`);
@@ -42,26 +41,7 @@ useEffect(() => {
       fetchMoviesByCategory("top_rated", setTopRatedMovies),
       fetchMoviesByCategory("upcoming", setUpcomingMovies),
     ]).then(() => setIsLoading(false));
-  };
-
-  // Check last updated
-  const lastUpdated = localStorage.getItem("lastMovieUpdate");
-  const now = new Date();
-  const threeWeeks = 21 * 24 * 60 * 60 * 1000; // 21 días en milisegundos
-
-  if (!lastUpdated || now - new Date(lastUpdated) > threeWeeks) {
-    fetchMovies();
-    localStorage.setItem("lastMovieUpdate", now.toISOString());
-  }
-
-  // Actualizar cada 3 semanas automáticamente
-  const interval = setInterval(() => {
-    fetchMovies();
-    localStorage.setItem("lastMovieUpdate", new Date().toISOString());
-  }, threeWeeks);
-
-  return () => clearInterval(interval);
-}, []);
+  }, []);
 
     // Manejar filtros
   useEffect(() => {
