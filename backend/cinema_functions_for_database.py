@@ -748,8 +748,12 @@ def update_seat_status(seat_id, new_status, reservation_id = None):
     try:
         con = sqlite3.connect("movies.db")
         cur = con.cursor()
-        cur.execute("UPDATE seat SET status = ? WHERE id = ? AND reservation_id = ?", (new_status, seat_id, reservation_id))
-        con.commit()
+        if reservation_id is None:
+            cur.execute("UPDATE seat SET status = ? WHERE id = ? AND reservation_id IS NULL", (new_status, seat_id))
+            con.commit()
+        else:
+            cur.execute("UPDATE seat SET status = ? WHERE id = ? AND reservation_id = ?", (new_status, seat_id, reservation_id))
+            con.commit()
         # rowcount is number of changed rows while updating
         if cur.rowcount > 0:
             print(f"Seat with ID {seat_id} in reservation {reservation_id} updated: status = {new_status}")
@@ -806,11 +810,24 @@ def check_for_admin(user_id):
     finally:
         con.close()
 
-def calculate_number_available_seats():
-    return
+def calculate_number_available_seats(show_id):
+    con = sqlite3.connect("movies.db")
+    cur = con.cursor()
 
-def calculate_percentage_available_seats():
-    return
+    cur.execute("SELECT COUNT(*) FROM seat WHERE show_id = ? AND status = 'free'", (show_id,))
+    result = cur.fetchone()
+
+    con.close()
+    if result:
+        return result[0]
+    else:
+        return None
+
+def calculate_percentage_available_seats(show_id):
+    available = calculate_number_available_seats(show_id)
+    percentage = available/200
+    percentage = (float)(percentage * 100)
+    return f"{percentage} %"
 
 def list_of_available_seats():
     return
