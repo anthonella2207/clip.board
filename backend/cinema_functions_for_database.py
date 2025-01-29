@@ -823,8 +823,27 @@ def calculate_number_available_seats(show_id):
     else:
         return None
 
+def calculate_number_not_available_seats(show_id):
+    con = sqlite3.connect("movies.db")
+    cur = con.cursor()
+
+    cur.execute("SELECT COUNT(*) FROM seat WHERE show_id = ? AND status = 'booked' OR status = 'selected'", (show_id,))
+    result = cur.fetchone()
+
+    con.close()
+    if result:
+        return result[0]
+    else:
+        return None
+
 def calculate_percentage_available_seats(show_id):
     available = calculate_number_available_seats(show_id)
+    percentage = available/200
+    percentage = (float)(percentage * 100)
+    return f"{percentage} %"
+
+def calculate_percentage_not_available_seats(show_id):
+    available = calculate_number_not_available_seats(show_id)
     percentage = available/200
     percentage = (float)(percentage * 100)
     return f"{percentage} %"
