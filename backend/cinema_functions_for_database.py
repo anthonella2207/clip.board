@@ -772,7 +772,7 @@ def calculate_total_price(hall_id):
     try:
         con = sqlite3.connect("movies.db")
         cur = con.cursor()
-        cur.execute("SELECT sum(price) FROM seat WHERE status = 'selected'")
+        cur.execute("SELECT sum(price) FROM seat WHERE status = 'selected' AND hall_id = ?", (hall_id,))
         result = cur.fetchone()
         if result:
             return result[0]
@@ -783,3 +783,38 @@ def calculate_total_price(hall_id):
     finally:
         con.close()
 
+
+# Functions for statistic analysis
+def check_for_admin(user_id):
+    try:
+        con = sqlite3.connect("movies.db")
+        cur = con.cursor()
+        cur.execute("SELECT role FROM user WHERE id = ?", (user_id,))
+        result = cur.fetchone()
+        if result:
+            if result[0] == "Admin":
+                return 1
+            else:
+                return 0
+        else:
+            return None
+    except sqlite3.Error as e:
+        print(f"Error while calculating total price: {e}")
+    finally:
+        con.close()
+
+def calculate_number_available_seats():
+    return
+
+def calculate_percentage_available_seats():
+    return
+
+def list_of_available_seats():
+    return
+
+def list_of_not_available_seats():
+    return
+
+# except for their password
+def number_of_users_with_information():
+    return
