@@ -43,10 +43,7 @@ def initialize_database():
         category VARCHAR(100) NOT NULL,
         genres VARCHAR(100) NOT NULL,
         runtime INTEGER,
-        adult BOOLEAN,
-        hall_id INTEGER,
-        showtime VARCHAR(50),
-        FOREIGN KEY (hall_id) REFERENCES hall(id)
+        adult BOOLEAN
     );
     """)
 
@@ -69,9 +66,9 @@ def initialize_database():
         total_price DECIMAL(10, 2) DEFAULT NULL,
         time_of_reservation DATETIME NOT NULL,
         user_id INTEGER,
-        movie_id INTEGER,
+        show_id INTEGER,
         FOREIGN KEY (user_id) REFERENCES user(id),
-        FOREIGN KEY (movie_id) REFERENCES movies(id)
+        FOREIGN KEY (show_id) REFERENCES shows(id)
     );
     """)
 
@@ -95,8 +92,20 @@ def initialize_database():
         seat_number INTEGER NOT NULL,
         price DECIMAL(10, 2) DEFAULT NULL,
         reservation_id INTEGER,
-        hall_id INTEGER,
+        show_id INTEGER,
         FOREIGN KEY (reservation_id) REFERENCES reservation(id),
+        FOREIGN KEY (show_id) REFERENCES shows(id)
+    );
+    """)
+
+    cursor.execute("DROP TABLE IF EXISTS shows;")
+    cursor.execute("""
+    CREATE TABLE shows (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        movie_id INTEGER NOT NULL,
+        hall_id INTEGER NOT NULL,
+        showtime VARCHAR(50) NOT NULL,
+        FOREIGN KEY (movie_id) REFERENCES movies(id),
         FOREIGN KEY (hall_id) REFERENCES hall(id)
     );
     """)
@@ -253,20 +262,17 @@ def start_frontend():
 
 # Add ourselfs as users
 def add_initial_users():
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
+    con = sqlite3.connect(DB_PATH)
+    cur = con.cursor()
 
     add_user(1, "Anthonella Alessandra", "Frutos Lara", "1234", "a.frutoslara@stud.uni-goettingen.de", "Admin")
-    conn.commit()
     add_user(2, "Emily Sophie", "Aust", "1234", "emilysophie.aust@stud.uni-goettingen.de ", "Client")
-    conn.commit()
     add_user(3, "Cordula", "Maier", "1234", "cordula.maier@stud.uni-goettingen.de", "Client")
-    conn.commit()
 
-    conn.close()
+    con.close()
 
 # Add cinema halls
-def add_initial_cinema_halls():
+def add_initial_halls():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
@@ -276,34 +282,16 @@ def add_initial_cinema_halls():
 
     conn.close()
 
-def add_initial_seats():
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
+def add_initial_show():
+    con = sqlite3.connect(DB_PATH)
+    cur = con.cursor()
 
-    id_counter = 1
-    for hall_id in range(1, 11):
-        price = 8
-        for row_number in range(1, 11):
-            if (row_number >= 5):
-                price = 5
-            for seat_number in range(1, 21):
-                add_seat(id_counter, "free", row_number, seat_number, price, None, hall_id)
-                con.commit()
-                id_counter += 1
-
-    conn.close()
-
-def initialize_playing_schedule():
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-
-    # Get all IDs from all movies in our database and save in list
     idList = []
     for row in cur.execute("SELECT id FROM movies WHERE category = ?", ('now_playing',)):
         idList.append(row[0])
 
     showtime = "16:00 Uhr"
-    hall = 1
+    hall_id = 1
     for i in range(len(idList)):
         if (i % 2 != 0):
             showtime = "20:00 Uhr"
@@ -311,19 +299,35 @@ def initialize_playing_schedule():
             showtime = "16:00 Uhr"
 
         if (i % 2 == 0 and i != 0):
-            hall += 1
+            hall_id += 1
 
-        set_hall_showtime_for_movie(idList[i], hall, showtime)
+        add_show(None, idList[i], hall_id, showtime)
 
-    conn.close()
+    con.close()
+
+# add_seat(iD, status, row_number, seat_number, price, reservation_iD, show_iD):
+def add_initial_seats():
+    con = sqlite3.connect(DB_PATH)
+    cur = con.cursor()
+    id_counter = 1
+    for show_id in range(1, 21):
+        price = 8
+        for row_number in range(1, 11):
+            if (row_number >= 5):
+                price = 5
+            for seat_number in range(1, 21):
+                add_seat(id_counter, "free", row_number, seat_number, price, None, show_id)
+                id_counter += 1
+    con.commit()
+    con.close()
 
 
 if __name__ == "__main__":
     initialize_database()
     fetch_and_save_movies()
     add_initial_users()
-    add_initial_cinema_halls()
+    add_initial_halls()
+    add_initial_show()
     add_initial_seats()
-    initialize_playing_schedule()
     start_frontend()
     app.run(debug=True)
