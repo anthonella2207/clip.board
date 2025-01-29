@@ -7,9 +7,11 @@ import requests
 from PIL import Image
 from io import BytesIO
 from cinema_functions_for_database import *
+from routes import *
 
 app = Flask(__name__)
-CORS(app)  # Allow cross-origin requests
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})  # Allow cross-origin requests
+app.register_blueprint(auth_routes, url_prefix="/")
 # Configuration
 API_KEY = "814254e9d1fb4859da3f4798b86b6f49"
 IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500"
@@ -24,6 +26,12 @@ GENRES_URL = f"https://api.themoviedb.org/3/genre/movie/list?api_key={API_KEY}&l
 
 # Create folders if they don't exist
 os.makedirs(POSTER_FOLDER, exist_ok=True)
+
+@app.route('/routes', methods=['GET'])
+def list_routes():
+    from flask import jsonify
+    routes = [str(rule) for rule in app.url_map.iter_rules()]
+    return jsonify(routes)
 
 # Create database if not exists
 def initialize_database():

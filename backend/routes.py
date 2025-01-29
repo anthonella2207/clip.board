@@ -1,27 +1,98 @@
+from werkzeug.security import check_password_hash, generate_password_hash
 from flask import Blueprint, request, jsonify
-from cinema_functions_for_database import get_seats_for_hall
+import sqlite3
+from flask_cors import cross_origin, CORS
 
-auth_routes = Blueprint('auth_routes', __name__)
+#connection to our database
+def get_db_connection():
+    con = sqlite3.connect('movies.db')
+    con.row_factory = sqlite3.Row
+    print("Datenbank verbunden:", 'movies.db')  # Ausgabe zur Bestätigung
+    return con
+
+con = get_db_connection()
+cur = con.cursor()
+cur.execute("SELECT * FROM user;")
+users = cur.fetchall()
+con.close()
+
+print("Alle User in der Datenbank:", users)
+
+#Login routes
+auth_routes = Blueprint('auth', __name__)
+CORS(auth_routes)
 
 @auth_routes.route('/login', methods=['POST'])
-
+@cross_origin()
 def login():
+    try:
+        data = request.get_json()
+        print("Empfangene JSON-Daten:", data)
+        if not data:
+            return jsonify({"success": False, "message": "No JSON data received"}), 400
+
+        email = data.get('email', '').strip()
+        password = data.get('password', '')
+
+        if not email or not password:
+            return jsonify({"success": False, "message": "Missing email or password"}), 400
+
+        con = get_db_connection()
+        cur = con.cursor()
+        cur.execute("SELECT * FROM user WHERE TRIM(email) = ?", (email.strip(),))
+        user = cur.fetchone()
+        con.close()
+
+        if user:
+            print("✅ Nutzer gefunden:", dict(user))
+        else:
+            print("❌ Nutzer nicht gefunden! SQL-Abfrage fehlgeschlagen.")
+
+        if user:
+            if user["password"] == password:
+                return jsonify({"success": True, "message": "Login Successful", "role": user["role"]})
+            else:
+                return jsonify({"success": False, "message": "wrong password"}), 401
+        else:
+            return jsonify({"success": False, "message": "email not found"}), 404
+    except Exception as e:
+        return jsonify({"success": False, "message": "Server error", "error": str(e)}), 500
+
+#sign-up route
+
+@auth_routes.route('/signup', methods=['POST'])
+@cross_origin()
+def signup():
     data = request.get_json()
-    username = data.get('username')
+    print("📥 Empfangene JSON-Daten:", data)
+    first_name = data.get("vorname")
+    last_name = data.get("nachname")
+    email = data.get('email')
     password = data.get('password')
 
-    if username in users and users[username] == password:
-        return jsonify({"success": True, "message": "Login Successful"})
-    else:
-        return jsonify({"success": False, "message": "Login Failed"})
+    #make sure all fields are filled in
+    if not (first_name and last_name and email and password):
+        print("❌ Fehlende Felder:", first_name, last_name, email, password)
+        return jsonify({"success": False, "message": "missing fields"}), 400
+    con = get_db_connection()
+    cur = con.cursor()
+
+    #check if user already exists
+    cur.execute("SELECT * FROM user WHERE email = ?", (email,))
+    if cur.fetchone():
+        con.close()
+        return jsonify({"success": False, "message": "email already registered"}), 400
+
+    role = "Client"
+
+    cur.execute("""
+    INSERT INTO user (email, password, vorname, nachname, role)VALUES(?, ?, ?, ?, ?)""",
+                (email, password, first_name, last_name, role))
+
+    con.commit()
+    con.close()
+
+    return jsonify({"success": True, "message": "Registration successful"}), 201
 
 seats_routes = Blueprint('seats_routes', __name__)
 
-@seats_routes.route('/seats', methods=['GET'])
-
-def api_get_seats():
-    hall_id = request.args.get('hall_id')
-    if not hall_id:
-        return jsonify({"error": "hall_id parameter is required"}), 400
-    seats = get_seats_for_hall(hall_id)
-    return jsonify(seats)
