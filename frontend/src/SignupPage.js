@@ -1,105 +1,99 @@
 import React, { useState } from "react";
 import "./SignupPage.css";
 
-const SignupPage = () => {
-  const [formData, setFormData] = useState({
-    username: "",
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
-  });
+function SignupPage(){
+  const[first_name, setFirst_name] = useState("");
+  const[last_name, setLast_name] = useState("");
+  const[email, setEmail] = useState("");
+  const[password, setPassword] = useState("");
+  const[message, setMessage] = useState("");
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleSubmit = async (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
-    try {
-      const response = await fetch("http://127.0.0.1:5000/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-      const data = await response.json();
-      if (data.success) {
-        alert("Account created successfully!");
-      } else {
-        alert("Error: " + data.message);
-      }
-    } catch (error) {
-      alert("An error occurred: " + error.message);
-    }
+
+    console.log("Signup-Daten:", { first_name, last_name, email, password });
+
+    const response = await fetch("http://127.0.0.1:5000/signup", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        vorname: first_name,
+        nachname: last_name,
+        email,
+        password}),
+    });
+
+    const data = await response.json();
+    setMessage(data.message);
   };
+
+
 
   return (
-    <div className="signup-container">
-      {/* Sección Izquierda */}
+    <div className="signup-container">  {/* ✅ Hauptcontainer für das Layout */}
+      {/* Linke Sektion */}
       <div className="signup-left">
-        <h3 className="join-for-free">JOIN FOR FREE</h3>
+        <p className="join-for-free">Join for free</p>
         <h1 className="signup-slogan">
-          Experience Movies Like <span className="highlight">Never Before!</span>
+          Create an account on <span className="highlight">clip.board</span>
         </h1>
       </div>
 
-      {/* Sección Derecha */}
+      {/* Rechte Sektion */}
       <div className="signup-right">
-        <h2>Create new account.</h2>
-        <form className="signup-form" onSubmit={handleSubmit}>
-          <div className="input-group">
+        <form className="signup-form" onSubmit={handleSignup}>
+          {/* Name Felder */}
+          <div className="name-fields">
             <input
               type="text"
-              name="username"
-              placeholder="Username"
-              value={formData.username}
-              onChange={handleChange}
+              placeholder="First Name"
+              value={first_name}
+              onChange={(e) => setFirst_name(e.target.value)}
+              required
+            />
+            <input
+              type="text"
+              placeholder="Last Name"
+              value={last_name}
+              onChange={(e) => setLast_name(e.target.value)}
               required
             />
           </div>
-            <div className="name-fields">
-                <input
-                    type="text"
-                    name="firstName"
-                    placeholder="First Name"
-                    required
-                />
-                <input
-                    type="text"
-                    name="lastName"
-                    placeholder="Last Name"
-                    required
-                />
-            </div>
-            <div className="input-group">
-                <input
-                    type="email"
-                    name="email"
-                    placeholder="Email"
-                    value={formData.email}
-                    onChange={handleChange}
+
+          {/* Email-Feld */}
+          <div className="input-group">
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
+
+          {/* Passwort-Feld */}
           <div className="input-group">
             <input
               type="password"
-              name="password"
               placeholder="Password"
-              value={formData.password}
-              onChange={handleChange}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>
+
+          {/* Submit-Button */}
           <button type="submit" className="signup-button">Create Account</button>
         </form>
+
+        {/* Nachricht nach dem Absenden */}
+        {message && <p className="signup-message">{message}</p>}
+
         <p>
-          Already a member? <a href="/login" className="login-link">Log In</a>
+          Already have an account? <a href="/login" className="login-link">Log in</a>
         </p>
       </div>
     </div>
   );
-};
-
+}
 export default SignupPage;

@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { FaHome, FaHeart, FaBook, FaSignInAlt } from "react-icons/fa";
 import "./App.css";
+import LoginPage from "./LoginPage";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import SignupPage from "./SignupPage";
 
 
 function App() {
@@ -81,113 +83,126 @@ function App() {
     setFilteredTopRated(filtered);
   }, [genre, ageRating, duration, searchQuery, topRatedMovies]);
 
+
   return (
-    <div className="App">
-      {/* Sidebar */}
-      <div className="sidebar">
-        <div className="sidebar-header">
-          <h1>
-            <span className="clip">clip</span>
-            <span className="board">.board</span>
-          </h1>
-        </div>
-        <ul className="menu-list">
-          {menuItems.map((item, index) => (
-            <li key={index} className="menu-item">
-              {item.icon}
-              <span>{item.name}</span>
-            </li>
-          ))}
-        </ul>
-        {/* Login at the bottom */}
-        <div className="bottom-menu">
-          <div className="menu-item">
-            {bottomMenuItem.icon}
-            <span>{bottomMenuItem.name}</span>
+    <Router>
+      <div className="App">
+        {/* Sidebar */}
+        <div className="sidebar">
+          <div className="sidebar-header">
+            <h1>
+              <span className="clip">clip</span>
+              <span className="board">.board</span>
+            </h1>
+          </div>
+          <ul className="menu-list">
+            {menuItems.map((item, index) => (
+              <li key={index} className="menu-item">
+                {item.icon}
+                <span>{item.name}</span>
+              </li>
+            ))}
+          </ul>
+          {/* Login at the bottom */}
+          <div className="bottom-menu">
+            <Link to="/login" className="menu-item">
+              {bottomMenuItem.icon}
+              <span>{bottomMenuItem.name}</span>
+            </Link>
           </div>
         </div>
+
+        {/* Main Content */}
+        <div className="content">
+          {/* Routes to handle login page */}
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
+            {/* Default route that shows the home page */}
+            <Route path="/" element={
+              <div>
+                {/* Filter Bar */}
+                <div className="filter-bar">
+                  <select value={genre} onChange={(e) => setGenre(e.target.value)}>
+                    <option value="All">All Genres</option>
+                    <option value="Action">Action</option>
+                    <option value="Comedy">Comedy</option>
+                    <option value="Drama">Drama</option>
+                  </select>
+                  <select value={ageRating} onChange={(e) => setAgeRating(e.target.value)}>
+                    <option value="All">All Age Ratings</option>
+                    <option value="G">G</option>
+                    <option value="PG">PG</option>
+                    <option value="PG-13">PG-13</option>
+                    <option value="R">R</option>
+                  </select>
+                  <select value={duration} onChange={(e) => setDuration(e.target.value)}>
+                    <option value="All">All Durations</option>
+                    <option value="<90">Less than 90 minutes</option>
+                    <option value="90-120">90-120 minutes</option>
+                    <option value=">120">More than 120 minutes</option>
+                  </select>
+                  <input
+                    type="text"
+                    placeholder="Search by name"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+
+                {/* Top Rated Section */}
+                <h2 className="section-title">Our Top Rated Movies</h2>
+                <div className="movies-grid">
+                  {isLoading ? (
+                    <p>Loading movies...</p>
+                  ) : topRatedMovies.slice(0, 3).map((movie) => (
+                    <div key={movie.id} className="movie-card">
+                      <img
+                        src={`http://127.0.0.1:5000${movie.poster_path}`}
+                        alt={`${movie.title} poster`}
+                        className="movie-poster"
+                      />
+                    </div>
+                  ))}
+                </div>
+
+                {/* Now Playing Section */}
+                <h2 className="section-title">Our Now Playing Movies</h2>
+                <div className="movies-grid">
+                  {isLoading ? (
+                    <p>Loading movies...</p>
+                  ) : nowPlayingMovies.slice(0, 20).map((movie) => (
+                    <div key={movie.id} className="movie-card">
+                      <img
+                        src={`http://127.0.0.1:5000${movie.poster_path}`}
+                        alt={`${movie.title} poster`}
+                        className="movie-poster"
+                      />
+                    </div>
+                  ))}
+                </div>
+
+                {/* Upcoming Section */}
+                <h2 className="section-title">Our Upcoming Movies</h2>
+                <div className="movies-grid">
+                  {isLoading ? (
+                    <p>Loading movies...</p>
+                  ) : upcomingMovies.slice(0, 5).map((movie) => (
+                    <div key={movie.id} className="movie-card">
+                      <img
+                        src={`http://127.0.0.1:5000${movie.poster_path}`}
+                        alt={`${movie.title} poster`}
+                        className="movie-poster"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            } />
+          </Routes>
+        </div>
       </div>
-
-      {/* Main Content */}
-      <div className="content">
-        {/* Filter Bar */}
-        <div className="filter-bar">
-          <select value={genre} onChange={(e) => setGenre(e.target.value)}>
-            <option value="All">All Genres</option>
-            <option value="Action">Action</option>
-            <option value="Comedy">Comedy</option>
-            <option value="Drama">Drama</option>
-            {/* Agrega más géneros según sea necesario */}
-          </select>
-          <select value={ageRating} onChange={(e) => setAgeRating(e.target.value)}>
-            <option value="All">All Age Ratings</option>
-            <option value="G">G</option>
-            <option value="PG">PG</option>
-            <option value="PG-13">PG-13</option>
-            <option value="R">R</option>
-          </select>
-          <select value={duration} onChange={(e) => setDuration(e.target.value)}>
-            <option value="All">All Durations</option>
-            <option value="<90">Less than 90 minutes</option>
-            <option value="90-120">90-120 minutes</option>
-            <option value=">120">More than 120 minutes</option>
-          </select>
-          <input
-            type="text"
-            placeholder="Search by name"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
-        {/* Top Rated Section */}
-        <h2 className="section-title">Our Top Rated Movies</h2>
-        <div className="movies-grid">
-          {isLoading ? (
-            <p>Loading movies...</p>
-          ) : topRatedMovies.slice(0, 3).map((movie) => (
-            <div key={movie.id} className="movie-card">
-              <img
-                src={`http://127.0.0.1:5000${movie.poster_path}`}
-                alt={`${movie.title} poster`}
-                className="movie-poster"
-              />
-            </div>
-          ))}
-        </div>
-
-        {/* Now Playing Section */}
-        <h2 className="section-title">Our Now Playing Movies</h2>
-        <div className="movies-grid">
-          {isLoading ? (
-            <p>Loading movies...</p>
-          ) : nowPlayingMovies.slice(0, 20).map((movie) => (
-            <div key={movie.id} className="movie-card">
-              <img
-                src={`http://127.0.0.1:5000${movie.poster_path}`}
-                alt={`${movie.title} poster`}
-                className="movie-poster"
-              />
-            </div>
-          ))}
-        </div>
-
-        {/* Upcoming Section */}
-        <h2 className="section-title">Our Upcoming Movies</h2>
-        <div className="movies-grid">
-          {isLoading ? (
-            <p>Loading movies...</p>
-          ) : upcomingMovies.slice(0, 5).map((movie) => (
-            <div key={movie.id} className="movie-card">
-              <img
-                src={`http://127.0.0.1:5000${movie.poster_path}`}
-                alt={`${movie.title} poster`}
-                className="movie-poster"
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
+    </Router>
   );
 }
 
