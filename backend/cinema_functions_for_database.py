@@ -829,12 +829,47 @@ def calculate_percentage_available_seats(show_id):
     percentage = (float)(percentage * 100)
     return f"{percentage} %"
 
-def list_of_available_seats():
-    return
+def list_of_available_seats(show_id):
+    con = sqlite3.connect("movies.db")
+    cur = con.cursor()
+
+    list_available_seats = []
+    cur.execute("SELECT * FROM seat WHERE show_id = ? AND status = 'free'", (show_id,))
+    result = cur.fetchall()
+    for r in result:
+        list_available_seats.append(r)
+    con.close()
+    return list_available_seats
 
 def list_of_not_available_seats():
-    return
+    con = sqlite3.connect("movies.db")
+    cur = con.cursor()
+
+    list_not_available_seats = []
+    cur.execute("SELECT * FROM seat WHERE show_id = ? AND status != 'free'", (show_id,))
+    result = cur.fetchall()
+    for r in result:
+        list_not_available_seats.append(r)
+    con.close()
+    return list_not_available_seats
 
 # except for their password
 def number_of_users_with_information():
-    return
+    con = sqlite3.connect("movies.db")
+    cur = con.cursor()
+
+    user_number = 0
+    cur.execute("SELECT COUNT(*) FROM user")
+    result = cur.fetchone()
+    if result:
+        user_number = result[0]
+
+    cur.execute("SELECT id, vorname, nachname, email, role FROM user")
+    result = cur.fetchall()
+    if result:
+        print(f"Number of current users: {user_number}")
+        print("")
+        for row in result:
+            print(row)
+    else:
+        print(f"Number of current users: {user_number}")
