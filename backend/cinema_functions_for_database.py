@@ -227,6 +227,7 @@ def get_seats_for_show(show_id):
 def get_all_movies():
     con = sqlite3.connect("movies.db")
     cur = con.cursor()
+
     for row in cur.execute("SELECT * FROM movies"):
         print(row)
     con.close()
@@ -234,6 +235,7 @@ def get_all_movies():
 def get_all_now_playing_movies():
     con = sqlite3.connect("movies.db")
     cur = con.cursor()
+
     for row in cur.execute("SELECT * FROM movies WHERE category = ?", ('now_playing',)):
         print(row)
     con.close()
@@ -241,6 +243,7 @@ def get_all_now_playing_movies():
 def get_all_logs_histories():
     con = sqlite3.connect("movies.db")
     cur = con.cursor()
+
     for row in cur.execute("SELECT * FROM logs_history"):
         print(row)
     con.close()
@@ -370,28 +373,6 @@ def get_movie_category(id):
     con = sqlite3.connect("movies.db")
     cur = con.cursor()
     cur.execute("SELECT category FROM movies WHERE id = ?", (id,))
-    result = cur.fetchone()
-    con.close()
-    if result:
-        return result[0]
-    else:
-        return None
-
-def get_movie_hall(id):
-    con = sqlite3.connect("movies.db")
-    cur = con.cursor()
-    cur.execute("SELECT hall_id FROM movies WHERE id = ?", (id,))
-    result = cur.fetchone()
-    con.close()
-    if result:
-        return result[0]
-    else:
-        return None
-
-def get_movie_showtime(id):
-    con = sqlite3.connect("movies.db")
-    cur = con.cursor()
-    cur.execute("SELECT showtime FROM movies WHERE id = ?", (id,))
     result = cur.fetchone()
     con.close()
     if result:
@@ -715,24 +696,6 @@ def delete_logs_history(logs_history_iD):
 
 # d) Setting/Updating data
 
-def set_hall_showtime_for_movie(movie_id, hall_id, showtime):
-    try:
-        con = sqlite3.connect("movies.db")
-        cur = con.cursor()
-        cur.execute("UPDATE movies SET hall_id = ? WHERE id = ?", (hall_id, movie_id))
-        con.commit()
-        cur.execute("UPDATE movies SET showtime = ? WHERE id = ?", (showtime, movie_id))
-        con.commit()
-        if cur.rowcount > 0:
-            print(f"Movie with ID {movie_id} updated: hall_id = {hall_id}")
-            print(f"Movie with ID {movie_id} updated: showtime = {showtime}")
-        else:
-            print(f"No movie found with ID {movie_id}.")
-    except sqlite3.Error as e:
-        print(f"Error while updating movies hall_id and showtime: {e}")
-    finally:
-        con.close()
-
 def update_user_name(user_id, new_vorname, new_nachname):
     try:
         con = sqlite3.connect("movies.db")
@@ -781,37 +744,48 @@ def update_user_role(user_id, new_role):
     finally:
         con.close()
 
-def update_seat_status(hall_id, seat_iD, new_status):
+def update_seat_status(seat_id, new_status, reservation_id = None):
     try:
         con = sqlite3.connect("movies.db")
         cur = con.cursor()
-        cur.execute("UPDATE seat SET status = ? WHERE hall_id = ? AND id = ?", (new_status, hall_id, seat_iD))
+        cur.execute("UPDATE seat SET status = ? WHERE id = ? AND reservation_id = ?", (new_status, seat_id, reservation_id))
         con.commit()
         # rowcount is number of changed rows while updating
         if cur.rowcount > 0:
-            print(f"Seat with ID {seat_iD} in hall {hall_id} updated: status = {new_status}")
+            print(f"Seat with ID {seat_id} in reservation {reservation_id} updated: status = {new_status}")
         else:
-            print(f"No seat found with ID {seat_iD}.")
+            print(f"No seat found with ID {seat_id}.")
     except sqlite3.Error as e:
         print(f"Error while updating seat status: {e}")
     finally:
         con.close()
 
-def calculate_total_price(hall_id):
+def calculate_total_price(seat_ids, show_id):
+    if not seat_ids: # if no seats selected
+        return 0.0
+
     try:
         con = sqlite3.connect("movies.db")
         cur = con.cursor()
-        cur.execute("SELECT sum(price) FROM seat WHERE status = 'selected' AND hall_id = ?", (hall_id,))
-        result = cur.fetchone()
-        if result:
-            return result[0]
-        else:
-            return None
-    except sqlite3.Error as e:
-        print(f"Error while calculating total price: {e}")
-    finally:
-        con.close()
 
+        # get prices of selected seats
+        placeholders = ", ".join(["?"] * len(seat_ids))
+        query = f"""
+            SELECT SUM(price)
+            FROM seat
+            WHERE id IN ({placeholders}) AND show_id = ?
+        """
+        cur.execute(query, (*seat_ids, show_id))
+        total_price = cur.fetchone()[0]
+
+        con.close()
+        if total_price is not None:
+            return total_price
+        else:
+            return 0.0
+    except Exception as e:
+        print(f"Error while calculating total_price: {e}")
+        return 0.0
 
 # Functions for statistic analysis
 def check_for_admin(user_id):
