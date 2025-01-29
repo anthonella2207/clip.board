@@ -89,16 +89,16 @@ def add_show(id, movie_id, hall_id, showtime):
     finally:
         con.close()
 
-def add_reservation(iD, total_price, time_of_reservation, user_iD, movie_iD):
+def add_reservation(id, total_price, time_of_reservation, user_id, show_id):
     try:
         con = sqlite3.connect("movies.db")
         cur = con.cursor()
         cur.execute("""
             INSERT INTO reservation VALUES
                 (?, ?, ?, ?, ?)
-        """, (iD, total_price, time_of_reservation, user_iD, movie_iD))
+        """, (id, total_price, time_of_reservation, user_id, show_id))
         con.commit()
-        print(f"Reservation {iD} added.")
+        print(f"Reservation {id} added.")
     except sqlite3.IntegrityError:
         print(f"Error while adding reservation: IntegrityError")
     except:
@@ -132,7 +132,7 @@ def add_seat(id, status, row_number, seat_number, price, reservation_id, show_iD
                 (?, ?, ?, ?, ?, ?, ?)
         """, (id, status, row_number, seat_number, price, reservation_id, show_iD))
         con.commit()
-        print("Seat added.")
+        print(f"Seat {id} added.")
     except sqlite3.IntegrityError:
         print(f"Error while adding seat: IntegrityError")
     except:
@@ -198,13 +198,13 @@ def get_all_seats():
         print(row)
     con.close()
 
-def get_seats_for_hall(hall_id):
+def get_seats_for_show(show_id):
     try:
         db_path = os.path.abspath(os.path.join("movies.db"))
         con = sqlite3.connect(db_path)
         cur = con.cursor()
-        seats = cur.execute("""SELECT id, status, row_number, seat_number, price, reservation_id FROM seat WHERE hall_id = ? """, (hall_id,)).fetchall()
-        print(f"Fetching seats for hall_id={hall_id}")
+        seats = cur.execute("""SELECT id, status, row_number, seat_number, price, reservation_id FROM seat WHERE show_id = ? """, (show_id,)).fetchall()
+        print(f"Fetching seats for show_id={show_id}")
         print(f"Query result: {seats}")
 
         return[
