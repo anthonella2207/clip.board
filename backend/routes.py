@@ -10,14 +10,6 @@ def get_db_connection():
     print("Datenbank verbunden:", 'movies.db')  # Ausgabe zur Bestätigung
     return con
 
-con = get_db_connection()
-cur = con.cursor()
-cur.execute("SELECT * FROM user;")
-users = cur.fetchall()
-con.close()
-
-print("Alle User in der Datenbank:", users)
-
 #Login routes
 auth_routes = Blueprint('auth', __name__)
 CORS(auth_routes)
@@ -44,11 +36,6 @@ def login():
         con.close()
 
         if user:
-            print("✅ Nutzer gefunden:", dict(user))
-        else:
-            print("❌ Nutzer nicht gefunden! SQL-Abfrage fehlgeschlagen.")
-
-        if user:
             if user["password"] == password:
                 return jsonify({"success": True, "message": "Login Successful", "role": user["role"]})
             else:
@@ -64,7 +51,6 @@ def login():
 @cross_origin()
 def signup():
     data = request.get_json()
-    print("📥 Empfangene JSON-Daten:", data)
     first_name = data.get("vorname")
     last_name = data.get("nachname")
     email = data.get('email')
@@ -72,7 +58,6 @@ def signup():
 
     #make sure all fields are filled in
     if not (first_name and last_name and email and password):
-        print("❌ Fehlende Felder:", first_name, last_name, email, password)
         return jsonify({"success": False, "message": "missing fields"}), 400
     con = get_db_connection()
     cur = con.cursor()

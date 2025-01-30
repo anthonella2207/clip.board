@@ -10,7 +10,7 @@ from cinema_functions_for_database import *
 from routes import *
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})  # Allow cross-origin requests
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})   # Allow cross-origin requests
 app.register_blueprint(auth_routes, url_prefix="/")
 # Configuration
 API_KEY = "814254e9d1fb4859da3f4798b86b6f49"
