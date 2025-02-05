@@ -31,6 +31,7 @@ import sqlite3 # Documentation: https://docs.python.org/3/library/sqlite3.html
 import requests
 import json
 import os
+import matplotlib.pyplot as plt
 
 # Connecting with our database
 con = sqlite3.connect("movies.db")
@@ -840,13 +841,13 @@ def calculate_percentage_available_seats(show_id):
     available = calculate_number_available_seats(show_id)
     percentage = available/200
     percentage = (float)(percentage * 100)
-    return f"{percentage} %"
+    return percentage
 
 def calculate_percentage_not_available_seats(show_id):
     available = calculate_number_not_available_seats(show_id)
     percentage = available/200
     percentage = (float)(percentage * 100)
-    return f"{percentage} %"
+    return percentage
 
 def list_of_available_seats(show_id):
     con = sqlite3.connect("movies.db")
@@ -892,3 +893,27 @@ def number_of_users_with_information():
             print(row)
     else:
         print(f"Number of current users: {user_number}")
+
+def pie_chart_seats(show_id):
+    labels = ['Available', 'Not Available']
+    sizes1 = [calculate_number_available_seats(show_id), calculate_number_not_available_seats(show_id)]
+    sizes2 = [calculate_percentage_available_seats(show_id), calculate_percentage_not_available_seats(show_id)]
+
+    # Set up the figure size and layout
+    fig, axs = plt.subplots(2, 1, figsize=(8, 12), constrained_layout=True)
+
+    # Colors and styles
+    colors = ['#4CAF50', '#E57373']
+
+    # First pie chart
+    axs[0].set_title("Total Seats: Available vs. Not Available", fontsize=16, fontweight='bold')
+    axs[0].pie(sizes1, labels=labels, colors=colors, autopct=lambda p: f'{int(round(p/100*sum(sizes1)))}', shadow=True, startangle=90,
+               wedgeprops={'edgecolor': 'white', 'linewidth': 1.5})
+
+    # Second pie chart
+    axs[1].set_title("Percentage: Available vs. Not Available", fontsize=16, fontweight='bold')
+    axs[1].pie(sizes2, labels=labels, colors=colors, autopct='%1.1f%%', shadow=True, startangle=90,
+               wedgeprops={'edgecolor': 'white', 'linewidth': 1.5})
+
+    # Save the figure with higher DPI for better quality
+    plt.savefig("pie_chart_seats.png", dpi=300)
