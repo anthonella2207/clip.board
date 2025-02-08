@@ -287,10 +287,10 @@ def get_movie(id):
     con = sqlite3.connect("movies.db")
     cur = con.cursor()
     cur.execute("SELECT * FROM movies WHERE id = ?", (id,))
-    result = cur.fetchone()
+    result = cur.fetchall()
     con.close()
     if result:
-        return result[0]
+        return result
     else:
         return None
 
