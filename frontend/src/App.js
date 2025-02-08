@@ -5,6 +5,7 @@ import LoginPage from "./LoginPage";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import SignupPage from "./SignupPage";
 import SeatSelection from "./SeatPage";
+import MoviePage from "./MoviePage";
 
 
 function App() {
@@ -120,6 +121,7 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/seats/:showId" element={<SeatSelection />} />
+            <Route path="/movie/:id" element={<MoviePage />} />
             {/* Default route that shows the home page */}
             <Route path="/" element={
               <div>
@@ -133,10 +135,8 @@ function App() {
                   </select>
                   <select value={ageRating} onChange={(e) => setAgeRating(e.target.value)}>
                     <option value="All">All Age Ratings</option>
-                    <option value="G">G</option>
-                    <option value="PG">PG</option>
-                    <option value="PG-13">PG-13</option>
-                    <option value="R">R</option>
+                    <option value="Adult">Adult</option>
+                    <option value="Child">Child</option>
                   </select>
                   <select value={duration} onChange={(e) => setDuration(e.target.value)}>
                     <option value="All">All Durations</option>
@@ -158,49 +158,49 @@ function App() {
                   {isLoading ? (
                     <p>Loading movies...</p>
                   ) : topRatedMovies.slice(0, 3).map((movie) => (
-                    <div key={movie.id} className="movie-card">
-                      <img
-                        src={`http://127.0.0.1:5000${movie.poster_path}`}
-                        alt={`${movie.title} poster`}
-                        className="movie-poster"
-                      />
-                    </div>
+                      <div key={movie.id} className="movie-card">
+                        <Link to={`/movie/${movie.id}`}>
+                          <img src={`http://127.0.0.1:5000${movie.poster_path}`} alt={`${movie.title} poster`}
+                               className="movie-poster"/>
+                        </Link>
+                      </div>
+
                   ))}
                 </div>
 
                 {/* Now Playing Section */}
                 <h2 className="section-title">Our Now Playing Movies</h2>
                 <div className="movies-grid">
-                  {isLoading ? (
+                {isLoading ? (
                     <p>Loading movies...</p>
                   ) : nowPlayingMovies.slice(0, 20).map((movie) => (
                     <div key={movie.id} className="movie-card">
-                      <img
-                        src={`http://127.0.0.1:5000${movie.poster_path}`}
-                        alt={`${movie.title} poster`}
-                        className="movie-poster"
-                      />
+                      <Link to={`/movie/${movie.id}`}>
+                        <img src={`http://127.0.0.1:5000${movie.poster_path}`} alt={`${movie.title} poster`}
+                             className="movie-poster"/>
+                      </Link>
                     </div>
-                  ))}
+
+                ))}
                 </div>
 
                 {/* Upcoming Section */}
                 <h2 className="section-title">Our Upcoming Movies</h2>
                 <div className="movies-grid">
-                  {isLoading ? (
+                {isLoading ? (
                     <p>Loading movies...</p>
                   ) : upcomingMovies.slice(0, 5).map((movie) => (
                     <div key={movie.id} className="movie-card">
-                      <img
-                        src={`http://127.0.0.1:5000${movie.poster_path}`}
-                        alt={`${movie.title} poster`}
-                        className="movie-poster"
-                      />
+                      <Link to={`/movie/${movie.id}`}>
+                        <img src={`http://127.0.0.1:5000${movie.poster_path}`} alt={`${movie.title} poster`}
+                             className="movie-poster"/>
+                      </Link>
                     </div>
-                  ))}
+
+                ))}
                 </div>
               </div>
-            } />
+            }/>
           </Routes>
         </div>
       </div>
