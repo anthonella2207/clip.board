@@ -133,11 +133,7 @@ function App() {
                     <option value="Comedy">Comedy</option>
                     <option value="Drama">Drama</option>
                   </select>
-                  <select value={ageRating} onChange={(e) => setAgeRating(e.target.value)}>
-                    <option value="All">All Age Ratings</option>
-                    <option value="Adult">Adult</option>
-                    <option value="Child">Child</option>
-                  </select>
+
                   <select value={duration} onChange={(e) => setDuration(e.target.value)}>
                     <option value="All">All Durations</option>
                     <option value="<90">Less than 90 minutes</option>
