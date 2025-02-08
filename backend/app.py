@@ -340,5 +340,5 @@ if __name__ == "__main__":
     add_initial_show()
     add_initial_seats()
     start_frontend()
-    app.run(debug=True)
+    app.run(debug=True, use_reloader=False)
 
