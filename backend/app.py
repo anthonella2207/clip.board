@@ -93,20 +93,20 @@ def initialize_database():
     );
     """)
 
-    cursor.execute("DROP TABLE IF EXISTS seat;")
-    cursor.execute("""
-    CREATE TABLE seat (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        status VARCHAR(20) NOT NULL,
-        row_number INTEGER NOT NULL,
-        seat_number INTEGER NOT NULL,
-        price DECIMAL(10, 2) DEFAULT NULL,
-        reservation_id INTEGER,
-        show_id INTEGER,
-        FOREIGN KEY (reservation_id) REFERENCES reservation(id),
-        FOREIGN KEY (show_id) REFERENCES shows(id)
-    );
-    """)
+    #cursor.execute("DROP TABLE IF EXISTS seat;")
+    #cursor.execute("""
+    #CREATE TABLE seat (
+    #    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    #    status VARCHAR(20) NOT NULL,
+    #    row_number INTEGER NOT NULL,
+    #    seat_number INTEGER NOT NULL,
+    #    price DECIMAL(10, 2) DEFAULT NULL,
+    #    reservation_id INTEGER,
+    #    show_id INTEGER,
+    #    FOREIGN KEY (reservation_id) REFERENCES reservation(id),
+    #    FOREIGN KEY (show_id) REFERENCES shows(id)
+    #);
+    #""")
 
     cursor.execute("DROP TABLE IF EXISTS shows;")
     cursor.execute("""
@@ -338,7 +338,7 @@ if __name__ == "__main__":
     add_initial_users()
     add_initial_halls()
     add_initial_show()
-    add_initial_seats()
+    #add_initial_seats()
     start_frontend()
     app.run(debug=True, use_reloader=False)
 
