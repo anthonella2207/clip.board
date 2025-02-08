@@ -201,8 +201,7 @@ def get_all_seats():
 
 def get_seats_for_show(show_id):
     try:
-        db_path = os.path.abspath(os.path.join("movies.db"))
-        con = sqlite3.connect(db_path)
+        con = sqlite3.connect("movies.db")
         cur = con.cursor()
         seats = cur.execute("""SELECT id, status, row_number, seat_number, price, reservation_id FROM seat WHERE show_id = ? """, (show_id,)).fetchall()
         print(f"Fetching seats for show_id={show_id}")

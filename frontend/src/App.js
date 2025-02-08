@@ -4,6 +4,7 @@ import "./App.css";
 import LoginPage from "./LoginPage";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import SignupPage from "./SignupPage";
+import SeatSelection from "./SeatPage";
 
 
 function App() {
@@ -51,10 +52,10 @@ function App() {
   const now = new Date();
   const threeWeeks = 21 * 24 * 60 * 60 * 1000; // 21 días en milisegundos
 
-  if (!lastUpdated || now - new Date(lastUpdated) > threeWeeks) {
+  //if (!lastUpdated || now - new Date(lastUpdated) > threeWeeks) {
     fetchMovies();
-    localStorage.setItem("lastMovieUpdate", now.toISOString());
-  }
+    //localStorage.setItem("lastMovieUpdate", now.toISOString());
+  //}
 
   // Actualizar cada 3 semanas automáticamente
   const interval = setInterval(() => {
@@ -118,6 +119,7 @@ function App() {
           <Routes>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
+            <Route path="/seats/:showId" element={<SeatSelection />} />
             {/* Default route that shows the home page */}
             <Route path="/" element={
               <div>

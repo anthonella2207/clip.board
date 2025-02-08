@@ -1,59 +1,106 @@
-import React, {useEffect, useState} from "react";
+import React, {use, useEffect, useState, useRef} from "react";
 import './SeatPage.css'
 import {useParams} from "react-router-dom";
 
-const SeatPage = () => {
-    const {hallId} = useParams()
-    const [seats, setSeats] = useState([])
-    const [selectedSeats, setSelectedSeats] = useState([])
+const fetchSeats = async (showId) => {
+    try {
+        console.log(`Fetching seats for showId: ${showId}`);
+        const response = await fetch(`http://localhost:5000/api/seats/${showId}`);
+        console.log(`API Response Status: ${response.status}`);
+        if (!response.ok) {
+            throw new Error("Error fetching the seats");
+        }
+        const data = await response.json();
+        console.log(`API Data Received:`, data);
+        return data.seats || [];
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+};
+
+export default function SeatSelection() {
+    const { showId } = useParams();
+    const[seats, setSeats] = useState([]);
+    const[selectedSeats, setSelectedSeats] = useState([]);
+    const[totalPrice, setTotalPrice] = useState(0);
+
+    const hasFetched = useRef(false);
 
     useEffect(() => {
-    fetch(`http://localhost:5000/api/seats?hall_id=${hallId}`)
-        .then((response) => response.json())
-        .then((data) => {
-            console.log("Sitzplan-Daten:", data); // Hier wird die Antwort in der Konsole ausgegeben
-            setSeats(data);  // Setzt die Daten in den State
-        })
-        .catch((error) => console.error('Error occurred:', error));
-}, [hallId]);
+    if (!hasFetched.current) {
+        hasFetched.current = true;
+        fetchSeats(showId).then((data) => {
+            console.log("Seats received:", data);
+            setSeats(data);
+        });
+    }
+}, [showId]);
 
-    const toggleSeatSelection = (seatId) => {
+useEffect(() => {
+    const newTotalPrice = selectedSeats.reduce((acc, seatId) => {
+        const seat = seats.find(s => s.id === seatId);
+        return acc + (seat ? Number(seat.price) : 0);
+    }, 0);
+
+    console.log("Neuer Gesamtpreis berechnet:", newTotalPrice);
+    setTotalPrice(newTotalPrice);
+}, [selectedSeats, seats]);
+
+    const toggleSeatSelection = (seatId, seatPrice) => {
+        const price = Number(seatPrice) || 0;
+
+        console.log("Toggle für Sitz:", seatId, "| Preis erhalten:", seatPrice, "| Typ:", typeof seatPrice, "| Konvertiert:", price);
+        console.log("Vorheriger Gesamtpreis:", totalPrice);
+
         setSelectedSeats((prevSelectedSeats) => {
             if(prevSelectedSeats.includes(seatId)){
+                setTotalPrice(prevTotal => prevTotal - price);
                 return prevSelectedSeats.filter((id) => id !== seatId);
             }
             else{
+                setTotalPrice(prevTotal => prevTotal + price);
                 return [...prevSelectedSeats, seatId];
             }
         });
     };
 
+    return (
+        <div className="seat-page">
+            <h2 className="seat-title">Seat selection</h2>
+            <div className="seat-grid">
+                {seats.length > 0 ?(
+                    seats.map((seat) => (
+                        console.log("Seat price check:", seat.price),
+                        <div
+                            key={seat.id}
+                            className={`seat ${seat.isbooked ? "seat-booked": ""}
+                            ${selectedSeats.includes(seat.id) ? "seat-selected": ""}`}
+                            onClick={() => !seat.isbooked && toggleSeatSelection(seat.id, Number(seat.price) || 0)}>
+                            {seat.row_number}-{seat.seat_number}
+                        </div>
+                    ))
+                ) : (
+                    <p>Loading seats...</p>
+                )}
+            </div>
+            <div className="summary">
+                {selectedSeats.length > 0 ? (
+                    <>
+                        <p>Selected Seats: {selectedSeats.join(", ")}</p>
+                        <p><strong>Total price: €{totalPrice.toFixed(2)}</strong></p>
+                    </>
 
-  return (
-      <div className="seat-page">
-          <div className="seat-title">Sitzplan für Saal {hallId}</div>
-          <div className="seat-grid">
-              {seats.map((seat) => (
-                  <div
-                      key={seat.id}
-                      className={`seat ${seat.isBooked ? 'seat-booked' : ''} ${selectedSeats.includes(seat.id) ? 'seat-selected' : ''}`}
-                      onClick={() => {
-                          if (!seat.isBooked) toggleSeatSelection(seat.id);
-                      }}
-                  >
-                      {seat.row_number}-{seat.seat_number}
-                  </div>
-              ))}
-          </div>
-          <div className="summary">
-              <h2>Ausgewählte Sitze:</h2>
-              <p>{selectedSeats.join(', ') || 'Keine Sitze ausgewählt'}</p>
-              <button className="booking-button">
-                  Book now!
-              </button>
-          </div>
-      </div>
-  );
-};
-
-export default SeatPage;
+                ) : (
+                    <p>No seats selected</p>
+                )}
+            </div>
+            <button
+                className="booking-button"
+                disabled={selectedSeats.length === 0}
+                onClick={() => alert(`You sure you want to proceed booking seats: ${selectedSeats.join(", ")}`)} >
+                Book Now!
+            </button>
+        </div>
+    );
+}

@@ -2,6 +2,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from flask import Blueprint, request, jsonify
 import sqlite3
 from flask_cors import cross_origin, CORS
+from cinema_functions_for_database import get_seats_for_show
 
 #connection to our database
 def get_db_connection():
@@ -19,9 +20,6 @@ CORS(auth_routes)
 def login():
     try:
         data = request.get_json()
-        print("Empfangene JSON-Daten:", data)
-        if not data:
-            return jsonify({"success": False, "message": "No JSON data received"}), 400
 
         email = data.get('email', '').strip()
         password = data.get('password', '')
@@ -79,5 +77,17 @@ def signup():
 
     return jsonify({"success": True, "message": "Registration successful"}), 201
 
-seats_routes = Blueprint('seats_routes', __name__)
+#seats for halls routes
+
+seats_routes = Blueprint('seats', __name__)
+
+@seats_routes.route("/api/seats/<int:show_id>", methods=['GET'])
+@cross_origin()
+def get_seats(show_id):
+    try:
+        seats = get_seats_for_show(show_id)
+        return jsonify({"seats": seats})
+    except Exception as e:
+        return jsonify({"error": "Internal server error"}), 500
+
 
