@@ -22,8 +22,8 @@ function App() {
   const [searchQuery, setSearchQuery] = useState("");
 
   const menuItems = [
-    { name: "Home", icon: <FaHome /> },
-    { name: "Favorite", icon: <FaHeart /> },
+    { name: "Home", icon: <FaHome />, link: "/" },
+    { name: "Favorite", icon: <FaHeart />  },
     { name: "Bookings", icon: <FaBook /> },
   ];
 
@@ -99,10 +99,12 @@ function App() {
           </div>
           <ul className="menu-list">
             {menuItems.map((item, index) => (
-              <li key={index} className="menu-item">
-                {item.icon}
-                <span>{item.name}</span>
-              </li>
+                <li key={index} className="menu-item">
+                  <Link to={item.link}>
+                    {item.icon}
+                    <span>{item.name}</span>
+                  </Link>
+                </li>
             ))}
           </ul>
           {/* Login at the bottom */}
@@ -118,7 +120,7 @@ function App() {
         <div className="content">
           {/* Routes to handle login page */}
           <Routes>
-            <Route path="/login" element={<LoginPage />} />
+            <Route path="/login" element={<LoginPage/>}/>
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/seats/:showId" element={<SeatSelection />} />
             <Route path="/movie/:id" element={<MoviePage />} />
