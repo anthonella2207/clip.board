@@ -169,9 +169,6 @@ def add_reservation(id, total_price, time_of_reservation, user_id, show_id):
         print(f"Reservation {id} added.")
 
         # Insert reservation action into Logs/history
-        seats = [] # Get seat ID's
-        for row in cur.execute("SELECT id FROM seat WHERE reservation_id = ?", (id,)):
-            seats.append(row)
 
         # Get show ID
         show = cur.execute("SELECT id FROM seat WHERE reservation_id = ?", (id,))
@@ -852,7 +849,7 @@ def update_seat_status(seat_id, new_status, reservation_id = None):
     finally:
         con.close()
 
-def update_seat_reservation_id(seat_id, reservations_id):
+def update_seat_reservation_id_and_status(seat_id, reservations_id):
     try:
         con = sqlite3.connect("movies.db")
         cur = con.cursor()
@@ -862,6 +859,14 @@ def update_seat_reservation_id(seat_id, reservations_id):
             print(f"Seat with ID {seat_id} updated: reservation id = {reservation_id}")
         else:
             print(f"No seat found with ID {seat_id} or reservation ID {reservation_id}")
+
+        cur.execute("UPDATE seat SET status = 'booked' WHERE id = ?", (seat_id,))
+        con.commit()
+        if cur.rowcount > 0:
+            print(f"Seat with ID {seat_id} updated: status = booked")
+        else:
+            print(f"No seat found with ID {seat_id}")
+
     except sqlite3.Error as e:
         print(f"Error while updating reservation id of seat: {e}")
     finally:
@@ -911,6 +916,19 @@ def check_for_admin(user_id):
         print(f"Error while calculating total price: {e}")
     finally:
         con.close()
+
+# Input parameter: list of seat id's
+def is_seat_available(seats):
+    con = sqlite3.connect("movies.db")
+    cur = con.cursor()
+    result = True
+    for seat in seats:
+        cur.execute("SELECT reservation_id FROM seat WHERE id = ?", (seat,))
+        res = cur.fetchone()
+        if res[0] is not None:
+            result = False
+    con.close()
+    return result
 
 def calculate_number_available_seats(show_id):
     con = sqlite3.connect("movies.db")
