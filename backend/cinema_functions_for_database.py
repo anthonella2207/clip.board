@@ -169,10 +169,6 @@ def add_reservation(id, total_price, time_of_reservation, user_id, show_id):
         print(f"Reservation {id} added.")
 
         # Insert reservation action into Logs/history
-
-        # Get show ID
-        show = cur.execute("SELECT id FROM seat WHERE reservation_id = ?", (id,))
-
         # Add History
         add_logs_history(None, "Seat reservation", datetime.now(), user_id, id)
         con.commit()
