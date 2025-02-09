@@ -57,17 +57,17 @@ def initialize_database():
     );
     """)
 
-    #cursor.execute("DROP TABLE IF EXISTS user;")
-    #cursor.execute("""
-    #CREATE TABLE user (
-    #    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    #    vorname VARCHAR(20) NOT NULL,
-    #    nachname VARCHAR(50) NOT NULL,
-    #    password VARCHAR(30) NOT NULL,
-    #    email VARCHAR(30) NOT NULL UNIQUE,
-    #    role VARCHAR(10) NOT NULL
-    #);
-    #""")
+    cursor.execute("DROP TABLE IF EXISTS user;")
+    cursor.execute("""
+    CREATE TABLE user (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        vorname VARCHAR(20) NOT NULL,
+        nachname VARCHAR(50) NOT NULL,
+        password VARCHAR(30) NOT NULL,
+        email VARCHAR(30) NOT NULL UNIQUE,
+        role VARCHAR(10) NOT NULL
+    );
+    """)
 
     cursor.execute("DROP TABLE IF EXISTS reservation;")
     cursor.execute("""
@@ -82,43 +82,43 @@ def initialize_database():
     );
     """)
 
-    #cursor.execute("DROP TABLE IF EXISTS hall;")
-    #cursor.execute("""
-    #CREATE TABLE hall (
-    #    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    #    name VARCHAR(20) NOT NULL,
-    #    row_count INTEGER NOT NULL,
-    #    seats_per_row INTEGER NOT NULL,
-    #    total_seats INTEGER NOT NULL
-    #);
-    #""")
+    cursor.execute("DROP TABLE IF EXISTS hall;")
+    cursor.execute("""
+    CREATE TABLE hall (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name VARCHAR(20) NOT NULL,
+        row_count INTEGER NOT NULL,
+        seats_per_row INTEGER NOT NULL,
+        total_seats INTEGER NOT NULL
+    );
+    """)
 
-    #cursor.execute("DROP TABLE IF EXISTS seat;")
-    #cursor.execute("""
-    #CREATE TABLE seat (
-    #    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    #    status VARCHAR(20) NOT NULL,
-    #    row_number INTEGER NOT NULL,
-    #    seat_number INTEGER NOT NULL,
-    #    price DECIMAL(10, 2) DEFAULT NULL,
-    #    reservation_id INTEGER,
-    #    show_id INTEGER,
-    #    FOREIGN KEY (reservation_id) REFERENCES reservation(id),
-    #    FOREIGN KEY (show_id) REFERENCES shows(id)
-    #);
-    #""")
+    cursor.execute("DROP TABLE IF EXISTS seat;")
+    cursor.execute("""
+    CREATE TABLE seat (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        status VARCHAR(20) NOT NULL,
+        row_number INTEGER NOT NULL,
+        seat_number INTEGER NOT NULL,
+        price DECIMAL(10, 2) DEFAULT NULL,
+        reservation_id INTEGER,
+        show_id INTEGER,
+        FOREIGN KEY (reservation_id) REFERENCES reservation(id),
+        FOREIGN KEY (show_id) REFERENCES shows(id)
+    );
+    """)
 
-    #cursor.execute("DROP TABLE IF EXISTS shows;")
-    #cursor.execute("""
-    #CREATE TABLE shows (
-    #    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    #    movie_id INTEGER NOT NULL,
-    #    hall_id INTEGER NOT NULL,
-    #    showtime VARCHAR(50) NOT NULL,
-    #    FOREIGN KEY (movie_id) REFERENCES movies(id),
-    #    FOREIGN KEY (hall_id) REFERENCES hall(id)
-    #);
-    #""")
+    cursor.execute("DROP TABLE IF EXISTS shows;")
+    cursor.execute("""
+    CREATE TABLE shows (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        movie_id INTEGER NOT NULL,
+        hall_id INTEGER NOT NULL,
+        showtime VARCHAR(50) NOT NULL,
+        FOREIGN KEY (movie_id) REFERENCES movies(id),
+        FOREIGN KEY (hall_id) REFERENCES hall(id)
+    );
+    """)
 
     cursor.execute("DROP TABLE IF EXISTS logs_history;")
     cursor.execute("""
@@ -276,7 +276,7 @@ def add_initial_users():
     cur = con.cursor()
 
     add_user(1, "Anthonella Alessandra", "Frutos Lara", "1234", "a.frutoslara@stud.uni-goettingen.de", "Admin")
-    add_user(2, "Emily Sophie", "Aust", "1234", "emilysophie.aust@stud.uni-goettingen.de ", "Client")
+    add_user(2, "Emily Sophie", "Aust", "1234", "emilysophie.aust@stud.uni-goettingen.de", "Client")
     add_user(3, "Cordula", "Maier", "1234", "cordula.maier@stud.uni-goettingen.de", "Client")
 
     con.close()
@@ -335,10 +335,10 @@ def add_initial_seats():
 if __name__ == "__main__":
     initialize_database()
     fetch_and_save_movies()
-    #add_initial_users()
-    #add_initial_halls()
-    #add_initial_show()
-    #add_initial_seats()
+    add_initial_users()
+    add_initial_halls()
+    add_initial_show()
+    add_initial_seats()
     start_frontend()
     app.run(debug=True, use_reloader=False)
 
