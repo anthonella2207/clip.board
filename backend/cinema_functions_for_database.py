@@ -94,6 +94,7 @@ import requests
 import json
 import os
 import matplotlib.pyplot as plt
+from datetime import datetime
 
 # Connecting with our database
 con = sqlite3.connect("movies.db")
@@ -128,6 +129,10 @@ def add_user(iD, vorname, nachname, password, email, role):
         """, (iD, vorname, nachname, password, email, role))
         con.commit()
         print(f"User {vorname} {nachname} added.")
+
+        add_logs_history(None, "User Added", datetime.now(), None, None)
+        con.commit()
+
     except sqlite3.IntegrityError:
         print(f"Error while adding user: IntegrityError")
     except:
@@ -162,6 +167,12 @@ def add_reservation(id, total_price, time_of_reservation, user_id, show_id):
         """, (id, total_price, time_of_reservation, user_id, show_id))
         con.commit()
         print(f"Reservation {id} added.")
+
+        # Insert reservation action into Logs/history
+        # Add History
+        add_logs_history(None, "Seat reservation", datetime.now(), user_id, id)
+        con.commit()
+
     except sqlite3.IntegrityError:
         print(f"Error while adding reservation: IntegrityError")
     except:
@@ -224,7 +235,7 @@ def add_logs_history(iD, action, action_timestamp, user_iD, reservation_iD):
 def get_all_users():
     con = sqlite3.connect("movies.db")
     cur = con.cursor()
-
+    print("User: ID, First Name, Last Name, Password, E-Mail, Role")
     for row in cur.execute("SELECT * FROM user"):
         print(row)
     con.close()
@@ -232,7 +243,7 @@ def get_all_users():
 def get_all_reservations():
     con = sqlite3.connect("movies.db")
     cur = con.cursor()
-
+    print("Reservation: ID, Total price, Time of reservation, User ID, Show ID")
     for row in cur.execute("SELECT * FROM reservation"):
         print(row)
     con.close()
@@ -240,7 +251,7 @@ def get_all_reservations():
 def get_all_halls():
     con = sqlite3.connect("movies.db")
     cur = con.cursor()
-
+    print("Hall: ID, Name of Hall, Row, Seat, Total seats")
     for row in cur.execute("SELECT * FROM hall"):
         print(row)
     con.close()
@@ -248,7 +259,7 @@ def get_all_halls():
 def get_all_shows():
     con = sqlite3.connect("movies.db")
     cur = con.cursor()
-
+    print("Show: ID, Movie ID, Hall ID, Showtime")
     for row in cur.execute("SELECT * FROM shows"):
         print(row)
     con.close()
@@ -256,7 +267,7 @@ def get_all_shows():
 def get_all_seats():
     con = sqlite3.connect("movies.db")
     cur = con.cursor()
-
+    print("Seat: ID, Status, Row, Seat, Price, Reservation ID, Show ID")
     for row in cur.execute("SELECT * FROM seat"):
         print(row)
     con.close()
@@ -305,7 +316,7 @@ def get_all_now_playing_movies():
 def get_all_logs_histories():
     con = sqlite3.connect("movies.db")
     cur = con.cursor()
-
+    print("Logs/History: ID, Action, Timestamp of action, User ID, Reservation ID")
     for row in cur.execute("SELECT * FROM logs_history"):
         print(row)
     con.close()
@@ -508,6 +519,14 @@ def get_user_role(id):
         return result[0]
     else:
         return None
+
+def get_reservations_for_user(user_id):
+    con = sqlite3.connect("movies.db")
+    cur = con.cursor()
+    for row in cur.execute("SELECT * FROM reservation WHERE user_id = ?", (user_id,)):
+        print(row)
+    con.close()
+
 
 # genres as String-list are input,
 # for example: filter_movies_by_genre("Action, Drama")
@@ -826,6 +845,28 @@ def update_seat_status(seat_id, new_status, reservation_id = None):
     finally:
         con.close()
 
+def update_seat_reservation_id_and_status(seat_id, reservations_id):
+    try:
+        con = sqlite3.connect("movies.db")
+        cur = con.cursor()
+        cur.execute("UPDATE seat SET reservation_id = ? WHERE id = ?", (reservation_id, seat_id))
+        con.commit()
+        if cur.rowcount > 0:
+            print(f"Seat with ID {seat_id} updated: reservation id = {reservation_id}")
+        else:
+            print(f"No seat found with ID {seat_id} or reservation ID {reservation_id}")
+
+        cur.execute("UPDATE seat SET status = 'booked' WHERE id = ?", (seat_id,))
+        con.commit()
+        if cur.rowcount > 0:
+            print(f"Seat with ID {seat_id} updated: status = booked")
+        else:
+            print(f"No seat found with ID {seat_id}")
+
+    except sqlite3.Error as e:
+        print(f"Error while updating reservation id of seat: {e}")
+    finally:
+        con.close()
 def calculate_total_price(seat_ids, show_id):
     if not seat_ids: # if no seats selected
         return 0.0
@@ -871,6 +912,19 @@ def check_for_admin(user_id):
         print(f"Error while calculating total price: {e}")
     finally:
         con.close()
+
+# Input parameter: list of seat id's
+def is_seat_available(seats):
+    con = sqlite3.connect("movies.db")
+    cur = con.cursor()
+    result = True
+    for seat in seats:
+        cur.execute("SELECT reservation_id FROM seat WHERE id = ?", (seat,))
+        res = cur.fetchone()
+        if res[0] is not None:
+            result = False
+    con.close()
+    return result
 
 def calculate_number_available_seats(show_id):
     con = sqlite3.connect("movies.db")
