@@ -543,7 +543,8 @@ def filter_movies_by_genres(genres):
     # Build the WHERE clause dynamically to check for all genres
     conditions_list = []
     for genre in genre_list:
-        conditions_list.append("genres LIKE ?")
+        conditions_list.append("genres LIKE '%' || ? || '%'")
+
     conditions = " AND ".join(conditions_list)
 
     # SQL query with dynamic conditions
@@ -552,7 +553,8 @@ def filter_movies_by_genres(genres):
     # Add wildcards for each genre for partial matching
     parameters = []
     for genre in genre_list:
-        parameters.append(f"%{genre}%")
+        conditions_list.append("genres LIKE '%' || ? || '%'")
+        parameters.append(genre)
 
     # Execute query
     cur.execute(query, parameters)
@@ -640,65 +642,40 @@ def filter_movies_by_keywords(keywords):
 
 # example for function call
 # filter_movies(genres="Animation", keywords=" mufasa king", vote_average="> 7", duration="90-120 minutes")
-def filter_movies(genres=None, vote_average=None, duration=None, keywords=None):
+def filter_movies(genres=None, duration=None, keywords=None):
     con = sqlite3.connect("movies.db")
     cur = con.cursor()
 
-    conditions_list = []
+    conditions_list = ["category = 'now_playing'"]  # Nur Now-Playing-Filme
     parameters = []
 
-    # Genre Filter
-    if genres:
-        genre_list = []
-        for genre in genres.split(","):
-            genre_list.append(genre.strip())
-        for genre in genre_list:
-            conditions_list.append("genres LIKE ?")
-            parameters.append(f"%{genre}%")
+    # Genre-Filter: Prüfen, ob das Genre in der Liste enthalten ist
+    if genres and genres != "All":
+        conditions_list.append("genres LIKE '%' || ? || '%'")
+        parameters.append(genres)
 
-    # Vote Average Filter
-    if vote_average:
-        if vote_average == "> 9":
-            conditions_list.append("vote_average > 9")
-        elif vote_average == "> 8":
-            conditions_list.append("vote_average > 8")
-        elif vote_average == "> 7":
-            conditions_list.append("vote_average > 7")
-        elif vote_average == "> 6":
-            conditions_list.append("vote_average > 6")
-        elif vote_average == "> 5":
-            conditions_list.append("vote_average > 5")
-
-    # Duration Filter
-    if duration:
-        if duration == "Less than 90 minutes":
+    # Dauer-Filter
+    if duration and duration != "All":
+        if duration == "<90":
             conditions_list.append("runtime < 90")
-        elif duration == "90-120 minutes":
+        elif duration == "90-120":
             conditions_list.append("runtime BETWEEN 90 AND 120")
-        elif duration == "More than 120 minutes":
+        elif duration == ">120":
             conditions_list.append("runtime > 120")
 
-    # Keyword Filter
+    # Keywords in Titel oder Beschreibung suchen
     if keywords:
-        keyword_list = []
-        for keyword in keywords.split():
-            keyword_list.append(keyword.strip())
+        keyword_list = keywords.split()
         for keyword in keyword_list:
             conditions_list.append("(LOWER(title) LIKE ? OR LOWER(overview) LIKE ?)")
             parameters.extend([f"%{keyword.lower()}%", f"%{keyword.lower()}%"])
 
-    # Combine all conditions
+    # Kombiniere alle Bedingungen
     conditions = " AND ".join(conditions_list)
-    query = f"SELECT * FROM movies WHERE category = 'now_playing'"
-    if conditions:
-        query += f" AND {conditions}"
+    query = f"SELECT * FROM movies WHERE {conditions}"
 
-    # Execute the query
     cur.execute(query, parameters)
     rows = cur.fetchall()
-    for row in rows:
-        print(row)
-
     con.close()
     return rows
 

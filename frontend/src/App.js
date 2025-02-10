@@ -7,8 +7,7 @@ import SignupPage from "./SignupPage";
 import SeatSelection from "./SeatPage";
 import MoviePage from "./MoviePage";
 import FavoritePage from "./FavoritePage";
-
-
+import MovieFilter from "./filter";
 
 function App() {
   const [nowPlayingMovies, setNowPlayingMovies] = useState([]);
@@ -72,22 +71,32 @@ const menuItems = [
 
     // Manejar filtros
   useEffect(() => {
-    const filtered = topRatedMovies.filter((movie) => {
-      const matchesGenre = genre === "All" || movie.genre?.includes(genre);
-      const matchesAgeRating = ageRating === "All" || movie.age_rating === ageRating;
-      const matchesDuration =
-        duration === "All" ||
-        (duration === "<90" && movie.runtime < 90) ||
-        (duration === "90-120" && movie.runtime >= 90 && movie.runtime <= 120) ||
-        (duration === ">120" && movie.runtime > 120);
-      const matchesSearch = movie.title.toLowerCase().includes(searchQuery.toLowerCase());
+  const fetchFilteredMovies = async () => {
+    try {
+      const queryParams = new URLSearchParams({
+        genres: genre !== "All" ? genre : "",
+        duration: duration !== "All" ? duration : "",
+        keywords: searchQuery !== "" ? searchQuery : "",
+      });
 
-      return matchesGenre && matchesAgeRating && matchesDuration && matchesSearch;
-    });
+      const response = await fetch(`http://127.0.0.1:5000/api/movies/now_playing?${queryParams}`);
+      const data = await response.json();
+      console.log("DEBUG: API response:", data);
 
-    setFilteredTopRated(filtered);
-  }, [genre, ageRating, duration, searchQuery, topRatedMovies]);
+      if (data.success && Array.isArray(data.movies)) {
+        setNowPlayingMovies(data.movies);
+      } else {
+        setNowPlayingMovies([]); // Falls die API kein Array zurückgibt
+      }
+    } catch (error) {
+      console.error("Error fetching filtered now-playing movies:", error);
+      setNowPlayingMovies([]); // Setzt einen leeren Array, um Fehler zu vermeiden
+      console.log(nowPlayingMovies);
+    }
+  };
 
+  fetchFilteredMovies();
+}, [genre, duration, searchQuery]);
 
   return (
     <Router>
@@ -132,27 +141,11 @@ const menuItems = [
             <Route path="/" element={
               <div>
                 {/* Filter Bar */}
-                <div className="filter-bar">
-                  <select value={genre} onChange={(e) => setGenre(e.target.value)}>
-                    <option value="All">All Genres</option>
-                    <option value="Action">Action</option>
-                    <option value="Comedy">Comedy</option>
-                    <option value="Drama">Drama</option>
-                  </select>
-
-                  <select value={duration} onChange={(e) => setDuration(e.target.value)}>
-                    <option value="All">All Durations</option>
-                    <option value="<90">Less than 90 minutes</option>
-                    <option value="90-120">90-120 minutes</option>
-                    <option value=">120">More than 120 minutes</option>
-                  </select>
-                  <input
-                    type="text"
-                    placeholder="Search by name"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                </div>
+                <MovieFilter onFilterChange={({ genre, duration, searchQuery }) => {
+                  setGenre(genre);
+                  setDuration(duration);
+                  setSearchQuery(searchQuery);
+                  }} />
 
                 {/* Top Rated Section */}
                 <h2 className="section-title">Our Top Rated Movies</h2>
@@ -174,16 +167,19 @@ const menuItems = [
                 <h2 className="section-title">Our Now Playing Movies</h2>
                 <div className="movies-grid">
                 {isLoading ? (
-                    <p>Loading movies...</p>
-                  ) : nowPlayingMovies.slice(0, 20).map((movie) => (
-                    <div key={movie.id} className="movie-card">
-                      <Link to={`/movie/${movie.id}`}>
-                        <img src={`http://127.0.0.1:5000${movie.poster_path}`} alt={`${movie.title} poster`}
-                             className="movie-poster"/>
-                      </Link>
-                    </div>
+                  <p>Loading movies...</p>
+                  ) : (Array.isArray(nowPlayingMovies) ? nowPlayingMovies.slice(0, 20).map((movie) => (
+                  <div key={movie.id} className="movie-card">
+                    <Link to={`/movie/${movie.id}`}>
+                      <img
+                          src={`http://127.0.0.1:5000${movie.poster_path}`}
+                          alt={`${movie.title} poster`}
+                          className="movie-poster"
+                      />
+                    </Link>
+                  </div>
+                )) : <p>No movies found.</p>)}
 
-                ))}
                 </div>
 
                 {/* Upcoming Section */}
