@@ -6,6 +6,8 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import SignupPage from "./SignupPage";
 import SeatSelection from "./SeatPage";
 import MoviePage from "./MoviePage";
+import FavoritePage from "./FavoritePage";
+
 
 
 function App() {
@@ -21,11 +23,12 @@ function App() {
   const [duration, setDuration] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const menuItems = [
-    { name: "Home", icon: <FaHome />, link: "/" },
-    { name: "Favorite", icon: <FaHeart />  },
-    { name: "Bookings", icon: <FaBook /> },
-  ];
+const menuItems = [
+  { name: "Home", icon: <FaHome />, link: "/" },
+  { name: "Favorite", icon: <FaHeart />, link: "/favorites" }, // Agregar link aquí
+  { name: "Bookings", icon: <FaBook /> },
+];
+
 
   const bottomMenuItem = { name: "Login", icon: <FaSignInAlt /> };
 
@@ -124,6 +127,7 @@ function App() {
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/seats/:showId" element={<SeatSelection />} />
             <Route path="/movie/:id" element={<MoviePage />} />
+            <Route path="/favorites" element={<FavoritePage />} />
             {/* Default route that shows the home page */}
             <Route path="/" element={
               <div>
