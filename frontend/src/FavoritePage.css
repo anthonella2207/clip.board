@@ -1,0 +1,99 @@
+/* Ajustar el contenedor principal para ocupar toda la pantalla */
+.favorites-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  min-height: calc(100vh - 60px); /* Ocupa al menos toda la pantalla menos el margen */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Espaciado entre los elementos */
+.movies-grid {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 20px;
+  justify-content: center;
+}
+
+/* Ajustes para el mensaje de "No favoritos" */
+.no-favorites {
+  color: #d1d1d1;
+  font-size: 1.2rem;
+  margin-top: 20px;
+  text-align: center;
+}
+
+/* Link de volver al inicio */
+.back-link {
+  display: inline-block;
+  margin-top: 20px;
+  color: #289cd5;
+  text-decoration: none;
+  font-size: 1rem;
+  transition: color 0.3s ease;
+}
+
+.back-link:hover {
+  color: #1b7cb3;
+}
+
+
+.favorites-title {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: #ffffff;
+  text-transform: uppercase;
+}
+
+
+.movie-poster {
+  width: 100%;
+  border-radius: 10px;
+  transition: opacity 0.3s ease;
+}
+
+.movie-poster:hover {
+  opacity: 0.8;
+}
+
+.movie-title {
+  font-size: 1.2rem;
+  margin-top: 10px;
+  color: #fff;
+}
+
+.remove-btn {
+  margin-top: 10px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  background-color: #e63946;
+  color: #fff;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.remove-btn:hover {
+  background-color: #ff5252;
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 20px;
+  color: #289cd5;
+  text-decoration: none;
+  font-size: 1rem;
+  transition: color 0.3s ease;
+}
+
+.back-link:hover {
+  color: #1b7cb3;
+}

@@ -19,15 +19,32 @@
 
 .movies-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Tarjetas adaptables */
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Columnas adaptables más amplias */
+  gap: 15px; /* Reduce el espacio entre tarjetas */
   margin-bottom: 40px;
+  justify-content: center; /* Centra el contenido en la cuadrícula */
+}
+
+.movie-card {
+  overflow: hidden; /* Asegura que el contenido no se desborde */
+  transition: transform 0.2s ease; /* Animación suave al pasar el mouse */
+}
+
+.movie-card:hover {
+  transform: scale(1.05); /* Aumenta ligeramente el tamaño al hacer hover */
 }
 
 .movie-poster {
-  width: 100%;
-  border-radius: 10px;
+  border-radius: 8px; /* Esquinas ligeramente redondeadas */
+  width: 100%; /* Asegura que la imagen ocupe todo el espacio del contenedor */
+  height: auto; /* Mantiene la proporción de la imagen */
+  transition: opacity 0.3s ease; /* Suaviza los cambios de opacidad */
 }
+
+.movie-poster:hover {
+  opacity: 0.9; /* Ligero efecto al hacer hover */
+}
+
 
 /* Sidebar */
 .sidebar {
@@ -84,7 +101,7 @@
 }
 
 .menu-item:hover {
-  background-color: #2c2c2e;
+  background-color: rgba(255, 255, 255, 0.07);
   transform: translateX(5px);
 }
 

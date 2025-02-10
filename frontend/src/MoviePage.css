@@ -1,0 +1,77 @@
+/* Asegura que la página ocupe toda la pantalla */
+.movie-page {
+  display: flex;
+  align-items: center; /* Centra verticalmente los elementos */
+  justify-content: center; /* Centra horizontalmente los elementos */
+  height: 100vh; /* Ocupa toda la altura de la pantalla */
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: rgb(29, 28, 42); /* Fondo oscuro consistente */
+  color: #fff; /* Texto blanco */
+}
+
+/* Eliminar fondo del contenedor principal */
+.movie-container {
+  display: flex;
+  max-width: 1200px;
+  width: 100%;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: none; /* Eliminar sombra */
+  background-color: transparent; /* Fondo transparente */
+}
+
+.movie-info {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Alinea hacia arriba */
+  padding-right: 20px;
+  margin-top: -20px; /* Reduce la distancia hacia abajo */
+}
+
+
+.movie-title {
+  font-size: 2.5rem !important;
+  font-weight: bold !important;
+  text-align: left !important;
+  color: white !important;
+  display: flex;
+  align-items: center;
+  gap: 20px; /* Espacio entre título y corazón */
+}
+
+
+.heart-icon {
+  font-size: 1.5rem; /* Reducir tamaño del ícono */
+  color: #d1d1d1; /* Gris por defecto */
+  transition: color 0.3s ease, transform 0.2s ease;
+  cursor: pointer;
+}
+
+.heart-icon.favorite-active {
+  color: #e63946; /* Rojo cuando es favorito */
+}
+
+.movie-details {
+  margin-top: 20px;
+  line-height: 1.8;
+}
+
+.movie-details p {
+  margin: 10px 0;
+}
+
+.movie-poster-container {
+  flex: 1; /* Ocupa menos espacio */
+  display: flex;
+  justify-content: flex-end; /* Alinea hacia la derecha */
+  align-items: flex-start; /* Alinea hacia arriba */
+  max-height: 500px; /* Tamaño máximo del póster */
+}
+.movie-poster {
+  max-width: 100%;
+  max-height: 900px; /* Incrementar tamaño máximo del póster aún más */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}

@@ -8,6 +8,7 @@ from PIL import Image
 from io import BytesIO
 from cinema_functions_for_database import *
 from routes import *
+from cinema_functions_for_database import get_movie
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})   # Allow cross-origin requests
@@ -28,6 +29,7 @@ GENRES_URL = f"https://api.themoviedb.org/3/genre/movie/list?api_key={API_KEY}&l
 
 # Create folders if they don't exist
 os.makedirs(POSTER_FOLDER, exist_ok=True)
+
 
 @app.route('/routes', methods=['GET'])
 def list_routes():
