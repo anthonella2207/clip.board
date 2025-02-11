@@ -8,6 +8,8 @@ import SeatSelection from "./SeatPage";
 import MoviePage from "./MoviePage";
 import FavoritePage from "./FavoritePage";
 import MovieFilter from "./filter";
+import BookingConfirmation from "./BookingConfirmation";
+import { AuthProvider } from "./AuthContext";
 
 function App() {
   const [nowPlayingMovies, setNowPlayingMovies] = useState([]);
@@ -101,6 +103,7 @@ const menuItems = [
 }, [genre, duration, voteAverage, searchQuery]);
 
   return (
+      <AuthProvider>
     <Router>
       <div className="App">
         {/* Sidebar */}
@@ -139,6 +142,7 @@ const menuItems = [
             <Route path="/seats/:showId" element={<SeatSelection />} />
             <Route path="/movie/:id" element={<MoviePage />} />
             <Route path="/favorites" element={<FavoritePage />} />
+            <Route path="/booking-confirmation" element={<BookingConfirmation />} />
             {/* Default route that shows the home page */}
             <Route path="/" element={
               <div>
@@ -206,6 +210,7 @@ const menuItems = [
         </div>
       </div>
     </Router>
+        </AuthProvider>
   );
 }
 

@@ -1,0 +1,61 @@
+/* 🟢 Grundlegendes Styling für die Buchungsbestätigung */
+.booking-confirmation-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: rgb(29, 28, 42);
+    font-family: "Arial", sans-serif;
+}
+
+.confirmation-box {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 400px;
+}
+
+.confirmation-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #289cd5;
+    margin-bottom: 10px;
+}
+
+.confirmation-text {
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.booking-number {
+    font-size: 22px;
+    font-weight: bold;
+    color: #1D1C2A;
+    margin: 10px 0;
+}
+
+.logout-button {
+    background-color: #289cd5;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+.logout-button:hover {
+    background-color: #289cd5;
+}
+
+.warning-text {
+    font-size: 16px;
+    font-weight: bold;
+    color: #d9534f;
+    margin-bottom: 10px;
+}
+

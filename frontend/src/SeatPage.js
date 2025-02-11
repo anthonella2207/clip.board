@@ -1,6 +1,8 @@
-import React, {use, useEffect, useState, useRef} from "react";
+import React, {use, useEffect, useState, useRef, useContext} from "react";
 import './SeatPage.css'
-import {useParams} from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import reserveSeats from "./Reservation";
+import {AuthContext} from "./AuthContext";
 
 const fetchSeats = async (showId) => {
     try {
@@ -21,6 +23,8 @@ const fetchSeats = async (showId) => {
 
 export default function SeatSelection() {
     const { showId } = useParams();
+    const { user } = useContext(AuthContext);
+    const navigate = useNavigate();
     const[seats, setSeats] = useState([]);
     const[selectedSeats, setSelectedSeats] = useState([]);
     const[totalPrice, setTotalPrice] = useState(0);
@@ -65,6 +69,45 @@ useEffect(() => {
         });
     };
 
+    const handleReservation = async() => {
+        if (!user) {
+            alert("You need to log in first!");
+            navigate("/login");
+            return;
+        }
+
+        if (!user.id) {
+        console.error("User-ID fehlt! User-Daten:", user);
+        return;
+        }
+
+        if(selectedSeats.length === 0){
+            alert("Please select a seat.");
+            return;
+        }
+
+        const confirmBooking = window.confirm("Are you sure, you want to continue?");
+        if(!confirmBooking){
+            return;
+        }
+
+        console.log("🔹 Reservierung wird gestartet für:", user.id, selectedSeats);
+
+        const result = await  reserveSeats(user.id, showId, selectedSeats);
+
+        if(result.success){
+            navigate("/booking-confirmation", {
+                state: {
+                    reservationId: result.reservationId,
+                    totalPrice: totalPrice,
+                },
+            });
+        }
+        else{
+            alert(`error reserving: ${result.message}`);
+        }
+    };
+
     return (
         <div className="seat-page">
             <h2 className="seat-title">Seat selection</h2>
@@ -98,7 +141,7 @@ useEffect(() => {
             <button
                 className="booking-button"
                 disabled={selectedSeats.length === 0}
-                onClick={() => alert(`You sure you want to proceed booking seats: ${selectedSeats.join(", ")}`)} >
+                onClick={handleReservation} >
                 Book Now!
             </button>
         </div>

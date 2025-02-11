@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import "./LoginPage.css";
+import { AuthContext } from "./AuthContext";
 
 function LoginPage() {
+  const { login } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -18,27 +20,14 @@ function LoginPage() {
       return;
     }
 
-    try {
-      const response = await fetch("http://127.0.0.1:5000/login", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({ email, password }),
-        mode: 'cors'
-      });
+    const result = await login(email, password);
 
-      if (!response.ok) {
-        throw new Error("Login failed!");
-      }
-
-      const data = await response.json();
-      console.log("Server-Antwort:", data);
-      setMessage(data.message);
-
-      if (data.success) {
-        navigate("/");
-      }
-    } catch (error) {
-      setMessage("Error: " + error.message);
+    if(result.success){
+      console.log("✅ Login erfolgreich, weiterleiten...");
+      navigate("/");
+    }
+    else{
+      setMessage(result.message);
     }
   };
 

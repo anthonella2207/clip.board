@@ -161,22 +161,36 @@ def add_reservation(id, total_price, time_of_reservation, user_id, show_id):
     try:
         con = sqlite3.connect("movies.db")
         cur = con.cursor()
+
         cur.execute("""
-            INSERT INTO reservation VALUES
-                (?, ?, ?, ?, ?)
-        """, (id, total_price, time_of_reservation, user_id, show_id))
-        con.commit()
-        print(f"Reservation {id} added.")
-
-        # Insert reservation action into Logs/history
-        # Add History
-        add_logs_history(None, "Seat reservation", datetime.now(), user_id, id)
+            INSERT INTO reservation(id, total_price, time_of_reservation, user_id, show_id)
+            VALUES (NULL, ?, ?, ?, ?)
+        """, (total_price, time_of_reservation, user_id, show_id))
         con.commit()
 
-    except sqlite3.IntegrityError:
-        print(f"Error while adding reservation: IntegrityError")
-    except:
-        print("Error occured")
+        # ✅ Sicherstellen, dass reservation_id korrekt gesetzt ist
+        reservation_id = cur.lastrowid
+        print(f"✅ Reservierung erfolgreich: ID {reservation_id}")
+
+        if reservation_id is None:
+            print("❌ Fehler: reservation_id ist None!")
+            return None
+
+        # ✅ Logs speichern
+        add_logs_history(None, "Seat reservation", datetime.now(), user_id, reservation_id)
+        con.commit()
+
+        return reservation_id
+
+    except sqlite3.IntegrityError as e:
+        print(f"❌ Datenbankfehler (IntegrityError): {e}")
+        return None
+    except sqlite3.Error as e:
+        print(f"❌ SQLite-Fehler: {e}")
+        return None
+    except Exception as e:
+        print(f"❌ Unerwarteter Fehler: {e}")
+        return None
     finally:
         con.close()
 
@@ -827,8 +841,12 @@ def update_seat_status(seat_id, new_status, reservation_id = None):
     finally:
         con.close()
 
-def update_seat_reservation_id_and_status(seat_id, reservations_id):
+def update_seat_reservation_id_and_status(seat_id, reservation_id):
     try:
+        if reservation_id is None:
+            print(f"❌ Fehler: reservation_id ist None! Sitz {seat_id} wird nicht aktualisiert.")
+            return
+
         con = sqlite3.connect("movies.db")
         cur = con.cursor()
         cur.execute("UPDATE seat SET reservation_id = ? WHERE id = ?", (reservation_id, seat_id))
@@ -903,8 +921,9 @@ def is_seat_available(seats):
     for seat in seats:
         cur.execute("SELECT reservation_id FROM seat WHERE id = ?", (seat,))
         res = cur.fetchone()
-        if res[0] is not None:
+        if res and res[0] is not None:
             result = False
+            break
     con.close()
     return result
 

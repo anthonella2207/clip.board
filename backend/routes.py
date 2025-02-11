@@ -4,14 +4,14 @@ import sqlite3
 from flask_cors import cross_origin, CORS
 from cinema_functions_for_database import *
 
-#connection to our database
+#connection to our database ------------------------------------------------------
 def get_db_connection():
     con = sqlite3.connect('movies.db')
     con.row_factory = sqlite3.Row
     print("Datenbank verbunden:", 'movies.db')  # Ausgabe zur Bestätigung
     return con
 
-#Login routes
+#Login routes --------------------------------------------------------------------
 auth_routes = Blueprint('auth', __name__)
 CORS(auth_routes)
 
@@ -29,13 +29,14 @@ def login():
 
         con = get_db_connection()
         cur = con.cursor()
-        cur.execute("SELECT * FROM user WHERE TRIM(email) = ?", (email.strip(),))
+        cur.execute("SELECT id, password, role FROM user WHERE TRIM(email) = ?", (email,))
         user = cur.fetchone()
         con.close()
 
         if user:
-            if user["password"] == password:
-                return jsonify({"success": True, "message": "Login Successful", "role": user["role"]})
+            user_id, stored_password, role = user
+            if stored_password == password:
+                return jsonify({"success": True, "message": "Login Successful", "user_id": user_id, "role": user["role"]})
             else:
                 return jsonify({"success": False, "message": "wrong password"}), 401
         else:
@@ -43,7 +44,7 @@ def login():
     except Exception as e:
         return jsonify({"success": False, "message": "Server error", "error": str(e)}), 500
 
-#sign-up route
+#sign-up route -------------------------------------------------------------------------------
 
 @auth_routes.route('/signup', methods=['POST'])
 @cross_origin()
@@ -77,7 +78,7 @@ def signup():
 
     return jsonify({"success": True, "message": "Registration successful"}), 201
 
-#seats for halls routes
+#seats for halls routes-------------------------------------------------------------------------
 
 seats_routes = Blueprint('seats', __name__)
 
@@ -90,9 +91,50 @@ def get_seats(show_id):
     except Exception as e:
         return jsonify({"error": "Internal server error"}), 500
 
-#route for reservation
+#route for reservation ---------------------------------------------------------------------
 
-#route for filters
+@seats_routes.route("/api/reserve", methods=['POST'])
+@cross_origin()
+
+def reserve_seats():
+    try:
+        data = request.get_json()
+        user_id = data.get('user_id')
+        show_id = data.get('show_id')
+        seat_ids = data.get('seat_ids')
+
+        print(f"🔹 Reservierung erhalten: user_id={user_id}, show_id={show_id}, seat_ids={seat_ids}")
+
+        if not user_id or not show_id or not seat_ids:
+            print("❌ Fehlende Parameter: user_id, show_id oder seat_ids fehlen!")
+            return jsonify({"Success": False, "message": "missing user_id, show_id or seat_ids"}), 400
+
+        available = is_seat_available(seat_ids)
+        if not available:
+            print("❌ Einige Sitze sind bereits reserviert!")
+            return jsonify({"Success": False, "message": "one ore more seats are already reserved"}), 400
+
+        total_price = calculate_total_price(seat_ids, show_id)
+        print(f"🔹 Berechneter Gesamtpreis: {total_price}")
+
+        reservation_id = add_reservation(None, total_price, datetime.now(), user_id, show_id)
+
+        if not reservation_id:
+            print("❌ Fehler: reservation_id ist None! Reservierung fehlgeschlagen.")
+            return jsonify({"success": False, "message": "Reservation failed"}), 500
+
+        for seat_id in seat_ids:
+            update_seat_reservation_id_and_status(seat_id, reservation_id)
+
+        print(f"✅ Reservierung erfolgreich: ID {reservation_id}")
+        return jsonify({"success": True, "reservation_id": reservation_id, "total_price": total_price}), 201
+
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({"error": "Internal server error", "error": str(e)}), 500
+
+#route for filters ------------------------------------------------------------------------------------
 
 movies_routes = Blueprint('movies', __name__)
 @movies_routes.route("/api/movies/now_playing", methods=['GET'])
@@ -133,7 +175,7 @@ def get_filtered_movies():
     except Exception as e:
         return jsonify({"success": False, "message": "server error", "error": str(e)}), 500
 
-#route for genres
+#route for genres -------------------------------------------------------------------------------------
 
 @movies_routes.route("/api/genres", methods=['GET'])
 def get_available_genres():
@@ -157,4 +199,12 @@ def get_available_genres():
     except Exception as e:
         return jsonify({"success": False, "message": "server error", "error": str(e)}), 500
 
-#route for logout
+#route for logout ------------------------------------------------------------------------------
+
+@auth_routes.route('/logout', methods=['POST'])
+@cross_origin()
+def logout():
+    try:
+        return jsonify({"success": True, "message": "User logged out successfully"}), 200
+    except Exception as e:
+        return jsonify({"success": False, "message": "server error", "error": str(e)}), 500
