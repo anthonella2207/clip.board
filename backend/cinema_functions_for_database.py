@@ -642,7 +642,7 @@ def filter_movies_by_keywords(keywords):
 
 # example for function call
 # filter_movies(genres="Animation", keywords=" mufasa king", vote_average="> 7", duration="90-120 minutes")
-def filter_movies(genres=None, duration=None, keywords=None):
+def filter_movies(genres=None, duration=None, keywords=None, vote_average=None):
     con = sqlite3.connect("movies.db")
     cur = con.cursor()
 
@@ -662,6 +662,11 @@ def filter_movies(genres=None, duration=None, keywords=None):
             conditions_list.append("runtime BETWEEN 90 AND 120")
         elif duration == ">120":
             conditions_list.append("runtime > 120")
+
+    #vote_average
+    if vote_average is not None:  # Stelle sicher, dass `vote_average` verarbeitet wird!
+        conditions_list.append("vote_average > ?")
+        parameters.append(vote_average)
 
     # Keywords in Titel oder Beschreibung suchen
     if keywords:

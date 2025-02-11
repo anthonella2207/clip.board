@@ -21,6 +21,7 @@ function App() {
   const [ageRating, setAgeRating] = useState("All");
   const [duration, setDuration] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [voteAverage, setVoteAverage] = useState("All");
 
 const menuItems = [
   { name: "Home", icon: <FaHome />, link: "/" },
@@ -76,6 +77,7 @@ const menuItems = [
       const queryParams = new URLSearchParams({
         genres: genre !== "All" ? genre : "",
         duration: duration !== "All" ? duration : "",
+        vote_average: voteAverage !== "All" ? voteAverage : "",
         keywords: searchQuery !== "" ? searchQuery : "",
       });
 
@@ -96,7 +98,7 @@ const menuItems = [
   };
 
   fetchFilteredMovies();
-}, [genre, duration, searchQuery]);
+}, [genre, duration, voteAverage, searchQuery]);
 
   return (
     <Router>
@@ -141,9 +143,10 @@ const menuItems = [
             <Route path="/" element={
               <div>
                 {/* Filter Bar */}
-                <MovieFilter onFilterChange={({ genre, duration, searchQuery }) => {
+                <MovieFilter onFilterChange={({ genre, duration, voteAverage, searchQuery }) => {
                   setGenre(genre);
                   setDuration(duration);
+                  setVoteAverage(voteAverage);
                   setSearchQuery(searchQuery);
                   }} />
 

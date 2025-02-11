@@ -104,7 +104,14 @@ def get_filtered_movies():
         duration = request.args.get("duration")
         keywords = request.args.get("keywords")
 
-        movies = filter_movies(genres=genres, duration=duration, keywords=keywords)
+        vote_threshold = None
+        if vote_average and vote_average.startswith(">"):
+            try:
+                vote_threshold = float(vote_average[1:])  # removes ">"
+            except ValueError:
+                pass
+
+        movies = filter_movies(genres=genres, vote_average=vote_threshold, duration=duration, keywords=keywords)
 
         formatted_movies = [
             {
