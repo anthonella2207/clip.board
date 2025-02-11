@@ -168,28 +168,27 @@ def add_reservation(id, total_price, time_of_reservation, user_id, show_id):
         """, (total_price, time_of_reservation, user_id, show_id))
         con.commit()
 
-        # ✅ Sicherstellen, dass reservation_id korrekt gesetzt ist
+        #  Sicherstellen, dass reservation_id korrekt gesetzt ist
         reservation_id = cur.lastrowid
-        print(f"✅ Reservierung erfolgreich: ID {reservation_id}")
+        print(f"reservierung erfolgreich: ID {reservation_id}")
 
         if reservation_id is None:
-            print("❌ Fehler: reservation_id ist None!")
+            print("Fehler: reservation_id ist None!")
             return None
 
-        # ✅ Logs speichern
         add_logs_history(None, "Seat reservation", datetime.now(), user_id, reservation_id)
         con.commit()
 
         return reservation_id
 
     except sqlite3.IntegrityError as e:
-        print(f"❌ Datenbankfehler (IntegrityError): {e}")
+        print(f"Datenbankfehler (IntegrityError): {e}")
         return None
     except sqlite3.Error as e:
-        print(f"❌ SQLite-Fehler: {e}")
+        print(f"SQLite-Fehler: {e}")
         return None
     except Exception as e:
-        print(f"❌ Unerwarteter Fehler: {e}")
+        print(f"Unerwarteter Fehler: {e}")
         return None
     finally:
         con.close()
@@ -844,7 +843,6 @@ def update_seat_status(seat_id, new_status, reservation_id = None):
 def update_seat_reservation_id_and_status(seat_id, reservation_id):
     try:
         if reservation_id is None:
-            print(f"❌ Fehler: reservation_id ist None! Sitz {seat_id} wird nicht aktualisiert.")
             return
 
         con = sqlite3.connect("movies.db")
