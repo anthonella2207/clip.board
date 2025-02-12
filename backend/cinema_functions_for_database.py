@@ -130,7 +130,7 @@ def add_user(iD, vorname, nachname, password, email, role):
         con.commit()
         print(f"User {vorname} {nachname} added.")
 
-        add_logs_history(None, "User Added", datetime.now(), None, None)
+        #add_logs_history(None, "User Added", datetime.now(), None, None)
         con.commit()
 
     except sqlite3.IntegrityError:
@@ -176,7 +176,7 @@ def add_reservation(id, total_price, time_of_reservation, user_id, show_id):
             print("Fehler: reservation_id ist None!")
             return None
 
-        add_logs_history(None, "Seat reservation", datetime.now(), user_id, reservation_id)
+        #add_logs_history(None, "Seat reservation", datetime.now(), user_id, reservation_id)
         con.commit()
 
         return reservation_id
@@ -227,19 +227,19 @@ def add_seat(id, status, row_number, seat_number, price, reservation_id, show_iD
     finally:
         con.close()
 
-def add_logs_history(iD, action, action_timestamp, user_iD, reservation_iD):
+def add_logs_history(action, user_iD, reservation_iD = None):
     try:
         con = sqlite3.connect("movies.db")
         cur = con.cursor()
         cur.execute("""
-            INSERT INTO logs_history VALUES
-                (?, ?, ?, ?, ?)
-        """, (iD, action, action_timestamp, user_iD, reservation_iD))
+            INSERT INTO logs_history (action, action_timestamp, user_id, reservation_id)
+            VALUES (?, datetime('now'), ?, ?)
+        """, (action, user_iD, reservation_iD))
         con.commit()
-        print(f"Logs and history {iD} added.")
+        print(f"Logs-history added: {action}, User: {user_iD}, Reservation: {reservation_iD}")
     except sqlite3.IntegrityError:
         print(f"Error while adding Logs/History: IntegrityError")
-    except:
+    except Exception as e:
         print("Error occured")
     finally:
         con.close()

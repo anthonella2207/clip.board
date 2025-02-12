@@ -21,13 +21,22 @@ export const AuthProvider = ({children}) => {
                 body: JSON.stringify({email, password}),
             });
             const data = await response.json();
-            console.log("🔹 Login API Response:", data);
+            console.log("Login API Response:", data);
 
             if(data.success && data.user_id){
                 const userData = { id: data.user_id, email };
                 setUser(userData);
                 localStorage.setItem("user", JSON.stringify(userData));
-                console.log("✅ User gespeichert:", userData);
+                console.log("User gespeichert:", userData);
+
+                await fetch("http://127.0.0.1:5000/add_log", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        action: "User logged in",
+                        user_id: data.user_id
+                    }),
+                });
                 return{success: true};
             }
             else{
@@ -52,6 +61,15 @@ export const AuthProvider = ({children}) => {
                 setUser(null);
                 localStorage.removeItem("user");
                 console.log("User successfully logged out.");
+
+                await fetch("http://127.0.0.1:5000/add_log", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        action: "User logged out",
+                        user_id: user.id
+                    }),
+                });
             }
             else {
                 console.error("Logout failed:", data.message);

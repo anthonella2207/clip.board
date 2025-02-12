@@ -36,7 +36,7 @@ def login():
         if user:
             user_id, stored_password, role = user
             if stored_password == password:
-                return jsonify({"success": True, "message": "Login Successful", "user_id": user_id, "role": user["role"]})
+                return jsonify({"success": True, "message": "Login Successful", "user_id": user_id, "role": role})
             else:
                 return jsonify({"success": False, "message": "wrong password"}), 401
         else:
@@ -74,9 +74,12 @@ def signup():
                 (email, password, first_name, last_name, role))
 
     con.commit()
-    con.close()
 
-    return jsonify({"success": True, "message": "Registration successful"}), 201
+    cur.execute("SELECT id FROM user WHERE email = ?", (email,))
+    user_id = cur.fetchone()[0]
+
+    con.close()
+    return jsonify({"success": True, "message": "Registration successful", "user_id": user_id}), 201
 
 #seats for halls routes-------------------------------------------------------------------------
 
@@ -103,30 +106,23 @@ def reserve_seats():
         show_id = data.get('show_id')
         seat_ids = data.get('seat_ids')
 
-        print(f"🔹 Reservierung erhalten: user_id={user_id}, show_id={show_id}, seat_ids={seat_ids}")
-
         if not user_id or not show_id or not seat_ids:
-            print("❌ Fehlende Parameter: user_id, show_id oder seat_ids fehlen!")
             return jsonify({"Success": False, "message": "missing user_id, show_id or seat_ids"}), 400
 
         available = is_seat_available(seat_ids)
         if not available:
-            print("❌ Einige Sitze sind bereits reserviert!")
-            return jsonify({"Success": False, "message": "one ore more seats are already reserved"}), 400
+            return jsonify({"Success": False, "message": "one or more seats are already reserved"}), 400
 
-        total_price = calculate_total_price(seat_ids, show_id)
-        print(f"🔹 Berechneter Gesamtpreis: {total_price}")
+        total_price = calculate_total_price(seat_ids, show_id) or 0.00
 
         reservation_id = add_reservation(None, total_price, datetime.now(), user_id, show_id)
 
         if not reservation_id:
-            print("❌ Fehler: reservation_id ist None! Reservierung fehlgeschlagen.")
             return jsonify({"success": False, "message": "Reservation failed"}), 500
 
         for seat_id in seat_ids:
             update_seat_reservation_id_and_status(seat_id, reservation_id)
 
-        print(f"✅ Reservierung erfolgreich: ID {reservation_id}")
         return jsonify({"success": True, "reservation_id": reservation_id, "total_price": total_price}), 201
 
     except Exception as e:
@@ -208,3 +204,25 @@ def logout():
         return jsonify({"success": True, "message": "User logged out successfully"}), 200
     except Exception as e:
         return jsonify({"success": False, "message": "server error", "error": str(e)}), 500
+
+#route for add_logs ----------------------------------------------------------------------------
+
+@auth_routes.route('/add_log', methods=['POST'])
+@cross_origin()
+def add_log():
+    try:
+        data = request.get_json()
+        action = data.get("action")
+        user_id = data.get("user_id")
+        reservation_id = data.get("reservation_id", None)  # Optional
+
+        if not action or not user_id:
+            return jsonify({"success": False, "message": "Missing data"}), 400
+
+        print(f"🔍 Debug: add_logs_history({repr('User made a reservation')}, {repr(user_id)}, {repr(reservation_id)})")
+
+        add_logs_history(action, user_id, reservation_id)
+        return jsonify({"success": True, "message": "Log added"}), 200
+
+    except Exception as e:
+        return jsonify({"success": False, "message": "Server error", "error": str(e)}), 500

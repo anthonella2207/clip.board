@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { FaHome, FaHeart, FaBook, FaSignInAlt } from "react-icons/fa";
 import "./App.css";
 import LoginPage from "./LoginPage";
@@ -10,8 +10,15 @@ import FavoritePage from "./FavoritePage";
 import MovieFilter from "./filter";
 import BookingConfirmation from "./BookingConfirmation";
 import { AuthProvider } from "./AuthContext";
+import { AuthContext } from "./AuthContext";
 
 function App() {
+  const { user, logout } = useContext(AuthContext);
+
+  useEffect(() => {
+    console.log("🔄 App hat sich aktualisiert. User: ", user);
+  }, [user]);
+
   const [nowPlayingMovies, setNowPlayingMovies] = useState([]);
   const [topRatedMovies, setTopRatedMovies] = useState([]);
   const [filteredTopRated, setFilteredTopRated] = useState([]);
@@ -103,7 +110,6 @@ const menuItems = [
 }, [genre, duration, voteAverage, searchQuery]);
 
   return (
-      <AuthProvider>
     <Router>
       <div className="App">
         {/* Sidebar */}
@@ -126,10 +132,17 @@ const menuItems = [
           </ul>
           {/* Login at the bottom */}
           <div className="bottom-menu">
-            <Link to="/login" className="menu-item">
-              {bottomMenuItem.icon}
-              <span>{bottomMenuItem.name}</span>
-            </Link>
+            {user ? (
+                <button onClick={logout} className="logout-button">
+                  <FaSignInAlt />
+                  <span>Logout</span>
+                </button>
+            ) : (
+                <Link to="/login" className="menu-item">
+                  <FaSignInAlt />
+                  <span>Login</span>
+                </Link>
+            )}
           </div>
         </div>
 
@@ -210,8 +223,13 @@ const menuItems = [
         </div>
       </div>
     </Router>
-        </AuthProvider>
   );
 }
 
-export default App;
+export default function RootApp() {
+  return (
+    <AuthProvider>
+      <App />
+    </AuthProvider>
+  );
+}

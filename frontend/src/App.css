@@ -154,3 +154,26 @@
   outline: none;
   box-shadow: 0 0 5px #289cd5; /* Resalte azul */
 }
+
+/* Logout Button */
+
+.logout-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 10px;
+  background-color: #289cd5; /* Blaue Farbe, passend zum Stil */
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.logout-button:hover {
+  background-color: #1b7ca6; /* Dunkleres Blau beim Hover */
+  transform: translateX(5px);
+}

@@ -25,9 +25,19 @@ function SignupPage(){
 
     const data = await response.json();
     setMessage(data.message);
+
+    if (data.success) {
+      console.log("✅ Signup erfolgreich, Logging wird erstellt...");
+      await fetch("http://127.0.0.1:5000/add_log", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "User signed up",
+          user_id: data.user_id
+        }),
+      });
+    }
   };
-
-
 
   return (
     <div className="signup-container">  {/* ✅ Hauptcontainer für das Layout */}
