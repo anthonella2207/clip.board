@@ -1,77 +1,239 @@
-/* Asegura que la página ocupe toda la pantalla */
+/* Fondo con imagen de la película y overlay oscuro */
 .movie-page {
-  display: flex;
-  align-items: center; /* Centra verticalmente los elementos */
-  justify-content: center; /* Centra horizontalmente los elementos */
-  height: 100vh; /* Ocupa toda la altura de la pantalla */
-  padding: 20px;
-  box-sizing: border-box;
-  background-color: rgb(29, 28, 42); /* Fondo oscuro consistente */
-  color: #fff; /* Texto blanco */
-}
-
-/* Eliminar fondo del contenedor principal */
-.movie-container {
-  display: flex;
-  max-width: 1200px;
-  width: 100%;
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: none; /* Eliminar sombra */
-  background-color: transparent; /* Fondo transparente */
-}
-
-.movie-info {
-  flex: 2;
+  position: relative;
+  min-height: 100vh;
+  background-size: cover;
+  background-position: center;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* Alinea hacia arriba */
-  padding-right: 20px;
-  margin-top: -20px; /* Reduce la distancia hacia abajo */
+  align-items: center;
+  padding: 20px;
+  color: white;
 }
 
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  min-height: 80vh;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1;
+}
 
-.movie-title {
-  font-size: 2.5rem !important;
-  font-weight: bold !important;
-  text-align: left !important;
-  color: white !important;
+.back-button {
+  position: absolute; /* O fixed si quieres que siempre esté en pantalla */
+  top: 20px;
+  left: 20px;
+  background: rgba(0, 0, 0, 0.5); /* Agrega un fondo semitransparente */
+  border: none;
+  font-size: 2rem;
+  color: white;
+  cursor: pointer;
+  z-index: 100; /* Asegura que esté por encima de todo */
+  padding: 10px;
+  border-radius: 50%; /* Hace un botón redondeado */
   display: flex;
   align-items: center;
-  gap: 20px; /* Espacio entre título y corazón */
+  justify-content: center;
+  transition: background 0.3s;
+}
+
+.back-button:hover {
+  background: rgba(0, 0, 0, 0.8); /* Hace que se destaque al pasar el mouse */
 }
 
 
-.heart-icon {
-  font-size: 1.5rem; /* Reducir tamaño del ícono */
-  color: #d1d1d1; /* Gris por defecto */
-  transition: color 0.3s ease, transform 0.2s ease;
+/* Contenedor de información */
+.movie-container {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+  position: relative;
+  z-index: 2;
+  width: 100%;
+}
+
+/* Estilizar la caja de información */
+.movie-info-box {
+  background: rgba(255, 255, 255, 0.67);
+  backdrop-filter: blur(8px);
+  padding: 25px;
+  border-radius: 10px;
+  flex: 1;
+  color: #1d1c2a;
+  min-height: 375px;
+}
+
+.movie-info-box p strong {
+  font-size: 1.2rem; /* Ajusta este tamaño según necesites */
+  font-weight: bold;
+}
+
+.movie-info-box p  {
+  margin-top: 10px;
+  font-size: 1.1rem; /* Hace el texto de Overview un poco más pequeño */
+  line-height: 1.4; /* Mejora el espaciado del texto */
+}
+
+
+
+/* Póster y botón de Watch Later */
+.movie-poster-container {
+  flex-shrink: 0;
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.movie-poster-two {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.watch-later {
+  background: rgba(255, 255, 255, 0.76);
+  border: none;
+  padding: 10px;
+  color: #1d1c2a;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+.watch-later:hover {
+  background: rgba(255, 255, 255, 0.5);
+
+}
+
+.container {
+    display: flex;
+    justify-content: flex-end; /* Alinea los elementos a la derecha */
+    max-width: 900px; /* Ajusta según necesites */
+    margin: 0 auto; /* Centra el contenedor */
+}
+
+.showtimes-box {
+    background: rgba(255, 255, 255, 0.67);
+    backdrop-filter: blur(8px);
+    padding: 10px;
+    border-radius: 10px;
+    max-width: 900px;
+    text-align: center;
+    color: #1d1c2a;
+    margin-left: auto; /* Empuja la caja hacia la derecha */
+    margin-top: 10px;
+}
+
+.showtimes-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.showtime-button {
+  background: white;
+  color: black;
+  padding: 10px 15px;
+  border-radius: 5px;
+  border: none;
   cursor: pointer;
 }
 
-.heart-icon.favorite-active {
-  color: #e63946; /* Rojo cuando es favorito */
+.showtime-button:hover {
+  background: #ddd;
 }
 
-.movie-details {
-  margin-top: 20px;
-  line-height: 1.8;
+
+.watch-later {
+  background: rgba(255, 255, 255, 0.67);
+  backdrop-filter: blur(8px);
+  border: none;
+  padding: 10px;
+  color: #1d1c2a;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 15px;
+  font-weight: bold;
+  transition: background 0.3s, color 0.3s;
 }
 
-.movie-details p {
-  margin: 10px 0;
+.watch-later:hover {
+  background: rgba(255, 255, 255, 0.5);
 }
 
-.movie-poster-container {
-  flex: 1; /* Ocupa menos espacio */
+.watch-later-active {
+  background: rgba(255, 255, 255, 0.76);
+  color: rgb(204, 41, 41);
+}
+
+.top-rated-box {
+  margin-top: 30px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.67);
+  backdrop-filter: blur(8px);
+  border-radius: 12px;
+  text-align: center;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.25);
+  color: #1d1c2a;
+}
+
+.top-rated-box h3 {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #1d1c2a;
+  margin-bottom: 8px;
+}
+
+.stars {
+  font-size: 1.5rem;
+  color: #cca238;
   display: flex;
-  justify-content: flex-end; /* Alinea hacia la derecha */
-  align-items: flex-start; /* Alinea hacia arriba */
-  max-height: 500px; /* Tamaño máximo del póster */
+  justify-content: center;
+  gap: 5px;
 }
-.movie-poster {
-  max-width: 100%;
-  max-height: 900px; /* Incrementar tamaño máximo del póster aún más */
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+
+.star {
+  display: inline-block;
+}
+
+.upcoming-box {
+  margin-top: 20px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.67);
+  backdrop-filter: blur(8px);
+  border-radius: 12px;
+  text-align: center;
+  width: 100%;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.25);
+  color: #1d1c2a;
+}
+
+.upcoming-box h3 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.upcoming-icon {
+  font-size: 1.8rem;
+  color: rgb(40, 156, 213); /* Naranja para destacar el "Coming Soon" */
+}
+
+.info-text {
+  font-size: 1.2rem;
+  margin-top: 10px;
+  color: #333;
 }
