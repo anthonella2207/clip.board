@@ -24,7 +24,7 @@ export const AuthProvider = ({children}) => {
             console.log("Login API Response:", data);
 
             if(data.success && data.user_id){
-                const userData = { id: data.user_id, email };
+                const userData = { id: data.user_id, email, firstName: data.first_name, lastName: data.last_name };
                 setUser(userData);
                 localStorage.setItem("user", JSON.stringify(userData));
                 console.log("User gespeichert:", userData);
@@ -80,8 +80,52 @@ export const AuthProvider = ({children}) => {
         }
     };
 
+    const updateEmail = async (newEmail, password) => {
+        if(!user) {
+            return {success: false, message: "User not logged in"};
+        }
+
+        try{
+            const response = await fetch("http://127.0.0.1:5000/update_email", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({user_id: user.id, new_email: newEmail, password}),
+            });
+
+            const data = await response.json();
+            if(data.success){
+                setUser({...user, email: newEmail});
+                localStorage.setItem("user", JSON.stringify({...user, email: newEmail}));
+            }
+            return data;
+        }
+        catch (error){
+            console.error("Error updating email: ", error);
+            return {success: false, message: "Server error"};
+        }
+    };
+
+    const updatePassword = async (oldPassword, newPassword) => {
+        if(!user){
+            return {success: false, message: "User not logged in"};
+        }
+        try{
+            const response = await fetch("http://127.0.0.1:5000/update_password", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({user_id: user.id, old_password: oldPassword, new_password: newPassword}),
+            });
+
+            return await response.json();
+        }
+        catch (error){
+            console.error("Error updating password: ", error);
+            return {success: false, message: "Server error"};
+        }
+    };
+
     return(
-        <AuthContext.Provider value={{user, login, logout}}>
+        <AuthContext.Provider value={{ user, login, logout, updateEmail, updatePassword }}>
             {children}
         </AuthContext.Provider>
     );
