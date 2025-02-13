@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useContext } from "react";
-import { FaHome, FaHeart, FaBook, FaSignInAlt } from "react-icons/fa";
+import { FaClock, FaHome, FaBook, FaSignInAlt } from "react-icons/fa";
 import "./App.css";
 import LoginPage from "./LoginPage";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link} from "react-router-dom";
 import SignupPage from "./SignupPage";
 import SeatSelection from "./SeatPage";
 import MoviePage from "./MoviePage";
@@ -14,6 +14,7 @@ import { AuthContext } from "./AuthContext";
 
 function App() {
   const { user, logout } = useContext(AuthContext);
+
 
   useEffect(() => {
     console.log("🔄 App hat sich aktualisiert. User: ", user);
@@ -34,8 +35,8 @@ function App() {
 
 const menuItems = [
   { name: "Home", icon: <FaHome />, link: "/" },
-  { name: "Favorite", icon: <FaHeart />, link: "/favorites" }, // Agregar link aquí
-  { name: "Bookings", icon: <FaBook /> },
+  { name: "Watch Later", icon: <FaClock />, link: "/watch-later" }, // Ahora es "Watch Later"
+  { name: "Bookings", icon: <FaBook />, link: "/bookings" }, // Agregamos el link faltante
 ];
 
 
@@ -121,24 +122,31 @@ const menuItems = [
             </h1>
           </div>
           <ul className="menu-list">
-            {menuItems.map((item, index) => (
-                <li key={index} className="menu-item">
-                  <Link to={item.link}>
-                    {item.icon}
-                    <span>{item.name}</span>
-                  </Link>
-                </li>
-            ))}
+            {menuItems.map((item, index) => {
+              const isActive = location.pathname === item.link; // Comprueba si es la página actual
+              return (
+                <Link
+                  to={item.link}
+                  className={`menu-link ${isActive ? "active-menu" : ""}`} // Aplica la clase si es activo
+                  key={index}
+                >
+                  {item.icon}
+                  <span>{item.name}</span>
+                </Link>
+              );
+            })}
           </ul>
+
+
           {/* Login at the bottom */}
           <div className="bottom-menu">
             {user ? (
-                <button onClick={logout} className="logout-button">
+                <button onClick={logout} className="log-button">
                   <FaSignInAlt />
                   <span>Logout</span>
                 </button>
             ) : (
-                <Link to="/login" className="menu-item">
+                <Link to="/login" className="login-button">
                   <FaSignInAlt />
                   <span>Login</span>
                 </Link>
@@ -155,7 +163,7 @@ const menuItems = [
             <Route path="/seats" element={<SeatSelection />} />
             <Route path="/seats/:showId" element={<SeatSelection />} />
             <Route path="/movie/:id" element={<MoviePage />} />
-            <Route path="/favorites" element={<FavoritePage />} />
+            <Route path="/watch-later" element={<FavoritePage />} />
             <Route path="/booking-confirmation" element={<BookingConfirmation />} />
             {/* Default route that shows the home page */}
             <Route path="/" element={

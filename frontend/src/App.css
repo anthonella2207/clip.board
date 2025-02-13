@@ -85,38 +85,83 @@
 
 /* Menu List */
 .menu-list {
+  margin-top: -370px;
   list-style: none;
   padding: 0;
   width: 100%;
 }
 
-.menu-item {
+.menu-link {
   display: flex;
   align-items: center;
-  gap: 15px;
-  padding: 15px;
-  border-radius: 10px;
+  width: 100%;
+  text-decoration: none;
+  color: #fff; /* Color blanco para el texto */
+  font-weight: bold;
+    display: flex;
+  align-items: center;
+  justify-content: flex-start; /* Alinear los iconos y texto a la izquierda */
+  gap: 10px;
+  padding: 12px 10px; /* Reducimos el padding para hacerlo más compacto */
+  border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease;
+  width: 85%; /* Hacer que los botones tengan un ancho más lógico */
+  margin: 5px auto; /* Centrar los elementos */
 }
 
-.menu-item:hover {
-  background-color: rgba(255, 255, 255, 0.07);
-  transform: translateX(5px);
+.menu-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: scale(1.05);
 }
 
-.menu-item span {
-  font-size: 1rem;
-  color: #d1d1d1;
+.active-menu {
+  background-color: rgba(40, 156, 213, 0.3); /* Azul medio transparente */
+  border-radius: 8px;
 }
 
-/* Bottom Menu */
-.bottom-menu {
-  margin-top: auto; /* Empuja el login al final */
+
+.login-button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
   width: 100%;
-  text-align: center; /* Centra el contenido del login */
-  padding-top: 20px;
-  border-top: 1px solid #141414; /* Línea separadora */
+  padding: 12px 10px;
+  text-decoration: none;
+  color: #fff; /* Color blanco para el texto */
+  font-weight: bold;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin: 5px auto; /* Centrar los elementos */
+}
+
+.login-button:hover {
+  background-color: #1a6da8;
+}
+
+.log-button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 10px;
+  text-decoration: none;
+  color: white;
+  background-color: #289cd5; /* Blaue Farbe, passend zum Stil */
+  font-weight: bold;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin: 5px auto; /* Centrar los elementos */
+}
+
+.log-button:hover {
+  background-color: #1b7ca6; /* Dunkleres Blau beim Hover */
+  transform: translateX(5px);
 }
 
 /* Content Area */
@@ -155,25 +200,4 @@
   box-shadow: 0 0 5px #289cd5; /* Resalte azul */
 }
 
-/* Logout Button */
 
-.logout-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  width: 100%;
-  padding: 15px;
-  border: none;
-  border-radius: 10px;
-  background-color: #289cd5; /* Blaue Farbe, passend zum Stil */
-  color: white;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.logout-button:hover {
-  background-color: #1b7ca6; /* Dunkleres Blau beim Hover */
-  transform: translateX(5px);
-}
