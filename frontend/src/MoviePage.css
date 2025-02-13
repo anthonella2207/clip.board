@@ -120,6 +120,7 @@
     backdrop-filter: blur(8px);
     padding: 10px;
     border-radius: 10px;
+    min-width: 400px;
     max-width: 900px;
     text-align: center;
     color: #1d1c2a;
@@ -135,17 +136,31 @@
 }
 
 .showtime-button {
-  background: white;
-  color: black;
-  padding: 10px 15px;
-  border-radius: 5px;
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
   border: none;
+  background-color: rgba(255, 255, 255, 0.8);
+  color: #1d1c2a;
+  font-size: 1rem;
+  font-weight: bold;
+  text-align: center;
+  border-radius: 8px;
+    max-width: 220px;
   cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .showtime-button:hover {
-  background: #ddd;
+  background-color: rgba(255, 255, 255, 1);
+  transform: scale(1.05);
 }
+
+.showtime-button:active {
+  background-color: rgba(200, 200, 200, 1);
+}
+
 
 
 .watch-later {

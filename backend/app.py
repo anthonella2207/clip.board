@@ -5,6 +5,7 @@ from flask import Flask, jsonify, send_from_directory
 from flask_cors import CORS
 import requests
 from PIL import Image
+import random
 from io import BytesIO
 from cinema_functions_for_database import *
 from routes import *
@@ -333,6 +334,25 @@ def add_initial_seats():
                 id_counter += 1
     con.commit()
     con.close()
+
+def get_db_connection():
+    conn = sqlite3.connect("movies.db")
+    conn.row_factory = sqlite3.Row
+    return conn
+
+@app.route("/api/showtimes/<int:movie_id>", methods=["GET"])
+def get_showtimes(movie_id):
+    conn = get_db_connection()
+    showtimes = conn.execute("""
+        SELECT h.name AS hall, s.showtime 
+        FROM shows s
+        JOIN hall h ON s.hall_id = h.id
+        WHERE s.movie_id = ?
+        ORDER BY s.showtime ASC
+    """, (movie_id,)).fetchall()
+    conn.close()
+
+    return jsonify([{"hall": row["hall"], "showtime": row["showtime"]} for row in showtimes])
 
 
 if __name__ == "__main__":

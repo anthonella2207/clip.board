@@ -13,6 +13,7 @@ const MoviePage = () => {
   const navigate = useNavigate();
   const [movie, setMovie] = useState(null);
   const [cast, setCast] = useState([]);
+ const [showtimes, setShowtimes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isNowPlaying, setIsNowPlaying] = useState(false);
   const [isTopRated, setIsTopRated] = useState(false);
@@ -38,6 +39,13 @@ const MoviePage = () => {
       const nowPlayingData = await nowPlayingResponse.json();
       const isPlaying = nowPlayingData.results.some(m => m.id === data.id);
       setIsNowPlaying(isPlaying);
+
+      // Si la película está en Now Playing, obtener los horarios desde Flask
+      if (isPlaying) {
+        const showtimesResponse = await fetch(`http://127.0.0.1:5000/api/showtimes/${data.id}`);
+        const showtimesData = await showtimesResponse.json();
+        setShowtimes(showtimesData);
+        }
 
       // Verificar si la película está en Top Rated
       const topRatedResponse = await fetch(`${BASE_URL}/movie/top_rated?api_key=${API_KEY}&language=en-US`);
@@ -136,13 +144,28 @@ const MoviePage = () => {
         </div>
       </div>
 
-      {/* Show just if it is Now Playing */}
-      {isNowPlaying && (
-        <div className="showtimes-box">
-          <h3>Available Showtimes</h3>
-          <p>No showtimes available at the moment.</p>
-        </div>
-      )}
+{/* Mostrar solo si es Now Playing */}
+{isNowPlaying && (
+  <div className="showtimes-box">
+    <h3>Available Showtimes</h3>
+    {showtimes.length > 0 ? (
+      <div className="showtimes-list">
+        {showtimes.map((show, index) => (
+          <button
+            key={index}
+            className="showtime-button"
+            onClick={() => navigate(`/seats?hall=${show.hall}&time=${show.showtime}&movie=${movie.id}`)}
+          >
+            🎥 {show.hall} - ⏰ {show.showtime}
+          </button>
+        ))}
+      </div>
+    ) : (
+      <p>No showtimes available at the moment.</p>
+    )}
+  </div>
+)}
+
 
       {/* Show just if it is Top Rated */}
       {isTopRated && (

@@ -152,6 +152,7 @@ const menuItems = [
           <Routes>
             <Route path="/login" element={<LoginPage/>}/>
             <Route path="/signup" element={<SignupPage />} />
+            <Route path="/seats" element={<SeatSelection />} />
             <Route path="/seats/:showId" element={<SeatSelection />} />
             <Route path="/movie/:id" element={<MoviePage />} />
             <Route path="/favorites" element={<FavoritePage />} />
