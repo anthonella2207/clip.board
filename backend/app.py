@@ -344,7 +344,7 @@ def get_db_connection():
 def get_showtimes(movie_id):
     conn = get_db_connection()
     showtimes = conn.execute("""
-        SELECT h.name AS hall, s.showtime 
+        SELECT h.name AS hall, s.showtime, s.id AS showtimeId 
         FROM shows s
         JOIN hall h ON s.hall_id = h.id
         WHERE s.movie_id = ?
@@ -352,7 +352,10 @@ def get_showtimes(movie_id):
     """, (movie_id,)).fetchall()
     conn.close()
 
-    return jsonify([{"hall": row["hall"], "showtime": row["showtime"]} for row in showtimes])
+    return jsonify([
+        {"hall": row["hall"], "showtime": row["showtime"], "showtimeId": row["showtimeId"]}
+        for row in showtimes
+    ])
 
 
 if __name__ == "__main__":
