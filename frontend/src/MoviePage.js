@@ -130,7 +130,7 @@ const MoviePage = () => {
               onClick={toggleFavorite}
               style={{ marginTop: "15px" }}
             >
-              {isFavorite ? <IoMdClose /> : <FaRegClock />} {isFavorite ? "Remove from Watch Later" : "Watch Later"}
+              {isFavorite ? <IoMdClose /> : <FaRegClock />} {isFavorite ? "Remove from Book Later" : "Book Later"}
             </button>
           )}
         </div>
@@ -154,8 +154,8 @@ const MoviePage = () => {
           <button
             key={index}
             className="showtime-button"
-            onClick={() => navigate(`/seats?hall=${show.hall}&time=${show.showtime}&movie=${movie.id}`)}
-          >
+            onClick={() => navigate(`/seats/${show.id}`)}
+            >
             🎥 {show.hall} - ⏰ {show.showtime}
           </button>
         ))}

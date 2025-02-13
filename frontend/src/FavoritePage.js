@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { IoArrowBackOutline } from "react-icons/io5";
 import "./FavoritePage.css"; // Asegura que el nombre del archivo es correcto
 
 const FavoritePage = () => {
@@ -10,16 +11,10 @@ const FavoritePage = () => {
     setFavoriteMovies(storedFavorites);
   }, []);
 
-  const removeFromFavorites = (movieId) => {
-    const updatedFavorites = favoriteMovies.filter(movie => movie.id !== movieId);
-    setFavoriteMovies(updatedFavorites);
-    localStorage.setItem("favoriteMovies", JSON.stringify(updatedFavorites));
-  };
-
   return (
     <div className="favorites-container">
-      <h1 className="favorites-title">Favorite Movies</h1>
-      <Link to="/" className="back-link">⬅ Back to Home</Link>
+      <Link to="/" className="back-link">⬅</Link>
+      <h1 className="favorites-title">Book Later List</h1>
 
       {favoriteMovies.length === 0 ? (
         <p className="no-favorites">No favorite movies yet.</p>
@@ -28,14 +23,11 @@ const FavoritePage = () => {
           {favoriteMovies.map((movie) => (
             <div key={movie.id} className="movie-card">
               <img
-                src={`http://127.0.0.1:5000${movie.poster_path}`}
-                alt={movie.title}
-                className="movie-poster"
-              />
-              <h3 className="movie-title">{movie.title}</h3>
-              <button className="remove-btn" onClick={() => removeFromFavorites(movie.id)}>
-                ❌ Remove
-              </button>
+                  src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                  alt={movie.title}
+                  className="movie-poster"
+                />
+              <button className="book-now-btn">Book Now</button>
             </div>
           ))}
         </div>

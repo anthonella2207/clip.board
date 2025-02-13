@@ -35,7 +35,7 @@ function App() {
 
 const menuItems = [
   { name: "Home", icon: <FaHome />, link: "/" },
-  { name: "Watch Later", icon: <FaClock />, link: "/watch-later" }, // Ahora es "Watch Later"
+  { name: "Book Later", icon: <FaClock />, link: "/book-later" }, // Ahora es "Watch Later"
   { name: "Bookings", icon: <FaBook />, link: "/bookings" }, // Agregamos el link faltante
 ];
 
@@ -160,10 +160,9 @@ const menuItems = [
           <Routes>
             <Route path="/login" element={<LoginPage/>}/>
             <Route path="/signup" element={<SignupPage />} />
-            <Route path="/seats" element={<SeatSelection />} />
             <Route path="/seats/:showId" element={<SeatSelection />} />
             <Route path="/movie/:id" element={<MoviePage />} />
-            <Route path="/watch-later" element={<FavoritePage />} />
+            <Route path="/book-later" element={<FavoritePage />} />
             <Route path="/booking-confirmation" element={<BookingConfirmation />} />
             {/* Default route that shows the home page */}
             <Route path="/" element={
