@@ -1,5 +1,6 @@
-import React, {use, useEffect, useState, useRef, useContext, useCallback} from "react";
+import React, {useEffect, useState, useRef, useContext, useCallback} from "react";
 import './SeatPage.css'
+import { MdEventSeat } from "react-icons/md";
 import { useParams, useNavigate } from "react-router-dom";
 import reserveSeats from "./Reservation";
 import {AuthContext} from "./AuthContext";
@@ -33,6 +34,7 @@ export default function SeatSelection() {
     const[selectedSeats, setSelectedSeats] = useState([]);
     const[totalPrice, setTotalPrice] = useState(0);
     const[stats, setStats] = useState(null);
+    const [buttonActive, setButtonActive] = useState(false);
 
     useEffect(() => {
     if (!showId) {
@@ -62,9 +64,10 @@ export default function SeatSelection() {
             const seat = seats.find(s => s.id === seatId);
             return acc + (seat ? Number(seat.price) : 0);
         }, 0);
-
-        console.log("Neuer Gesamtpreis berechnet:", newTotalPrice);
         setTotalPrice(newTotalPrice);
+
+        // Cambiar estado del botón dependiendo de la selección de asientos
+        setButtonActive(selectedSeats.length > 0);
     }, [selectedSeats, seats]);
 
     const toggleSeatSelection = (seatId, seatPrice) => {
@@ -162,25 +165,29 @@ export default function SeatSelection() {
         }
     };
 
-    return (
+        return (
         <div className="seat-page">
             {isAdmin && stats && (
-            <div className="admin-stats">
-                <h3>Show Statistics</h3>
-                <p>Available Seats: {stats.available_seats}</p>
-                <p>Booked Seats: {stats.booked_seats}</p>
-                <p>Total Revenue: €{stats.revenue.toFixed(2)}</p>
-            </div>
-        )}
-            <h2 className="seat-title">Seat selection</h2>
-            <div className="seat-grid">
-                {seats.length > 0 ?(
-                    seats.map((seat) => (
-                        console.log("Seat price check:", seat.price),
+                <div className="admin-stats">
+                    <h3>Show Statistics</h3>
+                    <p>Available Seats: {stats.available_seats}</p>
+                    <p>Booked Seats: {stats.booked_seats}</p>
+                    <p>Total Revenue: €{stats.revenue.toFixed(2)}</p>
+                </div>
+            )}
+            <h2 className="seat-title">Seat Selection</h2>
+            <div className="seat-container">
+                <div className="row-numbers">
+                    {Array.from(new Set(seats.map(seat => seat.row_number))).map(row => (
+                        <div key={row} className="row-number">{row}</div>
+                    ))}
+                </div>
+                <div className="seat-grid">
+                    {seats.length > 0 ? (
+                        seats.map((seat) => (
                             <div
                                 key={seat.id}
-                                className={`seat ${seat.isbooked ? "seat-booked" : ""} 
-                                ${selectedSeats.includes(seat.id) ? "seat-selected" : ""}`}
+                                className={`seat ${seat.isbooked ? "seat-booked" : "seat-free"} ${selectedSeats.includes(seat.id) ? "seat-selected" : ""}`}
                                 onClick={() => {
                                     if (!seat.isbooked) {
                                         toggleSeatSelection(seat.id, Number(seat.price) || 0);
@@ -192,21 +199,22 @@ export default function SeatSelection() {
                                     }
                                 }}
                             >
-                                {seat.row_number}-{seat.seat_number}
+                                <MdEventSeat />
+                                <span className="seat-tooltip">Row {seat.row_number} - Seat {seat.seat_number}</span>
                             </div>
-
-                    ))
-                ) : (
-                    <p>Loading seats...</p>
-                )}
+                        ))
+                    ) : (
+                        <p>Loading seats...</p>
+                    )}
+                </div>
             </div>
             {isAdmin && stats && (
                 <div className="chart-container">
-                    <h3>Seat availability</h3>
+                    <h3>Seat Availability</h3>
                     <Pie
                         className="pie-chart"
                         data={{
-                            labels: ["available seats", "booked seats"],
+                            labels: ["Available Seats", "Booked Seats"],
                             datasets: [
                                 {
                                     label: "Seats",
@@ -219,27 +227,26 @@ export default function SeatSelection() {
                     />
                 </div>
             )}
-
             <div className="summary">
                 {selectedSeats.length > 0 ? (
                     <>
                         <p>Selected Seats: {selectedSeats.join(", ")}</p>
-                        <p><strong>Total price: €{totalPrice.toFixed(2)}</strong></p>
+                        <p><strong>Total Price: €{totalPrice.toFixed(2)}</strong></p>
                     </>
-
                 ) : (
                     <p>No seats selected</p>
                 )}
             </div>
             {!isAdmin && (
                 <button
-                    className="booking-button"
+                    className={`booking-button ${selectedSeats.length > 0 ? "active" : ""}`}
                     disabled={selectedSeats.length === 0}
-                    onClick={handleReservation}>
+                    onClick={handleReservation}
+                >
                     Book Now!
                 </button>
             )}
-
         </div>
     );
+
 }
