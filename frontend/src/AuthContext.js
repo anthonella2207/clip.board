@@ -24,7 +24,13 @@ export const AuthProvider = ({children}) => {
             console.log("Login API Response:", data);
 
             if(data.success && data.user_id){
-                const userData = { id: data.user_id, email, firstName: data.first_name, lastName: data.last_name };
+                const userData = {
+                    id: data.user_id,
+                    email: data.email,
+                    firstName: data.first_name,
+                    lastName: data.last_name,
+                    role: data.role
+                };
                 setUser(userData);
                 localStorage.setItem("user", JSON.stringify(userData));
                 console.log("User gespeichert:", userData);

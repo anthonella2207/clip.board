@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { FaClock, FaHome, FaBook, FaSignInAlt } from "react-icons/fa";
+import {FaClock, FaHome, FaBook, FaSignInAlt, FaShoppingCart} from "react-icons/fa";
 import "./App.css";
 import LoginPage from "./LoginPage";
 import { BrowserRouter as Router, Routes, Route, Link} from "react-router-dom";
@@ -12,14 +12,19 @@ import BookingConfirmation from "./BookingConfirmation";
 import { AuthProvider } from "./AuthContext";
 import { AuthContext } from "./AuthContext";
 import ProfilePage from "./ProfilePage";
+import AdminShowSelection from "./AdminShowSelection";
+import {FaStairs} from "react-icons/fa6";
+import StatisticsPage from "./Statistics";
+import AdminLogs from "./AdminLogs";
+import ProtectedRoute from "./ProtectedRoute";
 
 function App() {
   const { user, logout } = useContext(AuthContext);
 
-
   useEffect(() => {
     console.log("🔄 App hat sich aktualisiert. User: ", user);
   }, [user]);
+
 
   const [nowPlayingMovies, setNowPlayingMovies] = useState([]);
   const [topRatedMovies, setTopRatedMovies] = useState([]);
@@ -41,7 +46,17 @@ const menuItems = [
 ];
 
 if (user) {
-  menuItems.push({ name: "Profile", icon: <FaSignInAlt />, link: "/profile" });
+  if(user.role === "Admin"){
+    menuItems.push(
+        {name: "Reservations", icon: <FaShoppingCart />, link: "/reservations"},
+        {name: "Logs", icon: <FaBook />, link: "/logs"},
+        {name: "Profile", icon: <FaSignInAlt />, link: "/profile"},
+        {name: "Stats", icon: <FaStairs />, link: "/statistics"}
+    );
+  }
+  else{
+    menuItems.push({ name: "Profile", icon: <FaSignInAlt />, link: "/profile" });
+    }
 }
 
 
@@ -116,7 +131,6 @@ if (user) {
 }, [genre, duration, voteAverage, searchQuery]);
 
   return (
-    <Router>
       <div className="App">
         {/* Sidebar */}
         <div className="sidebar">
@@ -147,12 +161,12 @@ if (user) {
           <div className="bottom-menu">
             {user ? (
                 <button onClick={logout} className="log-button">
-                  <FaSignInAlt />
+                  <FaSignInAlt/>
                   <span>Logout</span>
                 </button>
             ) : (
                 <Link to="/login" className="login-button">
-                  <FaSignInAlt />
+                  <FaSignInAlt/>
                   <span>Login</span>
                 </Link>
             )}
@@ -165,11 +179,19 @@ if (user) {
           <Routes>
             <Route path="/login" element={<LoginPage/>}/>
             <Route path="/signup" element={<SignupPage />} />
-            <Route path="/seats/:showId" element={<SeatSelection />} />
             <Route path="/movie/:id" element={<MoviePage />} />
+
+            <Route element={<ProtectedRoute />}>
+            <Route path="/seats/:showId" element={<SeatSelection />} />
             <Route path="/book-later" element={<FavoritePage />} />
             <Route path="/booking-confirmation" element={<BookingConfirmation />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/reservations" element={<AdminShowSelection />} />
+            <Route path="/reservations/:showId" element={<SeatSelection />} />
+            <Route path="/statistics" element={<StatisticsPage />} />
+            <Route path="/logs" element={<AdminLogs />} />
+          </Route>
+
             {/* Default route that shows the home page */}
             <Route path="/" element={
               <div>
@@ -236,14 +258,15 @@ if (user) {
           </Routes>
         </div>
       </div>
-    </Router>
   );
 }
 
 export default function RootApp() {
   return (
-    <AuthProvider>
-      <App />
-    </AuthProvider>
+    <Router>
+      <AuthProvider>
+        <App />
+      </AuthProvider>
+    </Router>
   );
 }

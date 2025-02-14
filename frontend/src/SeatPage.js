@@ -1,8 +1,11 @@
-import React, {use, useEffect, useState, useRef, useContext} from "react";
+import React, {use, useEffect, useState, useRef, useContext, useCallback} from "react";
 import './SeatPage.css'
 import { useParams, useNavigate } from "react-router-dom";
 import reserveSeats from "./Reservation";
 import {AuthContext} from "./AuthContext";
+import {Pie} from "react-chartjs-2";
+import { Chart, ArcElement, Tooltip, Legend } from "chart.js";
+Chart.register(ArcElement, Tooltip, Legend);
 
 const fetchSeats = async (showId) => {
     try {
@@ -24,32 +27,45 @@ const fetchSeats = async (showId) => {
 export default function SeatSelection() {
     const { showId } = useParams();
     const { user } = useContext(AuthContext);
+    const isAdmin = user?.role === "Admin";
     const navigate = useNavigate();
     const[seats, setSeats] = useState([]);
     const[selectedSeats, setSelectedSeats] = useState([]);
     const[totalPrice, setTotalPrice] = useState(0);
+    const[stats, setStats] = useState(null);
+
+    useEffect(() => {
+    if (!showId) {
+        console.error("No showId found, redirecting...");
+        navigate("/reservations"); // Falls keine ShowId vorhanden ist, zurück zur Show-Auswahl
+        return;
+    }
+
+    fetchSeats(showId).then(setSeats);
+}, [showId]);
+
 
     const hasFetched = useRef(false);
 
     useEffect(() => {
-    if (!hasFetched.current) {
-        hasFetched.current = true;
-        fetchSeats(showId).then((data) => {
-            console.log("Seats received:", data);
-            setSeats(data);
-        });
-    }
-}, [showId]);
+        if (!hasFetched.current) {
+            hasFetched.current = true;
+            fetchSeats(showId).then((data) => {
+                console.log("Seats received:", data);
+                setSeats(data);
+            });
+        }
+    }, [showId]);
 
-useEffect(() => {
-    const newTotalPrice = selectedSeats.reduce((acc, seatId) => {
-        const seat = seats.find(s => s.id === seatId);
-        return acc + (seat ? Number(seat.price) : 0);
-    }, 0);
+    useEffect(() => {
+        const newTotalPrice = selectedSeats.reduce((acc, seatId) => {
+            const seat = seats.find(s => s.id === seatId);
+            return acc + (seat ? Number(seat.price) : 0);
+        }, 0);
 
-    console.log("Neuer Gesamtpreis berechnet:", newTotalPrice);
-    setTotalPrice(newTotalPrice);
-}, [selectedSeats, seats]);
+        console.log("Neuer Gesamtpreis berechnet:", newTotalPrice);
+        setTotalPrice(newTotalPrice);
+    }, [selectedSeats, seats]);
 
     const toggleSeatSelection = (seatId, seatPrice) => {
         const price = Number(seatPrice) || 0;
@@ -68,6 +84,26 @@ useEffect(() => {
             }
         });
     };
+
+    const fetchShowStats = useCallback(async () => {
+        if(!showId){
+            return;
+        }
+        try{
+            const response = await fetch(`http://127.0.0.1:5000/api/show_stats?show_id=${showId}`);
+            const data = await response.json();
+            if(data.success){
+                setStats(data);
+            }
+        }
+        catch(error){
+            console.error("Error fetching show stats:", error);
+        }
+    }, [showId]);
+
+    useEffect(() => {
+        fetchShowStats();
+    }, [fetchShowStats]);
 
     const handleReservation = async() => {
         if (!user) {
@@ -91,7 +127,7 @@ useEffect(() => {
             return;
         }
 
-        console.log("🔹 Reservierung wird gestartet für:", user.id, selectedSeats);
+        console.log("Reservierung wird gestartet für:", user.id, selectedSeats);
 
         const result = await  reserveSeats(user.id, showId, selectedSeats);
 
@@ -108,25 +144,82 @@ useEffect(() => {
         }
     };
 
+    const deleteReservation = async (seatId) => {
+        try{
+            const response = await fetch(`http://127.0.0.1:5000/api/delete_reservation?seat_id=${seatId}`, {
+                method: "DELETE",
+            });
+
+            const data = await response.json();
+            if(data.success){
+                alert("Reservation deleted successfully");
+                fetchSeats(showId).then(setSeats);
+                fetchShowStats();
+            }
+        }
+        catch(error){
+            console.error("Error deleting reservation:", error);
+        }
+    };
+
     return (
         <div className="seat-page">
+            {isAdmin && stats && (
+            <div className="admin-stats">
+                <h3>Show Statistics</h3>
+                <p>Available Seats: {stats.available_seats}</p>
+                <p>Booked Seats: {stats.booked_seats}</p>
+                <p>Total Revenue: €{stats.revenue.toFixed(2)}</p>
+            </div>
+        )}
             <h2 className="seat-title">Seat selection</h2>
             <div className="seat-grid">
                 {seats.length > 0 ?(
                     seats.map((seat) => (
                         console.log("Seat price check:", seat.price),
-                        <div
-                            key={seat.id}
-                            className={`seat ${seat.isbooked ? "seat-booked": ""}
-                            ${selectedSeats.includes(seat.id) ? "seat-selected": ""}`}
-                            onClick={() => !seat.isbooked && toggleSeatSelection(seat.id, Number(seat.price) || 0)}>
-                            {seat.row_number}-{seat.seat_number}
-                        </div>
+                            <div
+                                key={seat.id}
+                                className={`seat ${seat.isbooked ? "seat-booked" : ""} 
+                                ${selectedSeats.includes(seat.id) ? "seat-selected" : ""}`}
+                                onClick={() => {
+                                    if (!seat.isbooked) {
+                                        toggleSeatSelection(seat.id, Number(seat.price) || 0);
+                                    } else if (isAdmin) {
+                                        const confirmDelete = window.confirm("Do you want to delete this reservation?");
+                                        if (confirmDelete) {
+                                            deleteReservation(seat.id);
+                                        }
+                                    }
+                                }}
+                            >
+                                {seat.row_number}-{seat.seat_number}
+                            </div>
+
                     ))
                 ) : (
                     <p>Loading seats...</p>
                 )}
             </div>
+            {isAdmin && stats && (
+                <div className="chart-container">
+                    <h3>Seat availability</h3>
+                    <Pie
+                        className="pie-chart"
+                        data={{
+                            labels: ["available seats", "booked seats"],
+                            datasets: [
+                                {
+                                    label: "Seats",
+                                    data: [stats.available_seats, stats.booked_seats],
+                                    backgroundColor: ["#4CAF50", "#E57373"],
+                                },
+                            ],
+                        }}
+                        options={{ responsive: true, maintainAspectRatio: false }}
+                    />
+                </div>
+            )}
+
             <div className="summary">
                 {selectedSeats.length > 0 ? (
                     <>
@@ -138,12 +231,15 @@ useEffect(() => {
                     <p>No seats selected</p>
                 )}
             </div>
-            <button
-                className="booking-button"
-                disabled={selectedSeats.length === 0}
-                onClick={handleReservation} >
-                Book Now!
-            </button>
+            {!isAdmin && (
+                <button
+                    className="booking-button"
+                    disabled={selectedSeats.length === 0}
+                    onClick={handleReservation}>
+                    Book Now!
+                </button>
+            )}
+
         </div>
     );
 }

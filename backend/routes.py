@@ -157,6 +157,187 @@ def signup():
     con.close()
     return jsonify({"success": True, "message": "Registration successful", "user_id": user_id}), 201
 
+#route stats hall occupancy
+
+@auth_routes.route('/api/hall_occupancy', methods=['GET'])
+@cross_origin()
+def get_hall_occupancy():
+    """ Berechnet die Saalauslastung für jede Show """
+    con = get_db_connection()
+    cur = con.cursor()
+    cur.execute("""
+        SELECT s.showtime, h.name AS hall, 
+               COUNT(*) AS total_seats,
+               SUM(CASE WHEN seat.status = 'booked' THEN 1 ELSE 0 END) AS booked_seats,
+               ROUND(SUM(CASE WHEN seat.status = 'booked' THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS occupancy_rate
+        FROM seat
+        JOIN shows s ON seat.show_id = s.id
+        JOIN hall h ON s.hall_id = h.id
+        GROUP BY s.showtime, h.name
+        ORDER BY occupancy_rate DESC;
+    """)
+
+    data = [
+        {"showtime": row[0], "hall": row[1], "total_seats": row[2], "booked_seats": row[3], "occupancy_rate": row[4]}
+        for row in cur.fetchall()]
+
+    con.close()
+    return jsonify(data)
+
+
+@auth_routes.route('/api/monthly_revenue', methods=['GET'])
+@cross_origin()
+def get_monthly_revenue():
+    """ Berechnet die Einnahmen pro Monat """
+    con = get_db_connection()
+    cur = con.cursor()
+    cur.execute("""
+        SELECT strftime('%Y-%m', r.time_of_reservation) AS month,
+               SUM(r.total_price) AS revenue
+        FROM reservation r
+        GROUP BY month
+        ORDER BY month DESC;
+    """)
+
+    data = [{"month": row[0], "revenue": row[1]} for row in cur.fetchall()]
+
+    con.close()
+    return jsonify(data)
+
+
+@auth_routes.route('/api/bestseller_movies', methods=['GET'])
+@cross_origin()
+def get_bestseller_movies():
+    con = get_db_connection()
+    cur = con.cursor()
+    cur.execute("""
+        SELECT m.title, COUNT(seat.id) AS ticket_count
+        FROM movies AS m
+        JOIN shows AS s ON m.id = s.movie_id
+        JOIN seat AS seat ON seat.show_id = s.id
+        WHERE seat.status = 'booked'
+        GROUP BY m.title
+        ORDER BY ticket_count DESC
+        LIMIT 3;
+    """)
+
+    data = [{"title": row[0], "count": row[1]} for row in cur.fetchall()]
+    con.close()
+    return jsonify(data)
+
+#routes for show statistics
+
+@auth_routes.route('/api/show_stats', methods=['GET'])
+@cross_origin()
+
+def get_show_stats():
+    try:
+        show_id = request.args.get('show_id')
+        if not show_id:
+            return jsonify({"success": False, "message": "Missing show_id"}), 400
+
+        available = calculate_number_available_seats(show_id)
+        booked = calculate_number_not_available_seats(show_id)
+
+        con = get_db_connection()
+        cur = con.cursor()
+        cur.execute("""
+            SELECT SUM(s.price) 
+            FROM seat s
+            JOIN reservation r ON s.reservation_id = r.id
+            WHERE r.show_id = ?
+        """, (show_id,))
+
+        revenue = cur.fetchone()[0] or 0
+        con.close()
+
+        return jsonify({
+            "success": True,
+            "available_seats": available,
+            "booked_seats": booked,
+            "revenue": revenue,
+        }), 200
+
+    except Exception as e:
+        return jsonify({"success": False, "message": "Server error", "error": str(e)}), 500
+
+
+@auth_routes.route('/api/user_logs', methods=['GET'])
+@cross_origin()
+def get_all_logs_histories():
+    try:
+        con = get_db_connection()
+        cur = con.cursor()
+
+        user_id = request.args.get("user_id")
+        action_filter = request.args.get("action")
+
+        query = """
+            SELECT lh.id, lh.action, lh.action_timestamp, u.vorname, u.nachname 
+            FROM logs_history lh 
+            JOIN user u ON lh.user_id = u.id
+        """
+        params = []
+
+        if user_id:
+            query += " WHERE lh.user_id = ?"
+            params.append(user_id)
+
+        if action_filter:
+            if user_id:
+                query += " AND lh.action = ?"
+            else:
+                query += " WHERE lh.action = ?"
+            params.append(action_filter)
+
+        query += " ORDER BY lh.action_timestamp DESC"
+
+        cur.execute(query, params)
+        logs = [{"id": row[0], "action": row[1], "timestamp": row[2], "user": f"{row[3]} {row[4]}"} for row in
+                cur.fetchall()]
+
+        con.close()
+        return jsonify(logs)
+    except Exception as e:
+        return jsonify({"success": False, "message": "Server error", "error": str(e)}), 500
+
+
+#route for deleting
+
+@auth_routes.route('/api/delete_reservation', methods=['DELETE'])
+@cross_origin()
+def delete_reservation():
+    try:
+        seat_id = request.args.get("seat_id")
+        if not seat_id:
+            return jsonify({"success": False, "message": "Seat ID missing"}), 400
+
+        con = get_db_connection()
+        cur = con.cursor()
+        cur.execute("SELECT reservation_id FROM seat WHERE id = ?", (seat_id,))
+        reservation_id = cur.fetchone()
+
+        if not reservation_id:
+            return jsonify({"success": False, "message": "Reservation not found"}), 404
+
+        reservation_id = reservation_id[0]
+
+        cur.execute("UPDATE seat SET reservation_id = NULL, status = 'free' WHERE id = ?", (seat_id,))
+
+        cur.execute("SELECT COUNT(*) FROM seat WHERE reservation_id = ?", (reservation_id,))
+        remaining_seats = cur.fetchone()[0]
+
+        if remaining_seats == 0:
+            cur.execute("DELETE FROM reservation WHERE id = ?", (reservation_id,))
+
+        con.commit()
+        con.close()
+
+        return jsonify({"success": True, "message": "Reservation deleted"}), 200
+    except Exception as e:
+        return jsonify({"success": False, "message": "Server error", "error": str(e)}), 500
+
+
 #seats for halls routes-------------------------------------------------------------------------
 
 seats_routes = Blueprint('seats', __name__)
@@ -169,6 +350,25 @@ def get_seats(show_id):
         return jsonify({"seats": seats})
     except Exception as e:
         return jsonify({"error": "Internal server error"}), 500
+
+
+#route for available shows -----------------------------------------------------------------
+
+@seats_routes.route("/api/available_shows", methods=['GET'])
+@cross_origin()
+
+def get_available_shows():
+    try:
+        con = get_db_connection()
+        cur = con.cursor()
+        cur.execute("SELECT DISTINCT show_id FROM seat")
+        show_ids = [row[0] for row in cur.fetchall()]
+        con.close()
+
+        return jsonify({"success": True, "available_shows": show_ids}), 200
+
+    except Exception as e:
+        return jsonify({"success": False, "message": "Server error", "error": str(e)}), 500
 
 #route for reservation ---------------------------------------------------------------------
 
