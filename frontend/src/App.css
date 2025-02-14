@@ -85,7 +85,8 @@
 
 /* Menu List */
 .menu-list {
-  margin-top: -370px;
+  flex-grow: 1;
+  margin-top: 0px;
   list-style: none;
   padding: 0;
   width: 100%;
