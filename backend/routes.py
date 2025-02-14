@@ -354,21 +354,22 @@ def get_seats(show_id):
 
 #route for available shows -----------------------------------------------------------------
 
-@seats_routes.route("/api/available_shows", methods=['GET'])
+@auth_routes.route('/api/available_shows', methods=['GET'])
 @cross_origin()
-
 def get_available_shows():
-    try:
-        con = get_db_connection()
-        cur = con.cursor()
-        cur.execute("SELECT DISTINCT show_id FROM seat")
-        show_ids = [row[0] for row in cur.fetchall()]
-        con.close()
+    """ Gibt verfügbare Shows mit Filmtiteln zurück """
+    con = get_db_connection()
+    cur = con.cursor()
+    cur.execute("""
+        SELECT s.id, m.title
+        FROM shows s
+        JOIN movies m ON s.movie_id = m.id
+        ORDER BY s.id;
+    """)
 
-        return jsonify({"success": True, "available_shows": show_ids}), 200
-
-    except Exception as e:
-        return jsonify({"success": False, "message": "Server error", "error": str(e)}), 500
+    shows = [{"show_id": row[0], "title": row[1]} for row in cur.fetchall()]
+    con.close()
+    return jsonify({"available_shows": shows})
 
 #route for reservation ---------------------------------------------------------------------
 

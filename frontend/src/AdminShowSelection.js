@@ -3,7 +3,7 @@ import {useNavigate} from "react-router-dom";
 import "./AdminShowSelection.css"
 
 function AdminShowSelection(){
-    const[showIds, setShowIds] = useState([]);
+    const[shows, setShows] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -18,11 +18,11 @@ function AdminShowSelection(){
                 const data = await response.json();
                 console.log("Fetched Shows:", data);
 
-                setShowIds(data.available_shows || []);
+                setShows(data.available_shows || []);
             }
             catch(error){
                 console.error("Error fetching shows:", error);
-                setShowIds([]);
+                setShows([]);
             }
         };
         fetchShows();
@@ -35,14 +35,14 @@ function AdminShowSelection(){
     return (
         <div className="reservations-page">
             <h2>Select a Show</h2>
-            {showIds.length === 0 ? (
+            {shows.length === 0 ? (
                 <p>Loading available shows...</p>
             ) : (
                 <ul className="reservations-container">
-                    {showIds.map((showId) => (
-                        <li key={showId}>
-                            <button className="reservations-actions" onClick={() => handleShowSelection(showId)}>
-                                Show ID: {showId}
+                    {shows.map((show) => (
+                        <li key={show.show_id}>
+                            <button className="reservations-actions" onClick={() => handleShowSelection(show.show_id)}>
+                                {show.title}
                             </button>
                         </li>
                     ))}
