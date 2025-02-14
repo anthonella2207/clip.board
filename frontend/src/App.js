@@ -11,6 +11,7 @@ import MovieFilter from "./filter";
 import BookingConfirmation from "./BookingConfirmation";
 import { AuthProvider } from "./AuthContext";
 import { AuthContext } from "./AuthContext";
+import ProfilePage from "./ProfilePage";
 
 function App() {
   const { user, logout } = useContext(AuthContext);
@@ -38,6 +39,10 @@ const menuItems = [
   { name: "Book Later", icon: <FaClock />, link: "/book-later" }, // Ahora es "Watch Later"
   { name: "Bookings", icon: <FaBook />, link: "/bookings" }, // Agregamos el link faltante
 ];
+
+if (user) {
+  menuItems.push({ name: "Profile", icon: <FaSignInAlt />, link: "/profile" });
+}
 
 
   const bottomMenuItem = { name: "Login", icon: <FaSignInAlt /> };
@@ -164,6 +169,7 @@ const menuItems = [
             <Route path="/movie/:id" element={<MoviePage />} />
             <Route path="/book-later" element={<FavoritePage />} />
             <Route path="/booking-confirmation" element={<BookingConfirmation />} />
+            <Route path="/profile" element={<ProfilePage />} />
             {/* Default route that shows the home page */}
             <Route path="/" element={
               <div>

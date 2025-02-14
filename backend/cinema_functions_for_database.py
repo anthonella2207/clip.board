@@ -96,6 +96,8 @@ import os
 import matplotlib.pyplot as plt
 from datetime import datetime
 
+from sqlalchemy import except_
+
 # Connecting with our database
 con = sqlite3.connect("movies.db")
 cur = con.cursor()
@@ -804,6 +806,22 @@ def update_user_email(user_id, new_email):
     finally:
         con.close()
 
+def update_user_password(user_id, new_password):
+    try:
+        con = sqlite3.connect("movies.db")
+        cur = con.cursor()
+        cur.execute("UPDATE user SET password = ? WHERE id = ?", (new_password, user_id))
+        con.commit()
+        if cur.rowcount > 0:
+            print("User with ID {user_id} updated: password = {new_password}")
+        else:
+            print(f"No user found with ID {user_id}.")
+
+    except sqlite3.Error as e:
+        print(f"Error while updating users password: {e}")
+    finally:
+        con.close()
+
 # Hint: only Admins can change user roles!
 def update_user_role(user_id, new_role):
     try:
@@ -975,7 +993,7 @@ def list_of_available_seats(show_id):
     con.close()
     return list_available_seats
 
-def list_of_not_available_seats():
+def list_of_not_available_seats(show_id):
     con = sqlite3.connect("movies.db")
     cur = con.cursor()
 

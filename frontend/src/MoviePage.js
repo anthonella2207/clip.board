@@ -42,10 +42,11 @@ const MoviePage = () => {
 
       // Si la película está en Now Playing, obtener los horarios desde Flask
       if (isPlaying) {
-        const showtimesResponse = await fetch(`http://127.0.0.1:5000/api/showtimes/${data.id}`);
-        const showtimesData = await showtimesResponse.json();
-        setShowtimes(showtimesData);
-        }
+          const showtimesResponse = await fetch(`http://127.0.0.1:5000/api/showtimes/${data.id}`);
+          const showtimesData = await showtimesResponse.json();
+          console.log("Showtimes received:", showtimesData); // Debugging
+          setShowtimes(showtimesData);
+      }
 
       // Verificar si la película está en Top Rated
       const topRatedResponse = await fetch(`${BASE_URL}/movie/top_rated?api_key=${API_KEY}&language=en-US`);
@@ -130,7 +131,7 @@ const MoviePage = () => {
               onClick={toggleFavorite}
               style={{ marginTop: "15px" }}
             >
-              {isFavorite ? <IoMdClose /> : <FaRegClock />} {isFavorite ? "Remove from Book Later" : "Book Later"}
+              {isFavorite ? <IoMdClose /> : <FaRegClock />} {isFavorite ? "Remove from Watch Later" : "Watch Later"}
             </button>
           )}
         </div>
@@ -154,8 +155,9 @@ const MoviePage = () => {
           <button
             key={index}
             className="showtime-button"
-            onClick={() => navigate(`/seats/${show.id}`)}
-            >
+            onClick={() => navigate(`/seats/${show.showtimeId}`)}
+
+          >
             🎥 {show.hall} - ⏰ {show.showtime}
           </button>
         ))}

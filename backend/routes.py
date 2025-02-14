@@ -29,20 +29,96 @@ def login():
 
         con = get_db_connection()
         cur = con.cursor()
-        cur.execute("SELECT id, password, role FROM user WHERE TRIM(email) = ?", (email,))
+        cur.execute("SELECT id, password, role, vorname, nachname FROM user WHERE TRIM(email) = ?", (email,))
         user = cur.fetchone()
         con.close()
 
         if user:
-            user_id, stored_password, role = user
+            user_id, stored_password, role, first_name, last_name = user
             if stored_password == password:
-                return jsonify({"success": True, "message": "Login Successful", "user_id": user_id, "role": role})
+                return jsonify({
+                    "success": True,
+                    "message": "Login Successful",
+                    "user_id": user_id,
+                    "role": role,
+                    "first_name": first_name,
+                    "last_name": last_name
+                    })
             else:
                 return jsonify({"success": False, "message": "wrong password"}), 401
         else:
             return jsonify({"success": False, "message": "email not found"}), 404
     except Exception as e:
         return jsonify({"success": False, "message": "Server error", "error": str(e)}), 500
+
+#route for user updating password and email --------------------------------------------------
+
+@auth_routes.route('update_email', methods=['POST'])
+@cross_origin()
+
+def update_email():
+    try:
+        data = request.get_json()
+        user_id = data.get("user_id")
+        new_email = data.get("new_email")
+        password = data.get("password")
+
+        if not (user_id and new_email and password):
+            return jsonify({"success": False, "message": "Missing fields"}), 400
+
+        #Verify user with password
+
+        con = get_db_connection()
+        cur = con.cursor()
+        cur.execute("SELECT password FROM user WHERE id = ?", (user_id,))
+        user = cur.fetchone()
+        con.close()
+
+        if not user:
+            return jsonify({"success": False, "message": "User not found"}), 404
+
+        stored_password = user["password"]
+        if stored_password != password:
+            return jsonify({"success": False, "message": "Wrong password"}), 401
+
+        update_user_email(user_id, new_email)
+        return jsonify({"success": True, "message": "Email updated successfully"})
+
+    except Exception as e:
+        return jsonify({"success": False, "message": "Server error", "error": str(e)}), 500
+
+@auth_routes.route('/update_password', methods=['POST'])
+@cross_origin()
+
+def update_password():
+    try:
+        data = request.get_json()
+        user_id = data.get("user_id")
+        old_password = data.get("old_password")
+        new_password = data.get("new_password")
+
+        if not (user_id and old_password and new_password):
+            return jsonify({"success": False, "message": "Missing fields"}), 400
+
+        con = get_db_connection()
+        cur = con.cursor()
+        cur.execute("SELECT password FROM user WHERE id = ?", (user_id,))
+        user = cur.fetchone()
+        con.close()
+
+        if not user:
+            return jsonify({"success": False, "message": "User not found"}), 404
+
+        stored_password = user[0]
+        if stored_password != old_password:
+            return jsonify({"success": False, "message": "Wrong password"}), 401
+
+        update_user_password(user_id, new_password)
+        return jsonify({"success": True, "message": "Password updated successfully"})
+
+    except Exception as e:
+        return jsonify({"success": False, "message": "Server error", "error": str(e)}), 500
+
 
 #sign-up route -------------------------------------------------------------------------------
 
