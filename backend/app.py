@@ -3,6 +3,7 @@ import sqlite3
 import subprocess
 from flask import Flask, jsonify, send_from_directory
 from flask_cors import CORS
+from flask_cors import cross_origin
 import requests
 from PIL import Image
 import random
@@ -12,7 +13,7 @@ from routes import *
 from cinema_functions_for_database import get_movie
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})   # Allow cross-origin requests
+CORS(app, resources={r"/*": {"origins": "*"}})  # Allow all origins
 app.register_blueprint(auth_routes, url_prefix="/")
 app.register_blueprint(seats_routes, url_prefix="/")
 app.register_blueprint(movies_routes, url_prefix="/")
@@ -31,7 +32,6 @@ GENRES_URL = f"https://api.themoviedb.org/3/genre/movie/list?api_key={API_KEY}&l
 
 # Create folders if they don't exist
 os.makedirs(POSTER_FOLDER, exist_ok=True)
-
 
 @app.route('/routes', methods=['GET'])
 def list_routes():
@@ -193,7 +193,7 @@ def fetch_movies_by_category(category_url, category_name, genres_dict):
         for movie in movies:
             title = movie['title']
             poster_path = movie.get('poster_path')
-            if poster_path:
+            if (poster_path):
                 full_poster_url = f"{IMAGE_BASE_URL}{poster_path}"
                 try:
                     image_response = requests.get(full_poster_url)
@@ -344,7 +344,7 @@ def get_db_connection():
 def get_showtimes(movie_id):
     conn = get_db_connection()
     showtimes = conn.execute("""
-        SELECT h.name AS hall, s.showtime, s.id AS showtimeId 
+        SELECT h.name AS hall, s.showtime, s.id AS showtimeId
         FROM shows s
         JOIN hall h ON s.hall_id = h.id
         WHERE s.movie_id = ?
@@ -358,6 +358,8 @@ def get_showtimes(movie_id):
     ])
 
 
+
+
 if __name__ == "__main__":
     initialize_database()
     fetch_and_save_movies()
@@ -367,4 +369,3 @@ if __name__ == "__main__":
     add_initial_seats()
     start_frontend()
     app.run(debug=True, use_reloader=False)
-
