@@ -1,74 +1,89 @@
-/* Ajustar el contenedor para que ocupe toda la pantalla sin caja */
+/* Contenedor principal */
 .favorites-container {
-  margin-top: -200px;
-  width: 100vw;
-  height: 100vh;
+  margin-left: 200px; /* Alineado con el contenido principal */
   padding: 20px;
-  background-color: transparent; /* Eliminado fondo negro */
+  color: white;
+  min-height: 100vh; /* Asegura que ocupe toda la pantalla */
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
+  align-items: flex-start; /* Alinea el contenido a la izquierda */
+  justify-content: flex-start;
+  background-color: #1d1c2a; /* Asegurar que tenga fondo oscuro */
 }
 
-.favorites-title {
-  font-size: 2rem;
-  margin-top: 5px;
-  margin-bottom: 20px;
-  color: #ffffff;
-  text-transform: uppercase;
-}
-
+/* Botón para volver */
 .back-link {
-  position: absolute;
+  position: fixed; /* Asegura que esté siempre visible */
+  margin-top: 22px;
   top: 20px;
-  left: 20px;
+  left: 220px; /* Ajustar para que no quede pegado al borde de la sidebar */
   font-size: 2rem;
   color: white;
   text-decoration: none;
+  z-index: 1000; /* Asegura que esté sobre otros elementos */
 }
 
 .back-link:hover {
   color: #1db954;
 }
 
-.movies-grid {
+/* Título de la página */
+.favorites-title {
+  font-size: 2rem;
+  margin-top: -20px;
+  margin-left: -180px; /* Mueve el título más cerca de la flecha */
+  margin-bottom: 20px;
+  text-align: left;
+  align-self: flex-start; /* Asegura que se alinee a la izquierda */
+}
+
+/* Grid para mostrar las películas */
+.movies-grid-2 {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 20px;
-  width: 80%;
-  justify-content: center;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+  width: 100%; /* Ahora ocupa todo el ancho */
+  margin-left: -200px;
 }
 
-.movie-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+/* Tarjeta de película */
+.movie-card-2 {
+  overflow: hidden;
+  transition: transform 0.2s ease;
+  text-align: center;
 }
 
-.movie-poster {
+.movie-card-2:hover {
+  transform: scale(1.05);
+}
+
+/* Imagen del póster */
+.movie-poster-2 {
+  border-radius: 8px;
   width: 100%;
-  border-radius: 10px;
+  max-width: 200px;
+  height: auto;
   transition: opacity 0.3s ease;
+    justify-content: right;
 }
 
 .movie-poster:hover {
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
-.book-now-btn {
+/* Botón para eliminar película */
+.remove-movie-btn {
   margin-top: 10px;
-  padding: 10px 15px;
+  padding: 10px 12px;
   border: none;
   border-radius: 5px;
-  background-color: #1db954;
+  background-color: #e63946;
   color: white;
   font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
-.book-now-btn:hover {
-  background-color: #17a444;
+.remove-movie-btn:hover {
+  background-color: #b71c1c;
 }
