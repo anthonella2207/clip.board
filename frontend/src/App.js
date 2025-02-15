@@ -8,6 +8,7 @@ import SeatSelection from "./SeatPage";
 import MoviePage from "./MoviePage";
 import FavoritePage from "./FavoritePage";
 import MovieFilter from "./filter";
+import BookingPage from "./BookingPage";
 import BookingConfirmation from "./BookingConfirmation";
 import { AuthProvider } from "./AuthContext";
 import { AuthContext } from "./AuthContext";
@@ -41,7 +42,7 @@ function App() {
   const menuItems = [
     { name: "Home", icon: <FaHome />, link: "/" },
     { name: "Book Later", icon: <FaClock />, link: "/book-later" },
-    { name: "Bookings", icon: <FaBook />, link: "/bookings" },
+    { name: "Bookings", icon: <FaBook />, link: "/bookings/:userID" },
   ];
 
   if (user) {
@@ -174,6 +175,7 @@ function App() {
             <Route path="/reservations" element={<AdminShowSelection />} />
             <Route path="/reservations/:showId" element={<SeatSelection />} />
             <Route path="/statistics" element={<StatisticsPage />} />
+            <Route path="/bookings/:userID" element={<BookingPage />} />
             <Route path="/logs" element={<AdminLogs />} />
           </Route>
 

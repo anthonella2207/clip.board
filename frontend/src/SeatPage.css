@@ -1,19 +1,53 @@
 .seat-page {
-    padding: 50px;
+    padding: 10px;
     font-family: Arial, sans-serif;
     display: flex;
-    justify-content: center;
     align-items: center;
     height: 100vh;
     flex-direction: column;
-    background-color: #12121d;
+    background-color: rgb(29, 28, 42);
 }
 
+.back-button-2 {
+    position: fixed;
+    top: 20px;
+    left: 200px;
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    font-size: 2rem;
+    color: white;
+    cursor: pointer;
+    z-index: 100;
+    padding: 10px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s;
+}
+
+.back-button-2:hover {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+
+
 .seat-title {
+    position: relative;
     font-size: 24px;
     font-weight: bold;
     margin-bottom: 20px;
     color: white;
+}
+
+.screen {
+    max-height: 10px;
+    min-height: 10px;
+    width: 80%;
+    background-color: rgba(255, 255, 255, 0.88); /* Color gris claro */
+    border-radius: 5px; /* Bordes redondeados */
+    margin: 20px auto; /* Centrado con margen */
+    box-shadow: 0px 10px 20px rgba(255, 255, 255, 0.37); /* Efecto de luz inferior */
 }
 
 .seat-container {
@@ -27,7 +61,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 5px;
+    gap: 1px;
     margin-right: 10px;
 }
 
@@ -112,7 +146,7 @@
 }
 
 .booking-button {
-    background-color: rgba(255, 255, 255, 0.3);
+    background-color: rgba(255, 255, 255, 0.2);
     border: none;
     border-radius: 5px;
     color: #ffffff;
@@ -129,20 +163,12 @@
     opacity: 0.5;
 }
 
-/* Cambio de color cuando hay asientos seleccionados y el mouse pasa sobre el botón */
+/* Cambio de color cuando hay asientos seleccionados y el mouse pasa sobre el botÃ³n */
 .booking-button.active:hover {
     background-color: #4CAF50; /* Verde */
 }
 
-.screen {
-    width: 80%;
-    height: 20px; /* Grosor de la pantalla */
-    background-color: rgba(255, 255, 255, 0.88); /* Color gris claro */
-    border-radius: 10px; /* Bordes redondeados */
-    margin: 20px auto; /* Centrado con margen */
-    box-shadow: 0px 10px 20px rgba(255, 255, 255, 0.37); /* Efecto de luz inferior */
-    text-align: center;
-}
+
 
 .summary {
     display: flex;
@@ -153,3 +179,44 @@
     width: 100%;
     margin-top: 20px;
 }
+
+.admin-button {
+    background-color: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 5px;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 20px;
+    margin-top: 20px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-bottom: 20px;
+}
+
+.chart-container {
+    display: flex;
+    flex-direction: row; /* Alinear elementos en fila */
+    justify-content: space-between; /* Distribuir espacio entre texto y gráfico */
+    align-items: center; /* Centrar verticalmente */
+    gap: 20px; /* Espaciado entre texto y gráfico */
+    width: 500px;
+    max-width: 800px;
+    background: rgba(97, 97, 97, 0.72); /* Fondo oscuro para el recuadro */
+    padding: 20px;
+    border-radius: 10px;
+    color: white; /* Asegurar que el texto sea legible */
+}
+
+.chart-text {
+    flex: 1; /* El texto ocupa la mitad del espacio */
+    text-align: center;
+}
+
+.chart-graph {
+    flex: 1; /* El gráfico ocupa la otra mitad */
+    display: flex;
+    justify-content: center;
+    color: white; /* Asegurar que el texto sea legible */
+}
+

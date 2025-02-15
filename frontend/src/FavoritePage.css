@@ -13,18 +13,25 @@
 
 /* Botón para volver */
 .back-link {
-  position: fixed; /* Asegura que esté siempre visible */
-  margin-top: 22px;
-  top: 20px;
-  left: 220px; /* Ajustar para que no quede pegado al borde de la sidebar */
-  font-size: 2rem;
-  color: white;
-  text-decoration: none;
-  z-index: 1000; /* Asegura que esté sobre otros elementos */
+    position: fixed;
+    top: 20px;
+    left: 200px;
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    font-size: 2rem;
+    color: white;
+    cursor: pointer;
+    z-index: 100;
+    padding: 10px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s;
 }
 
 .back-link:hover {
-  color: #1db954;
+  background: rgba(0, 0, 0, 0.8);
 }
 
 /* Título de la página */

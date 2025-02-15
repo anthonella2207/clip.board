@@ -357,7 +357,26 @@ def get_showtimes(movie_id):
         for row in showtimes
     ])
 
+@app.route("/api/bookings/<int:user_id>", methods=["GET"])
+def get_user_bookings(user_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
 
+    cursor.execute("""
+        SELECT id, movie_name, show_time, seat_number, price, status
+        FROM reservations
+        WHERE user_id = ?
+        ORDER BY show_time DESC
+    """, (user_id,))
+
+    bookings = [
+        {"id": row[0], "movie_name": row[1], "show_time": row[2], "seat_number": row[3], "price": row[4], "status": row[5]}
+        for row in cursor.fetchall()
+    ]
+
+    conn.close()
+
+    return jsonify({"success": True, "bookings": bookings}) if bookings else jsonify({"success": False, "message": "No bookings found"}), 404
 
 
 if __name__ == "__main__":
