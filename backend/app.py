@@ -238,35 +238,8 @@ def fetch_and_save_movies():
     fetch_movies_by_category(UPCOMING_URL, "upcoming", genres_dict)
 
 # API endpoint to get movies by category
-@app.route('/api/movies/<category>', methods=['GET'])
-def get_movies_by_category(category):
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    cursor.execute("""
-        SELECT id, title, release_date, overview, vote_average, poster_path, genres, runtime, adult
-        FROM movies WHERE category = ?
-    """, (category,))
-    movies = cursor.fetchall()
-    conn.close()
-    return jsonify([
-        {
-            "id": movie[0],
-            "title": movie[1],
-            "release_date": movie[2],
-            "overview": movie[3],
-            "vote_average": movie[4],
-            "poster_path": movie[5],
-            "genres": movie[6],
-            "runtime": movie[7],
-            "adult": movie[8]
-        }
-        for movie in movies
-    ])
 
 # Serve posters
-@app.route('/posters/<filename>')
-def get_poster(filename):
-    return send_from_directory(POSTER_FOLDER, filename)
 
 # Start the frontend
 def start_frontend():
@@ -339,44 +312,6 @@ def get_db_connection():
     conn = sqlite3.connect("movies.db")
     conn.row_factory = sqlite3.Row
     return conn
-
-@app.route("/api/showtimes/<int:movie_id>", methods=["GET"])
-def get_showtimes(movie_id):
-    conn = get_db_connection()
-    showtimes = conn.execute("""
-        SELECT h.name AS hall, s.showtime, s.id AS showtimeId
-        FROM shows s
-        JOIN hall h ON s.hall_id = h.id
-        WHERE s.movie_id = ?
-        ORDER BY s.showtime ASC
-    """, (movie_id,)).fetchall()
-    conn.close()
-
-    return jsonify([
-        {"hall": row["hall"], "showtime": row["showtime"], "showtimeId": row["showtimeId"]}
-        for row in showtimes
-    ])
-
-@app.route("/api/bookings/<int:user_id>", methods=["GET"])
-def get_user_bookings(user_id):
-    conn = get_db_connection()
-    cursor = conn.cursor()
-
-    cursor.execute("""
-        SELECT id, movie_name, show_time, seat_number, price, status
-        FROM reservations
-        WHERE user_id = ?
-        ORDER BY show_time DESC
-    """, (user_id,))
-
-    bookings = [
-        {"id": row[0], "movie_name": row[1], "show_time": row[2], "seat_number": row[3], "price": row[4], "status": row[5]}
-        for row in cursor.fetchall()
-    ]
-
-    conn.close()
-
-    return jsonify({"success": True, "bookings": bookings}) if bookings else jsonify({"success": False, "message": "No bookings found"}), 404
 
 
 if __name__ == "__main__":

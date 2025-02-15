@@ -1,5 +1,5 @@
-from werkzeug.security import check_password_hash, generate_password_hash
-from flask import Blueprint, request, jsonify
+POSTER_FOLDER = "./posters"
+from flask import Blueprint, request, jsonify, send_from_directory
 import sqlite3
 from flask_cors import cross_origin, CORS
 from cinema_functions_for_database import *
@@ -472,6 +472,52 @@ def get_available_genres():
     except Exception as e:
         return jsonify({"success": False, "message": "server error", "error": str(e)}), 500
 
+@movies_routes.route("/api/showtimes/<int:movie_id>", methods=["GET"])
+def get_showtimes(movie_id):
+    conn = get_db_connection()
+    showtimes = conn.execute("""
+        SELECT h.name AS hall, s.showtime, s.id AS showtimeId
+        FROM shows s
+        JOIN hall h ON s.hall_id = h.id
+        WHERE s.movie_id = ?
+        ORDER BY s.showtime ASC
+    """, (movie_id,)).fetchall()
+    conn.close()
+
+    return jsonify([
+        {"hall": row["hall"], "showtime": row["showtime"], "showtimeId": row["showtimeId"]}
+        for row in showtimes
+    ])
+
+@movies_routes.route('/api/movies/<category>', methods=['GET'])
+def get_movies_by_category(category):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT id, title, release_date, overview, vote_average, poster_path, genres, runtime, adult
+        FROM movies WHERE category = ?
+    """, (category,))
+    movies = cursor.fetchall()
+    conn.close()
+    return jsonify([
+        {
+            "id": movie[0],
+            "title": movie[1],
+            "release_date": movie[2],
+            "overview": movie[3],
+            "vote_average": movie[4],
+            "poster_path": movie[5],
+            "genres": movie[6],
+            "runtime": movie[7],
+            "adult": movie[8]
+        }
+        for movie in movies
+    ])
+
+@movies_routes.route('/posters/<filename>')
+def get_poster(filename):
+    return send_from_directory(POSTER_FOLDER, filename)
+
 #route for logout ------------------------------------------------------------------------------
 
 @auth_routes.route('/logout', methods=['POST'])
@@ -496,10 +542,32 @@ def add_log():
         if not action or not user_id:
             return jsonify({"success": False, "message": "Missing data"}), 400
 
-        print(f"🔍 Debug: add_logs_history({repr('User made a reservation')}, {repr(user_id)}, {repr(reservation_id)})")
+        print(f" Debug: add_logs_history({repr('User made a reservation')}, {repr(user_id)}, {repr(reservation_id)})")
 
         add_logs_history(action, user_id, reservation_id)
         return jsonify({"success": True, "message": "Log added"}), 200
 
     except Exception as e:
         return jsonify({"success": False, "message": "Server error", "error": str(e)}), 500
+
+@auth_routes.route("/api/bookings/<int:user_id>", methods=["GET"])
+def get_user_bookings(user_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT id, movie_name, show_time, seat_number, price, status
+        FROM reservations
+        WHERE user_id = ?
+        ORDER BY show_time DESC
+    """, (user_id,))
+
+    bookings = [
+        {"id": row[0], "movie_name": row[1], "show_time": row[2], "seat_number": row[3], "price": row[4], "status": row[5]}
+        for row in cursor.fetchall()
+    ]
+
+    conn.close()
+
+    return jsonify({"success": True, "bookings": bookings}) if bookings else jsonify({"success": False, "message": "No bookings found"}), 404
+
