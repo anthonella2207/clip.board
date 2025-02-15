@@ -113,7 +113,6 @@ export default function SeatSelection() {
             </button>
 
             <h2 className="seat-title">Seat Selection</h2>
-            <div className="screen"></div>
             <div className="seat-container">
                 <div className="row-numbers">
                     {seats.length > 0 && Array.from(new Set(seats.map(seat => seat.row_number))).map(row => (
@@ -137,6 +136,7 @@ export default function SeatSelection() {
                     )}
                 </div>
             </div>
+            <div className="screen"></div>
             <div className="summary">
                 {selectedSeats.length > 0 && (
                     <>

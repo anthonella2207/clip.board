@@ -38,7 +38,7 @@ const MovieFilter = ({ onFilterChange }) => {
         </select>
 
         <select value={selectedVoteAverage} onChange={(e) => setSelectedVoteAverage(e.target.value)}>
-          <option value="All">All Ratings</option>
+          <option value="All">Ratings</option>
           <option value=">9">Above 9</option>
           <option value=">8">Above 8</option>
           <option value=">7">Above 7</option>
@@ -47,7 +47,7 @@ const MovieFilter = ({ onFilterChange }) => {
         </select>
 
         <select value={selectedDuration} onChange={(e) => setSelectedDuration(e.target.value)}>
-          <option value="All">All Durations</option>
+          <option value="All">Duration</option>
           <option value="<90">Less than 90 minutes</option>
           <option value="90-120">90-120 minutes</option>
           <option value=">120">More than 120 minutes</option>
