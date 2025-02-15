@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const AuthContext = createContext();
 
@@ -58,6 +59,16 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const navigate = useNavigate();
+    let logoutTimer;
+
+    const resetLogoutTimer = () => {
+        if (logoutTimer) clearTimeout(logoutTimer);
+        logoutTimer = setTimeout(() => {
+            logout();
+        }, 10 * 60 * 1000);  // 10 minutes
+    };
+
     const logout = async () => {
         try {
             const response = await fetch("http://127.0.0.1:5000/logout", {
@@ -87,6 +98,24 @@ export const AuthProvider = ({ children }) => {
             console.error("Logout error:", error);
         }
     };
+     useEffect(() => {
+        if (user) {
+            resetLogoutTimer(); // Timer beim Login starten
+
+            // Events für Benutzeraktivität
+            window.addEventListener("mousemove", resetLogoutTimer);
+            window.addEventListener("keydown", resetLogoutTimer);
+            window.addEventListener("click", resetLogoutTimer);
+        }
+
+        return () => {
+            clearTimeout(logoutTimer);
+            window.removeEventListener("mousemove", resetLogoutTimer);
+            window.removeEventListener("keydown", resetLogoutTimer);
+            window.removeEventListener("click", resetLogoutTimer);
+        };
+    }, [user]);
+
 
     return (
         <AuthContext.Provider value={{ user, login, logout, loading }}>
