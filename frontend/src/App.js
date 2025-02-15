@@ -1,14 +1,13 @@
 import React, { useEffect, useState, useContext } from "react";
 import { FaClock, FaHome, FaBook, FaSignInAlt, FaShoppingCart } from "react-icons/fa";
-import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react-router-dom";
 import "./App.css";
 import LoginPage from "./LoginPage";
+import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react-router-dom";
 import SignupPage from "./SignupPage";
 import SeatSelection from "./SeatPage";
 import MoviePage from "./MoviePage";
 import FavoritePage from "./FavoritePage";
 import MovieFilter from "./filter";
-import BookingPage from "./BookingPage";
 import BookingConfirmation from "./BookingConfirmation";
 import { AuthProvider } from "./AuthContext";
 import { AuthContext } from "./AuthContext";
@@ -18,17 +17,34 @@ import { FaStairs } from "react-icons/fa6";
 import StatisticsPage from "./Statistics";
 import AdminLogs from "./AdminLogs";
 import ProtectedRoute from "./ProtectedRoute";
+import Loader from "./Loader"; // Import the Loader component
+
 
 function App() {
   const { user, logout } = useContext(AuthContext);
-  const location = useLocation(); // Get the current path
+  const [loading, setLoading] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     console.log("🔄 App hat sich aktualisiert. User: ", user);
   }, [user]);
 
+    useEffect(() => {
+    if (loading) {
+      const timer = setTimeout(() => setLoading(false), 1000); // Simulate loading for 1 second
+      return () => clearTimeout(timer);
+    }
+  }, [loading]);
+
+
+  const handleLinkClick = () => {
+    setLoading(true);
+  };
+
+
   const [nowPlayingMovies, setNowPlayingMovies] = useState([]);
   const [topRatedMovies, setTopRatedMovies] = useState([]);
+  const [filteredTopRated, setFilteredTopRated] = useState([]);
   const [upcomingMovies, setUpcomingMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -41,8 +57,8 @@ function App() {
 
   const menuItems = [
     { name: "Home", icon: <FaHome />, link: "/" },
-    { name: "Book Later", icon: <FaClock />, link: "/book-later" },
-    { name: "Bookings", icon: <FaBook />, link: "/bookings/:userID" },
+    { name: "Book Later", icon: <FaClock />, link: "/book-later" }, // Ahora es "Watch Later"
+    { name: "Bookings", icon: <FaBook />, link: "/bookings" }, // Agregamos el link faltante
   ];
 
   if (user) {
@@ -79,16 +95,26 @@ function App() {
       ]).then(() => setIsLoading(false));
     };
 
-    fetchMovies();
+    // Comprobar última actualización
+    const lastUpdated = localStorage.getItem("lastMovieUpdate");
+    const now = new Date();
+    const threeWeeks = 21 * 24 * 60 * 60 * 1000; // 21 días en milisegundos
 
+    //if (!lastUpdated || now - new Date(lastUpdated) > threeWeeks) {
+    fetchMovies();
+    //localStorage.setItem("lastMovieUpdate", now.toISOString());
+    //}
+
+    // Actualizar cada 3 semanas automáticamente
     const interval = setInterval(() => {
       fetchMovies();
       localStorage.setItem("lastMovieUpdate", new Date().toISOString());
-    }, 21 * 24 * 60 * 60 * 1000); // 21 days in milliseconds
+    }, threeWeeks);
 
     return () => clearInterval(interval);
   }, []);
 
+  // Manejar filtros
   useEffect(() => {
     const fetchFilteredMovies = async () => {
       try {
@@ -106,11 +132,12 @@ function App() {
         if (data.success && Array.isArray(data.movies)) {
           setNowPlayingMovies(data.movies);
         } else {
-          setNowPlayingMovies([]);
+          setNowPlayingMovies([]); // Falls die API kein Array zurückgibt
         }
       } catch (error) {
         console.error("Error fetching filtered now-playing movies:", error);
-        setNowPlayingMovies([]);
+        setNowPlayingMovies([]); // Setzt einen leeren Array, um Fehler zu vermeiden
+        console.log(nowPlayingMovies);
       }
     };
 
@@ -129,11 +156,11 @@ function App() {
         </div>
         <ul className="menu-list">
           {menuItems.map((item, index) => {
-            const isActive = location.pathname === item.link; // Check if it's the current page
+            const isActive = location.pathname === item.link; // Comprueba si es la página actual
             return (
               <Link
                 to={item.link}
-                className={`menu-link ${isActive ? "active-menu" : ""}`} // Apply the class if active
+                className={`menu-link ${isActive ? "active-menu" : ""}`} // Aplica la clase si es activo
                 key={index}
               >
                 {item.icon}
@@ -161,104 +188,101 @@ function App() {
 
       {/* Main Content */}
       <div className="content">
-        {/* Routes to handle login page */}
-        <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
-          <Route path="/movie/:id" element={<MoviePage />} />
+        {loading ? (
+           <Loader />
+        ) : (
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
+            <Route path="/movie/:id" element={<MoviePage />} />
 
-          <Route element={<ProtectedRoute />}>
-            <Route path="/seats/:showId" element={<SeatSelection />} />
-            <Route path="/book-later" element={<FavoritePage />} />
-            <Route path="/booking-confirmation" element={<BookingConfirmation />} />
-            <Route path="/profile" element={<ProfilePage />} />
-            <Route path="/reservations" element={<AdminShowSelection />} />
-            <Route path="/reservations/:showId" element={<SeatSelection />} />
-            <Route path="/statistics" element={<StatisticsPage />} />
-            <Route path="/bookings/:userID" element={<BookingPage />} />
-            <Route path="/logs" element={<AdminLogs />} />
-          </Route>
+            <Route element={<ProtectedRoute />}>
+              <Route path="/seats/:showId" element={<SeatSelection />} />
+              <Route path="/book-later" element={<FavoritePage />} />
+              <Route path="/booking-confirmation" element={<BookingConfirmation />} />
+              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/reservations" element={<AdminShowSelection />} />
+              <Route path="/reservations/:showId" element={<SeatSelection />} />
+              <Route path="/statistics" element={<StatisticsPage />} />
+              <Route path="/logs" element={<AdminLogs />} />
+            </Route>
 
-          {/* Default route that shows the home page */}
-          <Route
-            path="/"
-            element={
-              <div>
-                {/* Filter Bar */}
-                <MovieFilter
-                  onFilterChange={({ genre, duration, voteAverage, searchQuery }) => {
-                    setGenre(genre);
-                    setDuration(duration);
-                    setVoteAverage(voteAverage);
-                    setSearchQuery(searchQuery);
-                  }}
-                />
+            <Route
+              path="/"
+              element={
+                <div>
+                  <MovieFilter
+                    onFilterChange={({ genre, duration, voteAverage, searchQuery }) => {
+                      setGenre(genre);
+                      setDuration(duration);
+                      setVoteAverage(voteAverage);
+                      setSearchQuery(searchQuery);
+                    }}
+                  />
 
-                {/* Top Rated Section */}
-                <h2 className="section-title">Our Top Rated Movies</h2>
-                <div className="movies-grid">
-                  {isLoading ? (
-                    <p>Loading movies...</p>
-                  ) : (
-                    topRatedMovies.slice(0, 3).map((movie) => (
-                      <div key={movie.id} className="movie-card">
-                        <Link to={`/movie/${movie.id}`}>
-                          <img
-                            src={`http://127.0.0.1:5000${movie.poster_path}`}
-                            alt={`${movie.title} poster`}
-                            className="movie-poster"
-                          />
-                        </Link>
-                      </div>
-                    ))
-                  )}
+                  <h2 className="section-title">Our Top Rated Movies</h2>
+                  <div className="movies-grid">
+                    {isLoading ? (
+                      <Loader />
+                    ) : (
+                      topRatedMovies.slice(0, 3).map((movie) => (
+                        <div key={movie.id} className="movie-card">
+                          <Link to={`/movie/${movie.id}`} onClick={handleLinkClick}>
+                            <img
+                              src={`http://127.0.0.1:5000${movie.poster_path}`}
+                              alt={`${movie.title} poster`}
+                              className="movie-poster"
+                            />
+                          </Link>
+                        </div>
+                      ))
+                    )}
+                  </div>
+
+                  <h2 className="section-title">Our Now Playing Movies</h2>
+                  <div className="movies-grid">
+                    {isLoading ? (
+                        <Loader />
+                    ) : Array.isArray(nowPlayingMovies) ? (
+                        nowPlayingMovies.slice(0, 20).map((movie) => (
+                            <div key={movie.id} className="movie-card">
+                              <Link to={`/movie/${movie.id}`} onClick={handleLinkClick}>
+                            <img
+                              src={`http://127.0.0.1:5000${movie.poster_path}`}
+                              alt={`${movie.title} poster`}
+                              className="movie-poster"
+                            />
+                          </Link>
+                        </div>
+                      ))
+                    ) : (
+                      <p>No movies found.</p>
+                    )}
+                  </div>
+
+                  <h2 className="section-title">Our Upcoming Movies</h2>
+                  <div className="movies-grid">
+                    {isLoading ? (
+                      <Loader />
+                    ) : (
+                      upcomingMovies.slice(0, 5).map((movie) => (
+                        <div key={movie.id} className="movie-card">
+                          <Link to={`/movie/${movie.id}`} onClick={handleLinkClick}>
+                            <img
+                              src={`http://127.0.0.1:5000${movie.poster_path}`}
+                              alt={`${movie.title} poster`}
+                              className="movie-poster"
+                            />
+                          </Link>
+                        </div>
+                      ))
+                    )}
+                  </div>
                 </div>
-
-                {/* Now Playing Section */}
-                <h2 className="section-title">Our Now Playing Movies</h2>
-                <div className="movies-grid">
-                  {isLoading ? (
-                    <p>Loading movies...</p>
-                  ) : Array.isArray(nowPlayingMovies) ? (
-                    nowPlayingMovies.slice(0, 20).map((movie) => (
-                      <div key={movie.id} className="movie-card">
-                        <Link to={`/movie/${movie.id}`}>
-                          <img
-                            src={`http://127.0.0.1:5000${movie.poster_path}`}
-                            alt={`${movie.title} poster`}
-                            className="movie-poster"
-                          />
-                        </Link>
-                      </div>
-                    ))
-                  ) : (
-                    <p>No movies found.</p>
-                  )}
-                </div>
-
-                {/* Upcoming Section */}
-                <h2 className="section-title">Our Upcoming Movies</h2>
-                <div className="movies-grid">
-                  {isLoading ? (
-                    <p>Loading movies...</p>
-                  ) : (
-                    upcomingMovies.slice(0, 5).map((movie) => (
-                      <div key={movie.id} className="movie-card">
-                        <Link to={`/movie/${movie.id}`}>
-                          <img
-                            src={`http://127.0.0.1:5000${movie.poster_path}`}
-                            alt={`${movie.title} poster`}
-                            className="movie-poster"
-                          />
-                        </Link>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </div>
-            }
-          />
-        </Routes>
+              }
+            />
+          </Routes>
+        )}
       </div>
     </div>
   );
