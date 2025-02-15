@@ -23,6 +23,7 @@ import StatisticsPage from "./Statistics";
 import AdminLogs from "./AdminLogs";
 import ProtectedRoute from "./ProtectedRoute";
 import Loader from "./Loader"; // Import the Loader component
+import BookingPage from "./BookingPage";
 
 
 
@@ -209,6 +210,7 @@ function App() {
               <Route path="/reservations/:showId" element={<SeatSelection />} />
               <Route path="/statistics" element={<StatisticsPage />} />
               <Route path="/logs" element={<AdminLogs />} />
+              <Route path="/bookings" element={<BookingPage userId={user?.id} />} />
             </Route>
 
             <Route
