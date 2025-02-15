@@ -1,5 +1,11 @@
 import React, { useEffect, useState, useContext } from "react";
-import { FaClock, FaHome, FaBook, FaSignInAlt, FaShoppingCart } from "react-icons/fa";
+import { FaClock, FaHome, FaSignInAlt } from "react-icons/fa";
+import { MdBookmarkAdded } from "react-icons/md";
+import { GiHistogram } from "react-icons/gi";
+import { CiLogin } from "react-icons/ci";
+import { GrContactInfo } from "react-icons/gr";
+import { TbBookmarkQuestion } from "react-icons/tb";
+import { CgProfile } from "react-icons/cg";
 import "./App.css";
 import LoginPage from "./LoginPage";
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react-router-dom";
@@ -13,11 +19,11 @@ import { AuthProvider } from "./AuthContext";
 import { AuthContext } from "./AuthContext";
 import ProfilePage from "./ProfilePage";
 import AdminShowSelection from "./AdminShowSelection";
-import { FaStairs } from "react-icons/fa6";
 import StatisticsPage from "./Statistics";
 import AdminLogs from "./AdminLogs";
 import ProtectedRoute from "./ProtectedRoute";
 import Loader from "./Loader"; // Import the Loader component
+
 
 
 function App() {
@@ -57,17 +63,16 @@ function App() {
 
   const menuItems = [
     { name: "Home", icon: <FaHome />, link: "/" },
-    { name: "Book Later", icon: <FaClock />, link: "/book-later" }, // Ahora es "Watch Later"
-    { name: "Bookings", icon: <FaBook />, link: "/bookings" }, // Agregamos el link faltante
+    { name: "Book Later", icon: <FaClock />, link: "/book-later" },
+    { name: "Bookings", icon: <MdBookmarkAdded />, link: "/bookings" }
   ];
 
   if (user) {
     if (user.role === "Admin") {
       menuItems.push(
-        { name: "Reservations", icon: <FaShoppingCart />, link: "/reservations" },
-        { name: "Logs", icon: <FaBook />, link: "/logs" },
-        { name: "Profile", icon: <FaSignInAlt />, link: "/profile" },
-        { name: "Stats", icon: <FaStairs />, link: "/statistics" }
+        { name: "Availability", icon: <TbBookmarkQuestion />, link: "/reservations" },
+        { name: "User Activity", icon: <GrContactInfo />, link: "/logs" },
+        { name: "Statistics", icon: <GiHistogram />, link: "/statistics" }
       );
     } else {
       menuItems.push({ name: "Profile", icon: <FaSignInAlt />, link: "/profile" });
@@ -170,16 +175,15 @@ function App() {
           })}
         </ul>
 
-        {/* Login at the bottom */}
+            {/* Login at the bottom */}
         <div className="bottom-menu">
           {user ? (
-            <button onClick={logout} className="log-button">
-              <FaSignInAlt />
-              <span>Logout</span>
-            </button>
+            <Link to="/profile" className="menu-link">
+              <CgProfile size={28} /> {/* Solo el icono sin texto */}
+            </Link>
           ) : (
             <Link to="/login" className="login-button">
-              <FaSignInAlt />
+              <CiLogin />
               <span>Login</span>
             </Link>
           )}
@@ -210,7 +214,8 @@ function App() {
             <Route
               path="/"
               element={
-                <div>
+                <div >
+                  <div className="filter-container">
                   <MovieFilter
                     onFilterChange={({ genre, duration, voteAverage, searchQuery }) => {
                       setGenre(genre);
@@ -219,6 +224,7 @@ function App() {
                       setSearchQuery(searchQuery);
                     }}
                   />
+                    </div>
 
                   <h2 className="section-title">Our Top Rated Movies</h2>
                   <div className="movies-grid">

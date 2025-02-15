@@ -5,6 +5,7 @@
   font-family: Arial, sans-serif;
 }
 
+
 .loader-container {
   display: flex;
   align-items: center;
@@ -208,12 +209,43 @@
   background-color: rgba(255, 255, 255, 0.1);
   transform: scale(1.05);
 }
+.menu-link svg {
+  font-size: 24px; /* Ajusta el tamaño de todos los íconos */
+  width: 24px;
+  height: 24px;
+}
+
+.menu-link svg:nth-child(1) {
+  min-width: 24px;
+  min-height: 24px;
+}
+
+
 
 .active-menu {
   background-color: rgba(40, 156, 213, 0.3); /* Azul medio transparente */
   border-radius: 8px;
 }
 
+.bottom-menu .menu-link {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Centrar icono */
+  padding: 10px;
+  width: 40px; /* Ajustar tamaño del botón */
+  height: 40px;
+  border-radius: 50%;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.bottom-menu .menu-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: scale(1.1);
+}
+
+.bottom-menu .menu-link svg {
+  font-size: 28px; /* Asegurar un tamaño adecuado */
+}
 
 .login-button {
   display: flex;
@@ -267,31 +299,57 @@
   flex-direction: column;
 }
 
+.filter-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
 .filter-bar {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   margin-bottom: 20px;
-  padding: 10px;
-  background-color: rgba(255, 255, 255, 0.19);
-  border-radius: 10px;
+  padding: 12px;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 30px; /* Más redondeado */
+  align-items: center;
+  justify-content: center;
+  min-width: 800px;
+  max-width: 800px;
 }
 
 .filter-bar select,
 .filter-bar input {
-  padding: 10px;
+  padding: 12px;
   border: none;
-  border-radius: 5px;
+  border-radius: 20px; /* Más redondeado */
   font-size: 1rem;
+  width: 180px; /* Tamaño uniforme */
+  min-width: 180px;
+  background-color: rgba(255, 255, 255, 0.2);
+  text-align: center;
+  color: white;
+  transition: all 0.3s ease-in-out;
 }
 
-.filter-bar input {
-  flex: 1; /* Se expande para ocupar el espacio disponible */
-}
-
+/* Efecto al enfocar */
 .filter-bar select:focus,
 .filter-bar input:focus {
   outline: none;
-  box-shadow: 0 0 5px #289cd5; /* Resalte azul */
+  background-color: rgba(255, 255, 255, 0.3);
+   border-radius: 20px;
 }
 
+/* Placeholder más visible */
+.filter-bar input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+}
 
+/* Transición para hover */
+.filter-bar select:hover,
+.filter-bar input:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+  transform: scale(1.02);
+}
