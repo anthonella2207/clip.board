@@ -3,7 +3,7 @@
     font-family: Arial, sans-serif;
     display: flex;
     align-items: center;
-    height: 100vh;
+    height: 150vh;
     flex-direction: column;
     background-color: rgb(29, 28, 42);
 }
@@ -43,11 +43,12 @@
 .screen {
     max-height: 10px;
     min-height: 10px;
-    width: 80%;
+    min-width: 700px;
     background-color: rgba(255, 255, 255, 0.88); /* Color gris claro */
     border-radius: 5px; /* Bordes redondeados */
-    margin: 20px auto; /* Centrado con margen */
-    box-shadow: 0px 10px 20px rgba(255, 255, 255, 0.37); /* Efecto de luz inferior */
+    margin-top: 20px;
+    text-align: center;
+    box-shadow: 0px -10px 20px rgba(255, 255, 255, 0.37); /* Efecto de luz inferior */
 }
 
 .seat-container {
@@ -196,17 +197,19 @@
 
 .chart-container {
     display: flex;
-    flex-direction: row; /* Alinear elementos en fila */
-    justify-content: space-between; /* Distribuir espacio entre texto y gráfico */
-    align-items: center; /* Centrar verticalmente */
-    gap: 20px; /* Espaciado entre texto y gráfico */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     width: 500px;
     max-width: 800px;
-    background: rgba(97, 97, 97, 0.72); /* Fondo oscuro para el recuadro */
+    background: rgba(97, 97, 97, 0.72);
     padding: 20px;
     border-radius: 10px;
-    color: white; /* Asegurar que el texto sea legible */
+    color: white;
+    top: 110%; /* Ajusta según necesidad */
+    left: 59%; /* Ajusta según necesidad */
 }
+
 
 .chart-text {
     flex: 1; /* El texto ocupa la mitad del espacio */
