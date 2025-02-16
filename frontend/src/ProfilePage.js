@@ -3,10 +3,10 @@ import { AuthContext } from "./AuthContext";
 import defaultProfilePic from "./images/defaultProfilePic.jpg";
 import "./ProfilePage.css";
 import { useNavigate } from "react-router-dom";
-import { FaSignOutAlt } from "react-icons/fa";
+import { CiLogout } from "react-icons/ci"; // Nuevo icono
 
 function ProfilePage() {
-    const { user, updateEmail, updatePassword, logout } = useContext(AuthContext); // Agregar logout
+    const { user, updateEmail, updatePassword, logout } = useContext(AuthContext);
     const [newEmail, setNewEmail] = useState("");
     const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
@@ -64,9 +64,9 @@ function ProfilePage() {
                 <p><strong>First Name:</strong> {user?.firstName || "N/A"}</p>
                 <p><strong>Last Name:</strong> {user?.lastName || "N/A"}</p>
 
-                {/* Botón de Logout */}
-                <button onClick={logout} className="logout-button">
-                    <FaSignOutAlt /> Logout
+                {/* Botón de Logout con cambios */}
+                <button onClick={logout} className="logout-botton profile">
+                    <CiLogout /> Logout
                 </button>
             </div>
         </div>

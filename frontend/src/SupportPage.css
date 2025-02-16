@@ -1,0 +1,111 @@
+/* Contenedor principal */
+.support-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+  background-color: rgb(29, 28, 42);
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.support-container h1 {
+  color: #ffffff;
+  margin-bottom: 10px;
+}
+
+.support-container p {
+  color: #ffffff;
+  font-size: 16px;
+}
+
+.support-container h2 {
+  margin-top: 30px;
+  color: #289CD5FF;
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.support-container h3 {
+  color: #289CD5FF;
+  margin-bottom: 10px;
+  font-size: 28px;
+  margin-top: 30px;
+}
+
+
+/* Sección de preguntas frecuentes */
+.faq-section {
+  margin-top: 20px;
+  text-align: left;
+  max-width: 450px;
+  align-content: center;
+}
+
+.faq-section details {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.faq-section summary {
+  font-weight: bold;
+  color: #444;
+}
+
+.faq-section p {
+  margin-top: 5px;
+  color: #555;
+}
+
+/* Formulario de contacto */
+.support-form {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.support-form input,
+.support-form textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.support-form textarea {
+  resize: vertical;
+  height: 100px;
+}
+
+.support-form button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.support-form button:hover {
+  background-color: #0056b3;
+}
+
+/* Enlace de regreso */
+.support-container a {
+  display: inline-block;
+  margin-top: 20px;
+  color: #007bff;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.support-container a:hover {
+  text-decoration: underline;
+}
