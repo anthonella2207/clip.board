@@ -23,9 +23,7 @@ import StatisticsPage from "./Statistics";
 import AdminLogs from "./AdminLogs";
 import ProtectedRoute from "./ProtectedRoute";
 import Loader from "./Loader"; // Import the Loader component
-import { MdSupportAgent } from "react-icons/md";
-import SupportPage from "./SupportPage";
-
+import BookingPage from "./BookingPage";
 
 
 
@@ -67,8 +65,7 @@ function App() {
   const menuItems = [
     { name: "Home", icon: <FaHome />, link: "/" },
     { name: "Book Later", icon: <FaClock />, link: "/book-later" },
-    { name: "Bookings", icon: <MdBookmarkAdded />, link: "/bookings" },
-    { name: "Support", icon: <MdSupportAgent />, link: "/support" }
+    { name: "Bookings", icon: <MdBookmarkAdded />, link: "/bookings" }
   ];
 
   if (user) {
@@ -203,7 +200,6 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/movie/:id" element={<MoviePage />} />
-            <Route path="/support" element={<SupportPage />} />
 
             <Route element={<ProtectedRoute />}>
               <Route path="/seats/:showId" element={<SeatSelection />} />
@@ -214,7 +210,7 @@ function App() {
               <Route path="/reservations/:showId" element={<SeatSelection />} />
               <Route path="/statistics" element={<StatisticsPage />} />
               <Route path="/logs" element={<AdminLogs />} />
-
+              <Route path="/bookings" element={<BookingPage userId={user?.id} />} />
             </Route>
 
             <Route

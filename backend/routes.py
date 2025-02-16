@@ -162,28 +162,30 @@ def signup():
 @auth_routes.route('/api/hall_occupancy', methods=['GET'])
 @cross_origin()
 def get_hall_occupancy():
-    """ Berechnet die Saalauslastung für jede Show """
-    con = get_db_connection()
-    cur = con.cursor()
-    cur.execute("""
-        SELECT s.showtime, h.name AS hall, 
-               COUNT(*) AS total_seats,
-               SUM(CASE WHEN seat.status = 'booked' THEN 1 ELSE 0 END) AS booked_seats,
-               ROUND(SUM(CASE WHEN seat.status = 'booked' THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS occupancy_rate
-        FROM seat
-        JOIN shows s ON seat.show_id = s.id
-        JOIN hall h ON s.hall_id = h.id
-        GROUP BY s.showtime, h.name
-        ORDER BY occupancy_rate DESC;
-    """)
+    print("📌 API /api/hall_occupancy wurde aufgerufen")  # Debugging
+    try:
+        con = get_db_connection()
+        cur = con.cursor()
+        cur.execute("""
+            SELECT s.showtime, h.name AS hall, 
+                   COUNT(*) AS total_seats,
+                   SUM(CASE WHEN seat.status = 'booked' AND seat.reservation_id IS NOT NULL THEN 1 ELSE 0 END) AS booked_seats,
+                   ROUND(SUM(CASE WHEN seat.status = 'booked' AND seat.reservation_id IS NOT NULL THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS occupancy_rate
+            FROM seat
+            JOIN shows s ON seat.show_id = s.id
+            JOIN hall h ON s.hall_id = h.id
+            GROUP BY s.showtime, h.name
+            ORDER BY occupancy_rate DESC;
+        """)
+        data = [{"showtime": row[0], "hall": row[1], "total_seats": row[2], "booked_seats": row[3],
+                 "occupancy_rate": row[4]} for row in cur.fetchall()]
 
-    data = [
-        {"showtime": row[0], "hall": row[1], "total_seats": row[2], "booked_seats": row[3], "occupancy_rate": row[4]}
-        for row in cur.fetchall()]
-
-    con.close()
-    return jsonify(data)
-
+        print(f"📌 Daten für /api/hall_occupancy: {data}")  # Debugging
+        con.close()
+        return jsonify(data), 200
+    except Exception as e:
+        print(f"❌ Fehler in /api/hall_occupancy: {str(e)}")  # Debugging
+        return jsonify({"success": False, "message": "Server error", "error": str(e)}), 500
 
 @auth_routes.route('/api/monthly_revenue', methods=['GET'])
 @cross_origin()
@@ -195,6 +197,7 @@ def get_monthly_revenue():
         SELECT strftime('%Y-%m', r.time_of_reservation) AS month,
                SUM(r.total_price) AS revenue
         FROM reservation r
+        WHERE EXISTS (SELECT 1 FROM seat WHERE seat.reservation_id = r.id)
         GROUP BY month
         ORDER BY month DESC;
     """)
@@ -215,7 +218,7 @@ def get_bestseller_movies():
         FROM movies AS m
         JOIN shows AS s ON m.id = s.movie_id
         JOIN seat AS seat ON seat.show_id = s.id
-        WHERE seat.status = 'booked'
+        WHERE seat.status = 'booked' AND seat.reservation_id IS NOT NULL
         GROUP BY m.title
         ORDER BY ticket_count DESC
         LIMIT 3;
@@ -322,7 +325,7 @@ def delete_reservation():
 
         reservation_id = reservation_id[0]
 
-        cur.execute("UPDATE seat SET reservation_id = NULL, status = 'free' WHERE id = ?", (seat_id,))
+        cur.execute("UPDATE seat SET reservation_id = NULL, status = 'free' WHERE reservation_id = ?", (reservation_id,))
 
         cur.execute("SELECT COUNT(*) FROM seat WHERE reservation_id = ?", (reservation_id,))
         remaining_seats = cur.fetchone()[0]
@@ -334,6 +337,42 @@ def delete_reservation():
         con.close()
 
         return jsonify({"success": True, "message": "Reservation deleted"}), 200
+    except Exception as e:
+        return jsonify({"success": False, "message": "Server error", "error": str(e)}), 500
+
+
+@auth_routes.route("/api/bookings/cancel", methods=["DELETE"])
+@cross_origin()
+def cancel_booking():
+    try:
+        data = request.get_json()
+        booking_id = data.get("booking_id")
+
+        if not booking_id:
+            return jsonify({"success": False, "message": "Missing booking_id"}), 400
+
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        # Prüfen, ob die Reservierung existiert
+        cursor.execute("SELECT id FROM reservation WHERE id = ?", (booking_id,))
+        reservation = cursor.fetchone()
+
+        if not reservation:
+            return jsonify({"success": False, "message": "Reservation not found"}), 404
+
+        # Setze alle Sitzplätze der Reservierung auf 'free'
+        cursor.execute("UPDATE seat SET reservation_id = NULL, status = 'free' WHERE reservation_id = ?", (booking_id,))
+        conn.commit()
+
+        # Lösche die Reservierung
+        cursor.execute("DELETE FROM reservation WHERE id = ?", (booking_id,))
+
+        conn.commit()
+        conn.close()
+
+        return jsonify({"success": True, "message": "Reservation cancelled"}), 200
+
     except Exception as e:
         return jsonify({"success": False, "message": "Server error", "error": str(e)}), 500
 
@@ -552,22 +591,36 @@ def add_log():
 
 @auth_routes.route("/api/bookings/<int:user_id>", methods=["GET"])
 def get_user_bookings(user_id):
+    print(f"Route wurde aufgerufen mit user_id: {user_id}")  # Debugging
     conn = get_db_connection()
     cursor = conn.cursor()
 
     cursor.execute("""
-        SELECT id, movie_name, show_time, seat_number, price, status
-        FROM reservations
-        WHERE user_id = ?
-        ORDER BY show_time DESC
+        SELECT r.id, m.title AS movie_name, s.showtime AS show_time, 
+               h.name AS hall, r.total_price AS price
+        FROM reservation r
+        JOIN shows s ON r.show_id = s.id
+        JOIN movies m ON s.movie_id = m.id
+        JOIN hall h ON s.hall_id = h.id
+        WHERE r.user_id = ?
+        ORDER BY s.showtime DESC
     """, (user_id,))
 
     bookings = [
-        {"id": row[0], "movie_name": row[1], "show_time": row[2], "seat_number": row[3], "price": row[4], "status": row[5]}
+        {
+            "id": row[0],
+            "movie_name": row[1],
+            "show_time": row[2],
+            "hall": row[3],
+            "price": row[4]
+        }
         for row in cursor.fetchall()
     ]
 
     conn.close()
 
-    return jsonify({"success": True, "bookings": bookings}) if bookings else jsonify({"success": False, "message": "No bookings found"}), 404
+    if not bookings:
+        print(f"⚠️ Keine Buchungen gefunden für user_id: {user_id}")  # Debugging
+        return jsonify({"success": True, "bookings": [], "message": "No bookings found"}), 200  # Statt 404 jetzt 200 OK
 
+    return jsonify({"success": True, "bookings": bookings}), 200
