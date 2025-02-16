@@ -25,8 +25,6 @@ import ProtectedRoute from "./ProtectedRoute";
 import Loader from "./Loader"; // Import the Loader component
 import BookingPage from "./BookingPage";
 
-
-
 function App() {
   const { user, logout } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
@@ -36,18 +34,16 @@ function App() {
     console.log("🔄 App hat sich aktualisiert. User: ", user);
   }, [user]);
 
-    useEffect(() => {
+  useEffect(() => {
     if (loading) {
       const timer = setTimeout(() => setLoading(false), 1000); // Simulate loading for 1 second
       return () => clearTimeout(timer);
     }
   }, [loading]);
 
-
   const handleLinkClick = () => {
     setLoading(true);
   };
-
 
   const [nowPlayingMovies, setNowPlayingMovies] = useState([]);
   const [topRatedMovies, setTopRatedMovies] = useState([]);
@@ -62,23 +58,17 @@ function App() {
   const [searchQuery, setSearchQuery] = useState("");
   const [voteAverage, setVoteAverage] = useState("All");
 
-  const menuItems = [
+  const regularMenuItems = [
     { name: "Home", icon: <FaHome />, link: "/" },
     { name: "Book Later", icon: <FaClock />, link: "/book-later" },
     { name: "Bookings", icon: <MdBookmarkAdded />, link: "/bookings" }
   ];
 
-  if (user) {
-    if (user.role === "Admin") {
-      menuItems.push(
-        { name: "Availability", icon: <TbBookmarkQuestion />, link: "/reservations" },
-        { name: "User Activity", icon: <GrContactInfo />, link: "/logs" },
-        { name: "Statistics", icon: <GiHistogram />, link: "/statistics" }
-      );
-    } else {
-      menuItems.push({ name: "Profile", icon: <FaSignInAlt />, link: "/profile" });
-    }
-  }
+  const adminMenuItems = [
+    { name: "Availability", icon: <TbBookmarkQuestion />, link: "/reservations" },
+    { name: "User Activity", icon: <GrContactInfo />, link: "/logs" },
+    { name: "Statistics", icon: <GiHistogram />, link: "/statistics" }
+  ];
 
   const bottomMenuItem = { name: "Login", icon: <FaSignInAlt /> };
 
@@ -161,12 +151,12 @@ function App() {
           </h1>
         </div>
         <ul className="menu-list">
-          {menuItems.map((item, index) => {
-            const isActive = location.pathname === item.link; // Comprueba si es la página actual
+          {regularMenuItems.map((item, index) => {
+            const isActive = location.pathname === item.link; // Check if it's the current page
             return (
               <Link
                 to={item.link}
-                className={`menu-link ${isActive ? "active-menu" : ""}`} // Aplica la clase si es activo
+                className={`menu-link ${isActive ? "active-menu" : ""}`} // Apply the class if active
                 key={index}
               >
                 {item.icon}
@@ -176,11 +166,31 @@ function App() {
           })}
         </ul>
 
-            {/* Login at the bottom */}
+        {user && user.role === "Admin" && (
+          <div className="admin-container">
+            <h3>Admin Options</h3>
+            <ul className="menu-list">
+              {adminMenuItems.map((item, index) => {
+                const isActive = location.pathname === item.link; // Check if it's the current page
+                return (
+                  <Link
+                    to={item.link}
+                    className={`menu-link ${isActive ? "active-menu" : ""}`} // Apply the class if active
+                    key={index}
+                  >
+                    {item.icon}
+                    <span>{item.name}</span>
+                  </Link>
+                );
+              })}
+            </ul>
+          </div>
+        )}
+        {/* Login at the bottom */}
         <div className="bottom-menu">
           {user ? (
             <Link to="/profile" className="menu-link">
-              <CgProfile size={28} /> {/* Solo el icono sin texto */}
+              <CgProfile size={28} /> {/* Only the icon without text */}
             </Link>
           ) : (
             <Link to="/login" className="login-button">
@@ -194,7 +204,7 @@ function App() {
       {/* Main Content */}
       <div className="content">
         {loading ? (
-           <Loader />
+          <Loader />
         ) : (
           <Routes>
             <Route path="/login" element={<LoginPage />} />
@@ -216,17 +226,17 @@ function App() {
             <Route
               path="/"
               element={
-                <div >
+                <div>
                   <div className="filter-container">
-                  <MovieFilter
-                    onFilterChange={({ genre, duration, voteAverage, searchQuery }) => {
-                      setGenre(genre);
-                      setDuration(duration);
-                      setVoteAverage(voteAverage);
-                      setSearchQuery(searchQuery);
-                    }}
-                  />
-                    </div>
+                    <MovieFilter
+                      onFilterChange={({ genre, duration, voteAverage, searchQuery }) => {
+                        setGenre(genre);
+                        setDuration(duration);
+                        setVoteAverage(voteAverage);
+                        setSearchQuery(searchQuery);
+                      }}
+                    />
+                  </div>
 
                   <h2 className="section-title">Our Top Rated Movies</h2>
                   <div className="movies-grid">
@@ -250,11 +260,11 @@ function App() {
                   <h2 className="section-title">Our Now Playing Movies</h2>
                   <div className="movies-grid">
                     {isLoading ? (
-                        <Loader />
+                      <Loader />
                     ) : Array.isArray(nowPlayingMovies) ? (
-                        nowPlayingMovies.slice(0, 20).map((movie) => (
-                            <div key={movie.id} className="movie-card">
-                              <Link to={`/movie/${movie.id}`} onClick={handleLinkClick}>
+                      nowPlayingMovies.slice(0, 20).map((movie) => (
+                        <div key={movie.id} className="movie-card">
+                          <Link to={`/movie/${movie.id}`} onClick={handleLinkClick}>
                             <img
                               src={`http://127.0.0.1:5000${movie.poster_path}`}
                               alt={`${movie.title} poster`}

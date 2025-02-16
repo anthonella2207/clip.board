@@ -131,7 +131,7 @@ const MoviePage = () => {
               onClick={toggleFavorite}
               style={{ marginTop: "15px" }}
             >
-              {isFavorite ? <IoMdClose /> : <FaRegClock />} {isFavorite ? "Remove from Watch Later" : "Watch Later"}
+              {isFavorite ? <IoMdClose /> : <FaRegClock />} {isFavorite ? "Remove from Book Later" : "Book Later"}
             </button>
           )}
         </div>

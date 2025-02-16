@@ -180,7 +180,6 @@
 /* Menu List */
 .menu-list {
   flex-grow: 1;
-  margin-top: 0px;
   list-style: none;
   padding: 0;
   width: 100%;
@@ -352,4 +351,40 @@
 .filter-bar input:hover {
   background-color: rgba(255, 255, 255, 0.25);
   transform: scale(1.02);
+}
+
+/* App.css */
+.admin-container { /* Light background color */
+  border-radius: 20px; /* Rounded corners */
+  padding: 5px; /* Padding inside the container */
+  margin-bottom: 180px;
+}
+
+.admin-container h3 {
+  color: #ffffff; /* Darker color for the header */
+  margin-bottom: 12px; /* Space below the header */
+}
+
+.admin-container .menu-list {
+  list-style: none; /* Remove default list styling */
+  padding: 0; /* Remove default padding */
+}
+
+.admin-container .menu-link {
+  display: flex;
+  align-items: center;
+  padding: 12px 10px; /* Padding inside the links */
+  color: #ffffff; /* Text color */
+  text-decoration: none; /* Remove underline */
+  border-radius: 10px; /* Rounded corners for links */
+  transition: background-color 0.3s; /* Smooth background color transition */
+}
+
+.admin-container .menu-link:hover {
+  background-color: rgba(233, 236, 239, 0.52); /* Light background color on hover */
+}
+
+.admin-container .menu-link.active-menu {
+  background-color: rgba(40, 156, 213, 0.43);
+  color: #fff; /* Active text color */
 }
