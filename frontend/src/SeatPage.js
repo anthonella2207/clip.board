@@ -26,13 +26,21 @@ const fetchSeats = async (showId) => {
 
 const fetchShowStats = async (showId, setStats) => {
     try {
-        const response = await fetch(`http://127.0.0.1:5000/api/show_stats?show_id=${showId}`);
+        const response = await fetch(`http://127.0.0.1:5000/api/hall_occupancy?show_id=${showId}`);
+
+        if (!response.ok) {
+            console.error(`Error fetching hall occupancy: ${response.status}`);
+            return;
+        }
+
         const data = await response.json();
-        if (data.success) {
-            setStats(data);
+        console.log("Fetched show stats:", data);
+        if (data.length > 0) {
+            const showData = data[0];
+            setStats(showData);
         }
     } catch (error) {
-        console.error("Error fetching show stats:", error);
+        console.error("Error fetching hall occupancy:", error);
     }
 };
 
@@ -72,6 +80,33 @@ export default function SeatSelection() {
             }
         });
     };
+    const deleteReservation = async (seatId) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this reservation?");
+    if (!confirmDelete) return;
+
+    try {
+        const response = await fetch(`http://127.0.0.1:5000/api/delete_reservation?seat_id=${seatId}`, {
+            method: "DELETE",
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            alert("Reservation deleted successfully!");
+
+            setSeats(prevSeats =>
+                prevSeats.map(seat =>
+                    seat.id === seatId ? { ...seat, isbooked: false } : seat
+                )
+            );
+            fetchShowStats(showId, setStats);
+        } else {
+            alert(`Error: ${data.message}`);
+        }
+    } catch (error) {
+        console.error("Error deleting reservation:", error);
+        alert("Server error while deleting reservation.");
+    }
+};
 
     const handleReservation = async () => {
         if (!user) {
@@ -125,7 +160,13 @@ export default function SeatSelection() {
                             <div
                                 key={seat.id}
                                 className={`seat ${seat.isbooked ? "seat-booked" : "seat-free"} ${selectedSeats.includes(seat.id) ? "seat-selected" : ""}`}
-                                onClick={() => !seat.isbooked && toggleSeatSelection(seat.id)}
+                                onClick={() => {
+                                    if (seat.isbooked && isAdmin) {
+                                        deleteReservation(seat.id);
+                                    } else if (!seat.isbooked) {
+                                        toggleSeatSelection(seat.id);
+                                    }
+                                }}
                             >
                                 <MdEventSeat />
                                 <span className="seat-tooltip">Row {seat.row_number} - Seat {seat.seat_number}</span>
@@ -160,7 +201,7 @@ export default function SeatSelection() {
                     {showChart ? "Hide Chart" : "Show Chart"}
                 </button>
             )}
-            {isAdmin && showChart && stats && (
+            {isAdmin && showChart && stats && stats.available_seats !== undefined && stats.booked_seats !== undefined && (
                 <div className="chart-container">
                     {/* Sección de texto dentro del mismo recuadro */}
                     <div className="chart-text">
