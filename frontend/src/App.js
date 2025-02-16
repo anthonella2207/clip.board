@@ -6,6 +6,7 @@ import { CiLogin } from "react-icons/ci";
 import { GrContactInfo } from "react-icons/gr";
 import { TbBookmarkQuestion } from "react-icons/tb";
 import { CgProfile } from "react-icons/cg";
+import { BiSupport } from "react-icons/bi"; // Import the support icon
 import "./App.css";
 import LoginPage from "./LoginPage";
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react-router-dom";
@@ -24,6 +25,7 @@ import AdminLogs from "./AdminLogs";
 import ProtectedRoute from "./ProtectedRoute";
 import Loader from "./Loader"; // Import the Loader component
 import BookingPage from "./BookingPage";
+import SupportPage from "./SupportPage"; // Import the SupportPage
 
 function App() {
   const { user, logout } = useContext(AuthContext);
@@ -45,6 +47,10 @@ function App() {
     setLoading(true);
   };
 
+  const handleLogout = () => {
+    logout();
+  };
+
   const [nowPlayingMovies, setNowPlayingMovies] = useState([]);
   const [topRatedMovies, setTopRatedMovies] = useState([]);
   const [filteredTopRated, setFilteredTopRated] = useState([]);
@@ -61,7 +67,8 @@ function App() {
   const regularMenuItems = [
     { name: "Home", icon: <FaHome />, link: "/" },
     { name: "Book Later", icon: <FaClock />, link: "/book-later" },
-    { name: "Bookings", icon: <MdBookmarkAdded />, link: "/bookings" }
+    { name: "Bookings", icon: <MdBookmarkAdded />, link: "/bookings" },
+    { name: "Support", icon: <BiSupport />, link: "/support" } // Add SupportPage link
   ];
 
   const adminMenuItems = [
@@ -189,9 +196,11 @@ function App() {
         {/* Login at the bottom */}
         <div className="bottom-menu">
           {user ? (
-            <Link to="/profile" className="menu-link">
-              <CgProfile size={28} /> {/* Only the icon without text */}
-            </Link>
+            <div className="profile-menu">
+              <Link to="/profile" className="menu-link">
+                <CgProfile size={28} /> {/* Only the icon without text */}
+              </Link>
+            </div>
           ) : (
             <Link to="/login" className="login-button">
               <CiLogin />
@@ -222,6 +231,8 @@ function App() {
               <Route path="/logs" element={<AdminLogs />} />
               <Route path="/bookings" element={<BookingPage userId={user?.id} />} />
             </Route>
+
+            <Route path="/support" element={<SupportPage />} /> {/* Add SupportPage route */}
 
             <Route
               path="/"

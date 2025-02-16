@@ -357,7 +357,7 @@
 .admin-container { /* Light background color */
   border-radius: 20px; /* Rounded corners */
   padding: 5px; /* Padding inside the container */
-  margin-bottom: 180px;
+  margin-bottom: 50px;
 }
 
 .admin-container h3 {
