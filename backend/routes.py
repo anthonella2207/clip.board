@@ -140,7 +140,7 @@ database. It checks if the user exists in the database and compares the entered 
 the stored password. Then it calls the function update_user_email, to store the updated email
 in the database."""
 
-@auth_routes.route('update_email', methods=['POST'])
+@auth_routes.route('/update_email', methods=['POST'])
 @cross_origin()
 
 def update_email():

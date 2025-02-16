@@ -116,9 +116,63 @@ export const AuthProvider = ({ children }) => {
         };
     }, [user]);
 
+     const updateEmail = async (newEmail, currentPassword) => {
+        if (!user) {
+            return { success: false, message: "User not logged in" };
+        }
+
+        try {
+            const response = await fetch("http://127.0.0.1:5000/update_email", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    user_id: user.id,
+                    new_email: newEmail,
+                    password: currentPassword,
+                }),
+            });
+
+            const data = await response.json();
+            if (data.success) {
+            // Aktualisiere die lokale Benutzerdaten
+                const updatedUser = { ...user, email: newEmail };
+                setUser(updatedUser);
+                localStorage.setItem("user", JSON.stringify(updatedUser));
+            }
+
+            return data;
+        } catch (error) {
+            console.error("Error updating email:", error);
+            return { success: false, message: "Server error" };
+        }
+    };
+
+     const updatePassword = async (currentPassword, newPassword) => {
+        if (!user) {
+            return { success: false, message: "User not logged in" };
+        }
+
+        try {
+            const response = await fetch("http://127.0.0.1:5000/update_password", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    user_id: user.id,
+                    old_password: currentPassword,
+                    new_password: newPassword,
+                }),
+            });
+
+            const data = await response.json();
+            return data; // Erfolgs- oder Fehlermeldung vom Backend zurückgeben
+        } catch (error) {
+            console.error("Error updating password:", error);
+            return { success: false, message: "Server error" };
+        }
+    };
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, loading }}>
+        <AuthContext.Provider value={{ user, login, logout, loading, updateEmail, updatePassword }}>
             {children}
         </AuthContext.Provider>
     );
