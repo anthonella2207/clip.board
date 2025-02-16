@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { IoArrowBackOutline } from "react-icons/io5";
 import "./FavoritePage.css";
+import { PiListMagnifyingGlass } from "react-icons/pi";
 
 const FavoritePage = () => {
   const [favoriteMovies, setFavoriteMovies] = useState([]);
@@ -25,7 +26,8 @@ const FavoritePage = () => {
       <h1 className="favorites-title">My Book Later List</h1>
 
       {favoriteMovies.length === 0 ? (
-        <p className="no-favorites">No favorite movies yet.</p>
+        <p className="no-favorites"><PiListMagnifyingGlass /></p>
+
       ) : (
         <div className="movies-grid-2">
           {favoriteMovies.map((movie) => (

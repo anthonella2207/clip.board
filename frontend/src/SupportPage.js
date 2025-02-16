@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./SupportPage.css";
+import emailjs from '@emailjs/browser';
 
 const SupportPage = () => {
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
@@ -15,6 +16,19 @@ const SupportPage = () => {
     console.log("Form submitted:", formData);
     setSubmitted(true);
   };
+
+ const sendEmail = (e) => {
+  e.preventDefault();
+
+  emailjs.sendForm('service_ooob27q', 'template_eprk9q9', e.target, 'fUUgZ4BuPt-h0FxeW')
+    .then((result) => {
+      console.log(result.text);
+      setSubmitted(true);
+      setFormData({ name: "", email: "", message: "" }); // Limpiar el formulario
+    }, (error) => {
+      console.log(error.text);
+    });
+};
 
   return (
     <div className="support-container">
@@ -55,15 +69,19 @@ const SupportPage = () => {
           <summary>How do I report an issue with my booking?</summary>
           <p>If you experience any issues with your booking, please contact our support team using the contact form below.</p>
         </details>
+        <details>
+          <summary>Can I cancel a reservation?</summary>
+          <p>Yes, you can cancel a reservation on the bookings page.</p>
+        </details>
       </div>
 
       <h3>Contact Us</h3>
       {submitted ? (
         <p>Thank you! Your message has been received. We will get back to you soon.</p>
       ) : (
-        <form className="support-form" onSubmit={handleSubmit}>
+        <form className="support-form" onSubmit={sendEmail}>
           <input type="text" name="name" placeholder="Your Name" required onChange={handleChange} />
-          <input type="email" name="email" placeholder="Your Email" required onChange={handleChange} />
+          <input type="text" name="email_from" placeholder="Your Email" required onChange={handleChange} />
           <textarea name="message" placeholder="Your Message" required onChange={handleChange}></textarea>
           <button type="submit">Submit</button>
         </form>

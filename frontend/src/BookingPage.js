@@ -1,4 +1,8 @@
 import React, { useEffect, useState } from "react";
+import { PiListMagnifyingGlass } from "react-icons/pi";
+import "./BookingPage.css";
+import {IoArrowBackOutline} from "react-icons/io5";
+import {Link} from "react-router-dom";
 
 const BookingPage = ({ userId }) => {
   const [bookings, setBookings] = useState([]);
@@ -18,7 +22,7 @@ const BookingPage = ({ userId }) => {
 
     fetch(`http://127.0.0.1:5000/api/bookings/${userId}`)
       .then((response) => {
-        console.log("📌 API Response:", response);
+        console.log("API Response:", response);
 
         if (!response.ok) {
           throw new Error(`Server error: ${response.status}`);
@@ -27,20 +31,20 @@ const BookingPage = ({ userId }) => {
         return response.json();
       })
       .then((data) => {
-        console.log("📌 Parsed JSON:", data);
+        console.log("Parsed JSON:", data);
         if (data.success) {
           setBookings(data.bookings);
         }
         setLoading(false);
       })
       .catch((error) => {
-        console.error("❌ Fetch Error:", error);
+        console.error("Fetch Error:", error);
         setError("An error occurred while loading bookings.");
         setLoading(false);
       });
   }, [userId]);
 
-   useEffect(() => {
+  useEffect(() => {
     const storedCompleted = JSON.parse(localStorage.getItem("completedBookings")) || {};
     storedCompleted[userId] = Array.from(completedBookings);
     localStorage.setItem("completedBookings", JSON.stringify(storedCompleted));
@@ -62,45 +66,46 @@ const BookingPage = ({ userId }) => {
   };
 
   const cancelBooking = (bookingId, showId) => {
-  if (!window.confirm("Are you sure you want to cancel this booking?")) {
-    return;
-  }
+    if (!window.confirm("Are you sure you want to cancel this booking?")) {
+      return;
+    }
 
-  fetch("http://127.0.0.1:5000/api/bookings/cancel", {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ booking_id: bookingId }),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.success) {
-        console.log("✅ Reservation cancelled");
-
-        // 🔄 Entferne die Buchung aus der Liste
-        setBookings((prevBookings) => prevBookings.filter((booking) => booking.id !== bookingId));
-
-        // 🔄 Sitzplätze neu laden
-        fetchSeats(showId).then(setSeats);
-
-        // 🔄 Statistiken neu laden
-        fetchStatistics("occupancy");
-      } else {
-        console.error("❌ Fehler beim Stornieren:", data.message);
-      }
+    fetch("http://127.0.0.1:5000/api/bookings/cancel", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ booking_id: bookingId }),
     })
-    .catch((error) => console.error("❌ Netzwerkfehler:", error));
-};
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          console.log("Reservation cancelled");
 
+          // Remove the booking from the list
+          setBookings((prevBookings) => prevBookings.filter((booking) => booking.id !== bookingId));
 
+          // Reload seats
+          fetchSeats(showId).then(setSeats);
+
+          // Reload statistics
+          fetchStatistics("occupancy");
+        } else {
+          console.error("Error cancelling:", data.message);
+        }
+      })
+      .catch((error) => console.error("Network error:", error));
+  };
 
   return (
-    <div>
+    <div className={"booking-page"}>
+      <Link to="/" className="back-link">
+        <IoArrowBackOutline />
+      </Link>
       <h2>My bookings</h2>
 
       {bookings.length === 0 ? (
-        <p>No bookings found</p>
+          <p className="no-bookings"><PiListMagnifyingGlass /></p>
       ) : (
         <>
           <h3>Current bookings</h3>
@@ -109,12 +114,12 @@ const BookingPage = ({ userId }) => {
           ) : (
             <ul>
               {currentBookings.map((booking) => (
-                  <li key={booking.id}>
-                    <strong>{booking.movie_name}</strong> - {booking.show_time} - Hall: {booking.hall} - Reservation
-                    number: {booking.id}
-                    <button onClick={() => markAsCompleted(booking.id)}>Done</button>
-                    <button onClick={() => cancelBooking(booking.id, booking.show_id)}>Cancel booking</button>
-                  </li>
+                <li key={booking.id}>
+                  <strong>{booking.movie_name}</strong> - {booking.show_time} - Hall: {booking.hall} - Reservation
+                  number: {booking.id}
+                  <button onClick={() => markAsCompleted(booking.id)}>Done</button>
+                  <button onClick={() => cancelBooking(booking.id, booking.show_id)}>Cancel booking</button>
+                </li>
               ))}
             </ul>
           )}
