@@ -58,17 +58,16 @@ function ProfilePage() {
 
             {/* Sección derecha: Información del usuario y Logout */}
             <div className="profile-right">
-                <img src={defaultProfilePic} alt="Profile" className="profile-picture" />
-                <h2>User Information</h2>
-                <p><strong>Email:</strong> {user?.email}</p>
-                <p><strong>First Name:</strong> {user?.firstName || "N/A"}</p>
-                <p><strong>Last Name:</strong> {user?.lastName || "N/A"}</p>
+    <img src={defaultProfilePic} alt="Profile" className="profile-picture" />
+    <h2>User Information</h2>
+    <p><strong>Email:</strong> {user?.email || "N/A"}</p>
+    <p><strong>First Name:</strong> {user?.firstName || "N/A"}</p>
+    <p><strong>Last Name:</strong> {user?.lastName || "N/A"}</p>
 
-                {/* Botón de Logout con cambios */}
-                <button onClick={logout} className="logout-botton profile">
-                    <CiLogout /> Logout
-                </button>
-            </div>
+    <button onClick={logout} className="logout-button profile">
+        <CiLogout onClick={logout} /> Logout
+    </button>
+</div>
         </div>
     );
 }

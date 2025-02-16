@@ -50,12 +50,15 @@
 }
 
 .profile-right {
-    flex: 1;
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     padding: 20px;
     background: #1d1c2a;
     border-radius: 10px;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    width: 23rem;
+    margin-left: 20px;
 }
 
 .profile-picture {
@@ -66,19 +69,21 @@
     border: 3px solid #007bff;
 }
 
+
+.profile-right h2 {
+    margin-bottom: 20px;
+    color: #ffffff;
+}
+
 .profile-right p {
+    align-self: flex-start;
     font-size: 18px;
     margin: 5px 0;
+    color: #ffffff;
 }
 
-.message {
-    color: red;
-    font-weight: bold;
-    margin-top: 10px;
-}
-
-.logout-botton.profile {
-    background-color: red; /* Color rojo */
+.logout-button.profile {
+    background-color: transparent;
     color: white;
     padding: 10px 15px;
     border: none;
@@ -87,10 +92,11 @@
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 5px; /* Espacio entre icono y texto */
+    gap: 5px;
     transition: background 0.3s ease-in-out;
+    margin-top: 20px;
 }
 
-.logout-botton.profile:hover {
-    background-color: darkred; /* Rojo más oscuro al pasar el cursor */
+.logout-button.profile:hover {
+    background-color: darkred;
 }
