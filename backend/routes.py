@@ -57,7 +57,6 @@ def login():
                     "success": True,
                     "message": "Login Successful",
                     "user_id": user_id,
-                    "email": email,
                     "role": role,
                     "first_name": first_name,
                     "last_name": last_name
@@ -122,7 +121,9 @@ def signup():
 
     role = "Client"
 
-    add_user(None, email, password, first_name, last_name, role)
+    cur.execute("""
+    INSERT INTO user (email, password, vorname, nachname, role)VALUES(?, ?, ?, ?, ?)""",
+                (email, password, first_name, last_name, role))
 
     con.commit()
 
