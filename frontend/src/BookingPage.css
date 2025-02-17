@@ -1,31 +1,53 @@
 .booking-page {
-   margin-left: 200px; /* Alineado con el contenido principal */
     padding: 20px;
     color: white;
-    min-height: 100vh; /* Asegura que ocupe toda la pantalla */
+    min-height: 100vh; /* Ensures full-screen height */
     display: flex;
     flex-direction: column;
-    align-items: center; /* Alinea el contenido a la izquierda */
-    justify-content: flex-start;
-    background-color: #1d1c2a; /* Asegurar que tenga fondo oscuro */
+    background-color: #1d1c2a; /* Dark background */
 }
 
-.booking-page h2{
+.booking-page-title {
     font-size: 2rem;
-    margin-top: 0px;
-    margin-bottom: 20px;
-    margin-right: 300px;
-    margin-left: 100px;
+    font-weight: bold;
+    text-align: center;
+    width: 100%; /* Ensures full width for centering */
 }
 
 .no-bookings {
-     margin-right: 300px;
-    margin-left: 100px;
     font-size: 3rem;
     color: #1a6da8;
+    align-self: center; /* Moves to the right */
+    margin-right: 40px;
 }
 
-.back-link {
+.no-past-bookings {
+    font-size: 2rem;
+    color: #1a6da8;
+    align-self: flex-start; /* Moves to the right */
+}
+
+.no-current-bookings {
+    font-size: 2rem;
+    color: #1a6da8;
+    align-self: flex-start; /* Moves to the right */
+}
+
+.booking-page h3 {
+    font-size: 1.5rem;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    align-self: flex-start; /* Aligns to the left */
+}
+
+.booking-page h4 {
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+    align-self: flex-start; /* Aligns to the left */
+}
+
+
+ .back-link {
     position: fixed;
     top: 20px;
     left: 200px;
@@ -44,5 +66,119 @@
 }
 
 .back-link:hover {
-  background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.8);
+}
+
+
+.booking-list {
+    display: flex;
+    flex-direction: row; /* Alinea los tickets de derecha a izquierda */
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.booking-ticket {
+    background: white;
+    color: black;
+    padding: 15px 20px;
+    margin: 10px 0;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 200px;
+    max-width: 200px;
+    min-height: 380px;
+    position: relative;
+    text-align: center;
+}
+
+
+/* Add a color difference between active and completed bookings */
+.booking-ticket.active {
+    border: 2px solid #1a6da8;
+}
+
+.booking-ticket.completed {
+    opacity: 0.6;
+    background-color: #f5f5f5;
+    border: 2px solid gray;
+}
+
+/* Circular cutouts for ticket */
+.booking-ticket::before,
+.booking-ticket::after {
+    content: "";
+    width: 40px;
+    height: 20px;
+    background: #1d1c2a;
+    border-radius: 50%;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.booking-ticket::before {
+    top: -10px;
+}
+
+.booking-ticket::after {
+    bottom: -10px;
+}
+
+/* Ticket Footer */
+.ticket-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: -10px;
+}
+
+/* Ticket Text */
+.ticket-text {
+    font-size: 1.2rem;
+    margin-top: 10px;
+    background-color: rgba(44, 44, 44, 0.14);
+    padding: 10px 10px;
+    border-radius: 20px;
+}
+
+/* Status Labels */
+.ticket-status {
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.status.active {
+    color: green;
+}
+
+.status.completed {
+    color: gray;
+}
+
+/* Ticket Buttons */
+.ticket-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.ticket-buttons button {
+    background: #ff3b3b;
+    border: none;
+    padding: 8px 12px;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.ticket-buttons button:first-child {
+    background: #1a6da8;
+}
+
+/* QR Code */
+.qr-code {
+    margin-top: 10px;
 }
