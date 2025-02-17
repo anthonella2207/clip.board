@@ -1,21 +1,26 @@
 /* Contenedor principal */
 .favorites-container {
-  margin-left: 200px; /* Alineado con el contenido principal */
-  padding: 20px;
-  color: white;
-  min-height: 100vh; /* Asegura que ocupe toda la pantalla */
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* Alinea el contenido a la izquierda */
-  justify-content: flex-start;
-  background-color: #1d1c2a; /* Asegurar que tenga fondo oscuro */
+    padding: 20px;
+    color: white;
+    min-height: 100vh; /* Ensures full-screen height */
+    display: flex;
+    flex-direction: column;
+    background-color: #1d1c2a; /* Dark background */
 }
 
-.favorites-container p {
-    margin-right: 300px;
-    margin-left: 100px;
+
+.favorites-container h1{
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    width: 100%; /* Ensures full width for centering */
+}
+
+.no-favorites {
     font-size: 3rem;
     color: #1a6da8;
+    align-self: center; /* Moves to the right */
+    margin-right: 40px;
 }
 
 /* Botón para volver */
@@ -41,22 +46,15 @@
   background: rgba(0, 0, 0, 0.8);
 }
 
-/* Título de la página */
-.favorites-title {
-  font-size: 2rem;
-  margin-top: 0px;
-  margin-bottom: 20px;
-    margin-right: 300px;
-    margin-left: 100px;
-}
-
 /* Grid para mostrar las películas */
 .movies-grid-2 {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 10px;
-  width: 100%; /* Ahora ocupa todo el ancho */
-  margin-left: -200px;
+    display: flex;
+    flex-direction: row; /* Alinea los tickets de derecha a izquierda */
+    align-items: flex-start;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    width: 100%; /* Ahora ocupa todo el ancho */
+    margin-top: 20px;
 }
 
 /* Tarjeta de película */
@@ -84,19 +82,43 @@
   opacity: 0.9;
 }
 
-/* Botón para eliminar película */
+.movie-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center buttons horizontally */
+}
+
+.remove-movie-btn,
+.book-now-btn {
+    max-width: 130px;
+    min-width: 110px;/* Ensure both buttons have the same width */
+    padding: 12px; /* Uniform padding */
+    text-align: center; /* Ensures text is centered */
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border: none;
+    margin-top: 15px;
+}
+
 .remove-movie-btn {
-  margin-top: 10px;
-  padding: 10px 12px;
-  border: none;
-  border-radius: 5px;
-  background-color: #e63946;
-  color: white;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+    background-color: #e63946;
+    color: white;
 }
 
 .remove-movie-btn:hover {
-  background-color: #b71c1c;
+    background-color: #b71c1c;
+}
+
+.book-now-btn {
+    background-color: #1a6da8;
+    color: white;
+    text-decoration: none; /* Removes underline */
+    justify-content: center; /* Centers text horizontally */
+    align-items: center; /* Centers text vertically */
+}
+
+.book-now-btn:hover {
+    background-color: #14548b;
 }

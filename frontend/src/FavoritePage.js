@@ -19,6 +19,7 @@ const FavoritePage = () => {
   };
 
   return (
+
     <div className="favorites-container">
       <Link to="/" className="back-link">
         <IoArrowBackOutline />
@@ -41,6 +42,9 @@ const FavoritePage = () => {
                 <button className="remove-movie-btn" onClick={() => removeFavorite(movie.id)}>
                   Remove Movie
                 </button>
+                 <Link to={`/movie/${movie.id}`} className="book-now-btn">
+                  Book Now
+                </Link>
               </div>
             </div>
           ))}
