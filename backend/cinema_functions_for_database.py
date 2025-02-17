@@ -128,7 +128,7 @@ def add_movie(id, title, release_date, overview, vote_average, poster_path, cate
         con.close()
 
 # Adding users hint: id = None for using AUTOINCREMENT in SQL
-def add_user(iD, vorname, nachname, password, email, role):
+def add_user(iD, email, password, vorname, nachname, role):
     """
     Description: This function adds a user into the database movies.db.
     """
@@ -136,13 +136,13 @@ def add_user(iD, vorname, nachname, password, email, role):
         con = sqlite3.connect("movies.db")
         cur = con.cursor()
         cur.execute("""
-            INSERT INTO user VALUES
-                (?, ?, ?, ?, ?, ?)
-        """, (iD, vorname, nachname, password, email, role))
+                    INSERT INTO user (id, email, password, vorname, nachname, role)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                """, (iD, email, password, vorname, nachname, role))
         con.commit()
         print(f"User {vorname} {nachname} added.")
 
-        #add_logs_history(None, "User Added", datetime.now(), None, None)
+        add_logs_history(None, "User Added", datetime.now(), None, None)
         con.commit()
 
     except sqlite3.IntegrityError:

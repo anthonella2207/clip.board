@@ -19,6 +19,8 @@ function ProfilePage() {
         }
     }, [user, navigate]);
 
+    console.log(user);
+
     const handleEmailChange = async (e) => {
         e.preventDefault();
         const result = await updateEmail(newEmail, currentPassword);
