@@ -52,9 +52,22 @@ const BookingPage = ({ userId }) => {
     return <p>Error: {error}</p>;
   }
 
-  const markAsCompleted = (bookingId) => {
-    setCompletedBookings((prev) => new Set([...prev, bookingId]));
-  };
+const markAsCompleted = (bookingId) => {
+  fetch("http://127.0.0.1:5000/api/bookings/cancel", {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ booking_id: bookingId }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        setBookings((prev) => prev.filter((booking) => booking.id !== bookingId));
+      } else {
+        console.error("Error cancelling:", data.message);
+      }
+    })
+    .catch((error) => console.error("Network error:", error));
+};
 
   const cancelBooking = (bookingId) => {
     if (!window.confirm("Are you sure you want to cancel this booking?")) {
@@ -80,71 +93,45 @@ const BookingPage = ({ userId }) => {
   const currentBookings = bookings.filter((booking) => !completedBookings.has(booking.id));
   const pastBookings = bookings.filter((booking) => completedBookings.has(booking.id));
 
-  return (
-    <>
-      <div className="booking-page-title">My Bookings</div>
-      <div className="booking-page">
-        <Link to="/" className="back-link">
-          <IoArrowBackOutline />
-        </Link>
+return (
+  <>
+    <div className="booking-page-title">My Bookings</div>
+    <div className="booking-page">
+      <Link to="/" className="back-link">
+        <IoArrowBackOutline />
+      </Link>
 
-        {bookings.length === 0 ? (
-          <p className="no-bookings">
-            <PiListMagnifyingGlass />
-          </p>
-        ) : (
-          <>
-            {/* Current Bookings Section */}
-            {currentBookings.length >= 0 && <h3 className="section-title">Current Bookings</h3>}
-            {currentBookings.length === 0 ? (
-              <p className="no-current-bookings"><PiListMagnifyingGlass /></p>
-            ) : (
-              <div className="booking-list">
-                {currentBookings.map((booking) => (
-                  <div key={booking.id} className="booking-ticket active">
-                    <div className="ticket-text">
-                      <strong>{booking.movie_name}</strong>
-                      <p>{booking.show_time} - Hall: {booking.hall}</p>
-                      <p>Reservation #{booking.id}</p>
-                    </div>
-                    <div className="ticket-footer">
-                      <QRCodeCanvas value={booking.id.toString()} className="qr-code" />
-                      <div className="ticket-buttons">
-                        <button onClick={() => markAsCompleted(booking.id)}>Done</button>
-                        <button onClick={() => cancelBooking(booking.id)}>Cancel</button>
-                      </div>
+      {currentBookings.length === 0 ? (
+        <p className="no-bookings">
+          <PiListMagnifyingGlass />
+        </p>
+      ) : (
+        <>
+          {/* Current Bookings Section */}
+          {currentBookings.length > 0 && <h3 className="section-title">Current Bookings</h3>}
+            <div className="booking-list">
+              {currentBookings.map((booking) => (
+                <div key={booking.id} className="booking-ticket active">
+                  <div className="ticket-text">
+                    <strong>{booking.movie_name}</strong>
+                    <p>{booking.show_time} - Hall: {booking.hall}</p>
+                    <p>Reservation #{booking.id}</p>
+                  </div>
+                  <div className="ticket-footer">
+                    <QRCodeCanvas value={booking.id.toString()} className="qr-code" />
+                    <div className="ticket-buttons">
+                      <button onClick={() => markAsCompleted(booking.id)}>Done</button>
+                      <button onClick={() => cancelBooking(booking.id)}>Cancel</button>
                     </div>
                   </div>
-                ))}
-              </div>
-            )}
-
-            <h4>Past bookings</h4>
-              {pastBookings.length === 0 ? (
-                 <p className="no-past-bookings">
-            <PiListMagnifyingGlass />
-          </p>
-              ) : (
-              <div className="booking-list">
-                {pastBookings.map((booking) => (
-                  <div key={booking.id} className="booking-ticket completed">
-                    <div className="ticket-text">
-                      <strong>{booking.movie_name}</strong>
-                      <p>{booking.show_time} - Hall: {booking.hall}</p>
-                      <p>Reservation #{booking.id}</p>
-                    </div>
-                    <div className="ticket-footer">
-                      <QRCodeCanvas value={booking.id.toString()} className="qr-code" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </>
-        )}
-      </div>
-    </>
-  );
+                </div>
+              ))}
+            </div>
+        </>
+      )}
+    </div>
+  </>
+);
 };
 
 export default BookingPage;
