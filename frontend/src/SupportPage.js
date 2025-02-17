@@ -63,7 +63,7 @@ const SupportPage = () => {
         </details>
         <details>
           <summary>How do I search for a specific movie?</summary>
-          <p>You can use the search bar on the home page to find a specific movie by title.</p>
+          <p>You can use the filter bar on the home page to find a specific movie by genre, duration, rating and key words.</p>
         </details>
         <details>
           <summary>How do I report an issue with my booking?</summary>
