@@ -255,6 +255,7 @@ def add_initial_users():
     add_user(1, "Anthonella Alessandra", "Frutos Lara", "1234", "a.frutoslara@stud.uni-goettingen.de", "Admin")
     add_user(2, "Emily Sophie", "Aust", "1234", "emilysophie.aust@stud.uni-goettingen.de", "Client")
     add_user(3, "Cordula", "Maier", "1234", "cordula.maier@stud.uni-goettingen.de", "Client")
+    add_user(4, "Matthias", "Schmidt", "1234", "matthias.schmidt@email.de", "Client")
 
     con.close()
 
