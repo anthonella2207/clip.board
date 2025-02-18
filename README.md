@@ -132,7 +132,7 @@ The movie schedule will present a visually engaging display:
 - Group code: G21
 - Group repository: clip.board
 - Tutor responsible: Corinna Wegner
-- Group team leader: Anthonella
-- Group members: Emily, Cordula
+- Group team leader: Anthonella Alessandra Frotos Lara
+- Group members: Emily Sophie Aust, Cordula Maier
   
-Cordula did the database, the database functions and statistics. Anthonella did almost everything on the frontend and Emily was our connection. She worked on frontend and backend, wrote routes and did statistics, also.
+Cordula did the database, the database functions and statistics. Anthonella did almost everything on the frontend and did some routes. Emily was our connection. She worked on frontend and backend, wrote routes and did statistics, also.
