@@ -84,3 +84,55 @@ The movie schedule will present a visually engaging display:
 - Calculate total income and monthly income for each show
 - Calculate list of available seats
 - Calculate list of not available seats
+
+# Installation and Usage
+
+### 1. Clone the Repository
+- git clone https://github.com/anthonella2207/AEU_projectPy.git
+- cd AEU_project
+
+### 2. Create and Activate Virtual Environment
+- python -m venv venv
+- source venv/bin/activate # For Mac/Linux
+- venv\Scripts\activate # For Windows
+
+### 3. Install Dependencies
+- npm install
+- npm install the following dependencies:
+- @emailjs/browser
+- chart.js
+- qrcode.react
+- react
+- react-barcode
+- react-chartjs-2
+- react-dom
+- react-icons
+- react-router-dom
+- web-vitals
+
+### 4. Run the Server
+- python app.py
+  
+## Tools & libraries
+- Python 3.x (Core programming language)
+- Flask (Web framework)
+- CORS
+- SQLite Database
+- Requests
+- API: https://www.themoviedb.org/
+- MatPlotLib
+- Re
+- Subprocess
+
+## Timeline
+![](Timeline.png)
+
+## Group Details
+- Group name: A.E.U. (which is actually not quite right, it's A.E.C now :) )
+- Group code: G21
+- Group repository: clip.board
+- Tutor responsible: Corinna Wegner
+- Group team leader: Anthonella
+- Group members: Emily, Cordula
+  
+Cordula did the database, the database functions and statistics. Anthonella did almost everything on the frontend and Emily was our connection. She worked on frontend and backend, wrote routes and did statistics, also.
