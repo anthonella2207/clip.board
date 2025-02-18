@@ -5,28 +5,39 @@ import { IoMdClose } from "react-icons/io";
 import { IoArrowBackOutline } from "react-icons/io5";
 import "./MoviePage.css";
 
+// API configuration for fetching movie data
 const API_KEY = "814254e9d1fb4859da3f4798b86b6f49";
 const BASE_URL = "https://api.themoviedb.org/3";
 
 const MoviePage = () => {
+    // Extract movie ID from the URL parameters
   const { id } = useParams();
   const navigate = useNavigate();
+
+  // State variables for storing movie details, cast, and showtimes
   const [movie, setMovie] = useState(null);
   const [cast, setCast] = useState([]);
  const [showtimes, setShowtimes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Flags for different movie categories
   const [isNowPlaying, setIsNowPlaying] = useState(false);
   const [isTopRated, setIsTopRated] = useState(false);
   const [isUpcoming, setIsUpcoming] = useState(false);
+
+  // Retrieve and store favorite movies from localStorage
   const [favorites, setFavorites] = useState(
     JSON.parse(localStorage.getItem("favoriteMovies")) || []
   );
 
+  // Check if the current movie is in the favorites list
   const isFavorite = favorites.some(fav => fav.id === parseInt(id));
+
 
   useEffect(() => {
   const fetchMovie = async () => {
     try {
+        // Fetch movie details
       const response = await fetch(`${BASE_URL}/movie/${id}?api_key=${API_KEY}&language=en-US`);
       if (!response.ok) {
         throw new Error(`Error: ${response.status}`);
@@ -34,13 +45,13 @@ const MoviePage = () => {
       const data = await response.json();
       setMovie(data);
 
-      // Verificar si la película está en Now Playing
+      // Check if the movie is currently playing
       const nowPlayingResponse = await fetch(`${BASE_URL}/movie/now_playing?api_key=${API_KEY}&language=en-US`);
       const nowPlayingData = await nowPlayingResponse.json();
       const isPlaying = nowPlayingData.results.some(m => m.id === data.id);
       setIsNowPlaying(isPlaying);
 
-      // Si la película está en Now Playing, obtener los horarios desde Flask
+      // Fetch showtimes if the movie is playing now
       if (isPlaying) {
           const showtimesResponse = await fetch(`http://127.0.0.1:5000/api/showtimes/${data.id}`);
           const showtimesData = await showtimesResponse.json();
@@ -48,12 +59,12 @@ const MoviePage = () => {
           setShowtimes(showtimesData);
       }
 
-      // Verificar si la película está en Top Rated
+      // Check if the movie is top-rated
       const topRatedResponse = await fetch(`${BASE_URL}/movie/top_rated?api_key=${API_KEY}&language=en-US`);
       const topRatedData = await topRatedResponse.json();
       setIsTopRated(topRatedData.results.some(m => m.id === data.id));
 
-      // Verificar si la película está en Upcoming, pero solo si NO está en Now Playing
+      // Check if the movie is upcoming (but not currently playing)
       if (!isPlaying) {
         const upcomingResponse = await fetch(`${BASE_URL}/movie/upcoming?api_key=${API_KEY}&language=en-US`);
         const upcomingData = await upcomingResponse.json();
@@ -69,7 +80,7 @@ const MoviePage = () => {
     }
   };
 
-
+    // Fetch movie cast details
     const fetchCast = async () => {
       try {
         const response = await fetch(`${BASE_URL}/movie/${id}/credits?api_key=${API_KEY}&language=en-US`);
@@ -77,7 +88,7 @@ const MoviePage = () => {
           throw new Error(`Error fetching cast: ${response.status}`);
         }
         const data = await response.json();
-        setCast(data.cast.slice(0, 6));
+        setCast(data.cast.slice(0, 6)); // Limit to 6 cast members
       } catch (error) {
         console.error("Error fetching cast details:", error);
       }
@@ -87,6 +98,7 @@ const MoviePage = () => {
     fetchCast();
   }, [id]);
 
+  // Function to add or remove a movie from favorites
   const toggleFavorite = () => {
     let updatedFavorites;
     if (isFavorite) {
@@ -98,6 +110,7 @@ const MoviePage = () => {
     localStorage.setItem("favoriteMovies", JSON.stringify(updatedFavorites));
   };
 
+  // Function to render star ratings
   const renderStars = (rating) => {
     const stars = [];
     const fullStars = Math.floor(rating / 2);

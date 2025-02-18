@@ -4,27 +4,32 @@ import "./LoginPage.css";
 import { AuthContext } from "./AuthContext";
 
 function LoginPage() {
+  //get login function from AuthContext
   const { login } = useContext(AuthContext);
+  //State variables to store user input and messages
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
+  // Function to handle the login form submission
   const handleLogin = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent page reload
 
     console.log("Login-Daten:", { email, password });
 
+    // Ensure both email and password fields are filled
     if (!email || !password) {
       setMessage("Please fill in both email and password");
       return;
     }
 
+    // Call the login function from AuthContext
     const result = await login(email, password);
 
     if(result.success){
-      console.log("✅ Login erfolgreich, weiterleiten...");
-      navigate("/");
+      console.log("Login erfolgreich, weiterleiten...");
+      navigate("/"); // Redirect to the home page
     }
     else{
       setMessage(result.message);

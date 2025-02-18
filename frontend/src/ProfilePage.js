@@ -6,13 +6,17 @@ import { useNavigate } from "react-router-dom";
 import { CiLogout } from "react-icons/ci"; // Nuevo icono
 
 function ProfilePage() {
+    //retrieve authentication functions and user data from AuthContext
     const { user, updateEmail, updatePassword, logout } = useContext(AuthContext);
+
+    //state variables for email and password updates
     const [newEmail, setNewEmail] = useState("");
     const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [message, setMessage] = useState("");
     const navigate = useNavigate();
 
+    //redirect to login if user is not logged in
     useEffect(() => {
         if (!user) {
             navigate("/login");
@@ -21,12 +25,14 @@ function ProfilePage() {
 
     console.log(user);
 
+    // Handles email update
     const handleEmailChange = async (e) => {
         e.preventDefault();
         const result = await updateEmail(newEmail, currentPassword);
         setMessage(result.message);
     };
 
+    // Handles password update
     const handlePasswordChange = async (e) => {
         e.preventDefault();
         const result = await updatePassword(currentPassword, newPassword);

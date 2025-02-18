@@ -3,33 +3,42 @@ import { AuthContext } from "./AuthContext";
 import "./AdminLogs.css";
 
 export default function AdminLogs() {
+    //gets current user from AuthContext
     const { user } = useContext(AuthContext);
+    //check if user is admin
     const isAdmin = user?.role === "Admin";
 
+    //states for logs and filters
     const [logs, setLogs] = useState([]);
     const [filterUser, setFilterUser] = useState("");
     const [filterAction, setFilterAction] = useState("");
 
+    //called if filterUser or filterAction changes
     useEffect(() => {
         fetchLogs();
     }, [filterUser, filterAction]);
 
+    //function to request the logs data from the backend
     const fetchLogs = async () => {
         let url = "http://127.0.0.1:5000/api/user_logs";
         const params = [];
 
+        //adds filter parametres if called
         if (filterUser) params.push(`user_id=${encodeURIComponent(filterUser)}`);
         if (filterAction) params.push(`action=${encodeURIComponent(filterAction)}`);
 
+        //if filter params, append to URL
         if (params.length > 0) {
             url += `?${params.join("&")}`;
         }
 
         try {
+            //send request to backend
             const response = await fetch(url);
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
+            //convert answer to json
             const data = await response.json();
             setLogs(data);
         }

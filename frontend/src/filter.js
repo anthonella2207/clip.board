@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from "react";
 
 const MovieFilter = ({ onFilterChange }) => {
-  const [genres, setGenres] = useState(["All"]);
+  const [genres, setGenres] = useState(["All"]); // State to store available genres
+    // State for user-selected filters
   const [selectedGenre, setSelectedGenre] = useState("All");
   const [selectedDuration, setSelectedDuration] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedVoteAverage, setSelectedVoteAverage] = useState("All");
 
+  // Fetch available genres from the backend API
   useEffect(() => {
     const fetchGenres = async () => {
       try {
         const response = await fetch("http://127.0.0.1:5000/api/genres");
         const data = await response.json();
+        // If genres exist, add them to the state
         if (data.genres) {
           setGenres(["All", ...data.genres]);
         }
@@ -24,7 +27,7 @@ const MovieFilter = ({ onFilterChange }) => {
   }, []);
 
 
-  // Wird aufgerufen, wenn ein Filter geändert wird
+  // Called whenever filter changes
   useEffect(() => {
     onFilterChange({ genre: selectedGenre, duration: selectedDuration, voteAverage: selectedVoteAverage, searchQuery });
   }, [selectedGenre, selectedDuration, selectedVoteAverage, searchQuery]);

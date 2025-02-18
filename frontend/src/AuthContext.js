@@ -1,15 +1,17 @@
 import React, { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+// Create an authentication context
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [user, setUser] = useState(null); // Holds the logged-in user data
+    const [loading, setLoading] = useState(true); // Tracks loading state
 
     useEffect(() => {
+        // Load user details from localStorage on initial render
         const storedUser = localStorage.getItem("user");
-        const token = localStorage.getItem("token"); // Assuming you have a token stored
+        const token = localStorage.getItem("token");
         if (storedUser && token) {
             setUser(JSON.parse(storedUser));
             console.log("🔹 User loaded from Local Storage:", JSON.parse(storedUser));
@@ -17,6 +19,7 @@ export const AuthProvider = ({ children }) => {
         setLoading(false);
     }, []);
 
+    // Handles user login
     const login = async (email, password) => {
         try {
             const response = await fetch("http://127.0.0.1:5000/login", {
@@ -29,6 +32,7 @@ export const AuthProvider = ({ children }) => {
             console.log("Login API Response:", data);
 
             if (data.success && data.user_id) {
+                // Store user details
                 const userData = {
                     id: data.user_id,
                     email: data.email,
@@ -40,6 +44,7 @@ export const AuthProvider = ({ children }) => {
                 localStorage.setItem("user", JSON.stringify(userData));
                 console.log("User saved:", userData);
 
+                // Log user login action
                 await fetch("http://127.0.0.1:5000/add_log", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -62,6 +67,7 @@ export const AuthProvider = ({ children }) => {
     const navigate = useNavigate();
     let logoutTimer;
 
+    // Resets logout timer on user activity
     const resetLogoutTimer = () => {
         if (logoutTimer) clearTimeout(logoutTimer);
         logoutTimer = setTimeout(() => {
@@ -69,6 +75,7 @@ export const AuthProvider = ({ children }) => {
         }, 10 * 60 * 1000);  // 10 minutes
     };
 
+    // Handles user logout
     const logout = async () => {
         try {
             const response = await fetch("http://127.0.0.1:5000/logout", {
@@ -83,6 +90,7 @@ export const AuthProvider = ({ children }) => {
                 localStorage.removeItem("token"); // Remove token
                 console.log("User logged out successfully.");
 
+                 // Log logout action
                 await fetch("http://127.0.0.1:5000/add_log", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -98,11 +106,12 @@ export const AuthProvider = ({ children }) => {
             console.error("Logout error:", error);
         }
     };
+    // Auto logout after inactivity
      useEffect(() => {
         if (user) {
-            resetLogoutTimer(); // Timer beim Login starten
+            resetLogoutTimer(); // start timer when user logs in
 
-            // Events für Benutzeraktivität
+            // options for user activity
             window.addEventListener("mousemove", resetLogoutTimer);
             window.addEventListener("keydown", resetLogoutTimer);
             window.addEventListener("click", resetLogoutTimer);
@@ -116,6 +125,7 @@ export const AuthProvider = ({ children }) => {
         };
     }, [user]);
 
+     // Update user email
      const updateEmail = async (newEmail, currentPassword) => {
         if (!user) {
             return { success: false, message: "User not logged in" };
@@ -134,7 +144,7 @@ export const AuthProvider = ({ children }) => {
 
             const data = await response.json();
             if (data.success) {
-            // Aktualisiere die lokale Benutzerdaten
+            // Update local user data
                 const updatedUser = { ...user, email: newEmail };
                 setUser(updatedUser);
                 localStorage.setItem("user", JSON.stringify(updatedUser));
@@ -147,6 +157,7 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+     //update password
      const updatePassword = async (currentPassword, newPassword) => {
         if (!user) {
             return { success: false, message: "User not logged in" };

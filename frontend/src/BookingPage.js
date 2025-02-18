@@ -6,16 +6,19 @@ import { Link } from "react-router-dom";
 import { QRCodeCanvas } from "qrcode.react";
 
 const BookingPage = ({ userId }) => {
+  // State variables for bookings, loading state, and errors
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [completedBookings, setCompletedBookings] = useState(new Set());
 
+  // Load completed bookings from localStorage when component mounts
   useEffect(() => {
     const storedCompleted = JSON.parse(localStorage.getItem("completedBookings")) || {};
     setCompletedBookings(new Set(storedCompleted[userId] || []));
   }, [userId]);
 
+  // Fetch user bookings from the API
   useEffect(() => {
     if (!userId) return;
 
@@ -39,12 +42,14 @@ const BookingPage = ({ userId }) => {
       });
   }, [userId]);
 
+  // Save completed bookings to localStorage whenever the state changes
   useEffect(() => {
     const storedCompleted = JSON.parse(localStorage.getItem("completedBookings")) || {};
     storedCompleted[userId] = Array.from(completedBookings);
     localStorage.setItem("completedBookings", JSON.stringify(storedCompleted));
   }, [completedBookings, userId]);
 
+  // Show loading message if bookings are still being fetched
   if (loading) {
     return <p>Loading bookings...</p>;
   }
@@ -52,6 +57,7 @@ const BookingPage = ({ userId }) => {
     return <p>Error: {error}</p>;
   }
 
+  // Function to mark a booking as completed
 const markAsCompleted = (bookingId) => {
   fetch("http://127.0.0.1:5000/api/bookings/cancel", {
     method: "DELETE",
@@ -69,6 +75,7 @@ const markAsCompleted = (bookingId) => {
     .catch((error) => console.error("Network error:", error));
 };
 
+  // Function to cancel a booking with user confirmation
   const cancelBooking = (bookingId) => {
     if (!window.confirm("Are you sure you want to cancel this booking?")) {
       return;

@@ -5,16 +5,21 @@ import "./FavoritePage.css";
 import { PiListMagnifyingGlass } from "react-icons/pi";
 
 const FavoritePage = () => {
+  //state to store list of favourite movies
   const [favoriteMovies, setFavoriteMovies] = useState([]);
 
+  //load movies from local storage
   useEffect(() => {
     const storedFavorites = JSON.parse(localStorage.getItem("favoriteMovies")) || [];
     setFavoriteMovies(storedFavorites);
   }, []);
 
+  //function to remove a movie from favourites
   const removeFavorite = (id) => {
+    //filter out movies to be removed
     const updatedFavorites = favoriteMovies.filter((movie) => movie.id !== id);
     setFavoriteMovies(updatedFavorites);
+    // Update localStorage with the new favorites list
     localStorage.setItem("favoriteMovies", JSON.stringify(updatedFavorites));
   };
 

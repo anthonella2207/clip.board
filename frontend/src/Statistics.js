@@ -4,17 +4,21 @@ import { Pie, Bar } from "react-chartjs-2";
 import { Chart, ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from "chart.js";
 import "./Statistics.css";
 
+// Register chart components
 Chart.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 export default function StatisticsPage() {
+    // Get user details from AuthContext
     const {user} =useContext(AuthContext);
     const isAdmin = user ?.role === "Admin";
 
+    // State variables for statistics selection and data
     const[selectedStat, setSelectedStat] = useState("occupancy");
     const[statsData, setStatsData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
+    // Fetch statistics when the selectedStat changes
     useEffect(() => {
         if(!isAdmin){
             return;
@@ -22,6 +26,7 @@ export default function StatisticsPage() {
         fetchStatistics(selectedStat);
     }, [selectedStat]);
 
+    // Function to fetch statistics based on selected type
     const fetchStatistics = async (type) => {
         setLoading(true);
         setError(null);

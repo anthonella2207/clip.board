@@ -32,10 +32,12 @@ function App() {
   const [loading, setLoading] = useState(false);
   const location = useLocation();
 
+  //logs when user state changes
   useEffect(() => {
-    console.log("🔄 App hat sich aktualisiert. User: ", user);
+    console.log("App hat sich aktualisiert. User: ", user);
   }, [user]);
 
+  //simulates loading animation
   useEffect(() => {
     if (loading) {
       const timer = setTimeout(() => setLoading(false), 1000); // Simulate loading for 1 second
@@ -51,19 +53,21 @@ function App() {
     logout();
   };
 
+  //state for movie categories
   const [nowPlayingMovies, setNowPlayingMovies] = useState([]);
   const [topRatedMovies, setTopRatedMovies] = useState([]);
   const [filteredTopRated, setFilteredTopRated] = useState([]);
   const [upcomingMovies, setUpcomingMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Filtros
+  // states for filters
   const [genre, setGenre] = useState("All");
   const [ageRating, setAgeRating] = useState("All");
   const [duration, setDuration] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [voteAverage, setVoteAverage] = useState("All");
 
+  // Menu items for regular users
   const regularMenuItems = [
     { name: "Home", icon: <FaHome />, link: "/" },
     { name: "Book Later", icon: <FaClock />, link: "/book-later" },
@@ -71,6 +75,7 @@ function App() {
     { name: "Support", icon: <BiSupport />, link: "/support" } // Add SupportPage link
   ];
 
+  // Admin-specific menu items
   const adminMenuItems = [
     { name: "Availability", icon: <TbBookmarkQuestion />, link: "/reservations" },
     { name: "User Activity", icon: <GrContactInfo />, link: "/logs" },
@@ -79,6 +84,7 @@ function App() {
 
   const bottomMenuItem = { name: "Login", icon: <FaSignInAlt /> };
 
+  // Fetch movies from API
   useEffect(() => {
     const fetchMovies = () => {
       const fetchMoviesByCategory = async (category, setMovies) => {
@@ -91,6 +97,7 @@ function App() {
         }
       };
 
+      // Fetch all categories simultaneously
       Promise.all([
         fetchMoviesByCategory("now_playing", setNowPlayingMovies),
         fetchMoviesByCategory("top_rated", setTopRatedMovies),
@@ -117,7 +124,7 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
-  // Manejar filtros
+  // Fetch filtered movies based on user selections
   useEffect(() => {
     const fetchFilteredMovies = async () => {
       try {
@@ -135,11 +142,11 @@ function App() {
         if (data.success && Array.isArray(data.movies)) {
           setNowPlayingMovies(data.movies);
         } else {
-          setNowPlayingMovies([]); // Falls die API kein Array zurückgibt
+          setNowPlayingMovies([]); // Set empty array if no valid response
         }
       } catch (error) {
         console.error("Error fetching filtered now-playing movies:", error);
-        setNowPlayingMovies([]); // Setzt einen leeren Array, um Fehler zu vermeiden
+        setNowPlayingMovies([]);
         console.log(nowPlayingMovies);
       }
     };
@@ -316,7 +323,7 @@ function App() {
     </div>
   );
 }
-
+// Wrap App with Router and AuthProvider
 export default function RootApp() {
   return (
     <Router>

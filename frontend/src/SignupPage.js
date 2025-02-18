@@ -2,17 +2,20 @@ import React, { useState } from "react";
 import "./SignupPage.css";
 
 function SignupPage(){
+  //state variables to store user input
   const[first_name, setFirst_name] = useState("");
   const[last_name, setLast_name] = useState("");
   const[email, setEmail] = useState("");
   const[password, setPassword] = useState("");
   const[message, setMessage] = useState("");
 
+  //function to handle form submission
   const handleSignup = async (e) => {
     e.preventDefault();
 
     console.log("Signup-Daten:", { first_name, last_name, email, password });
 
+    //send sign up request to frontend
     const response = await fetch("http://127.0.0.1:5000/signup", {
       method: "POST",
       headers: {"Content-Type": "application/json"},
@@ -26,8 +29,8 @@ function SignupPage(){
     const data = await response.json();
     setMessage(data.message);
 
+    //if sign up successful, log data
     if (data.success) {
-      console.log("✅ Signup erfolgreich, Logging wird erstellt...");
       await fetch("http://127.0.0.1:5000/add_log", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -40,7 +43,7 @@ function SignupPage(){
   };
 
   return (
-    <div className="signup-container">  {/* ✅ Hauptcontainer für das Layout */}
+    <div className="signup-container">  {/*Hauptcontainer für das Layout */}
       {/* Linke Sektion */}
       <div className="signup-left">
         <p className="join-for-free">Join for free</p>

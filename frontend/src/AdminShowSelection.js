@@ -3,18 +3,22 @@ import {useNavigate} from "react-router-dom";
 import "./AdminShowSelection.css"
 
 function AdminShowSelection(){
+    //state to save available shows
     const[shows, setShows] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
+        //called at first render, to load movies
         const fetchShows = async () => {
             try{
+                //request to backend to get available shows
                 const response = await fetch(`http://127.0.0.1:5000/api/available_shows`);
 
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
 
+                //convert answer to json
                 const data = await response.json();
                 console.log("Fetched Shows:", data);
 

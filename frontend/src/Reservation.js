@@ -1,7 +1,9 @@
 import React from "react";
 
+// Function to reserve seats
 const reserveSeats = async(userId, showId, seatIds) => {
     try{
+        // Send reservation request to the backend
         const response = await fetch("http://127.0.0.1:5000/api/reserve", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
@@ -14,6 +16,7 @@ const reserveSeats = async(userId, showId, seatIds) => {
 
         const data = await response.json();
         if(data.success){
+            // Log the reservation action
 
             await fetch("http://127.0.0.1:5000/add_log", {
                 method: "POST",

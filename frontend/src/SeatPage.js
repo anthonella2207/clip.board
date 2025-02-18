@@ -10,6 +10,7 @@ import { IoArrowBackOutline } from "react-icons/io5";
 import { Chart, ArcElement, Tooltip, Legend } from "chart.js";
 Chart.register(ArcElement, Tooltip, Legend);
 
+// Fetch available seats for a given show ID
 const fetchSeats = async (showId) => {
     try {
         const response = await fetch(`http://localhost:5000/api/seats/${showId}`);
@@ -24,6 +25,7 @@ const fetchSeats = async (showId) => {
     }
 };
 
+//to show hall occupancy directly on the seat page for admin
 const fetchShowStats = async (showId, setStats) => {
     try {
         const response = await fetch(`http://127.0.0.1:5000/api/hall_occupancy?show_id=${showId}`);
@@ -44,6 +46,7 @@ const fetchShowStats = async (showId, setStats) => {
     }
 };
 
+// Seat selection component
 export default function SeatSelection() {
     const { showId } = useParams();
     const { user } = useContext(AuthContext);
@@ -55,6 +58,7 @@ export default function SeatSelection() {
     const [stats, setStats] = useState(null);
     const [showChart, setShowChart] = useState(false);
 
+    // Fetch seat data when component loads
     useEffect(() => {
         if (!showId) {
             navigate("/reservations");
@@ -64,6 +68,7 @@ export default function SeatSelection() {
         fetchShowStats(showId, setStats);
     }, [showId]);
 
+    // Calculate total price based on selected seats
     useEffect(() => {
         setTotalPrice(selectedSeats.reduce((acc, seatId) => {
             const seat = seats.find(s => s.id === seatId);
@@ -71,6 +76,7 @@ export default function SeatSelection() {
         }, 0));
     }, [selectedSeats, seats]);
 
+    // Handle seat selection
     const toggleSeatSelection = (seatId) => {
         setSelectedSeats((prevSelectedSeats) => {
             if (prevSelectedSeats.includes(seatId)) {
@@ -80,6 +86,8 @@ export default function SeatSelection() {
             }
         });
     };
+
+    //admin can delete seats and reservations
     const deleteReservation = async (seatId) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this reservation?");
     if (!confirmDelete) return;
@@ -108,6 +116,7 @@ export default function SeatSelection() {
     }
 };
 
+    // Handle seat reservation
     const handleReservation = async () => {
         if (!user) {
             alert("You need to log in first!");
